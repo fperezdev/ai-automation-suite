@@ -173,7 +173,7 @@ Airtable / Postgres / CRM, el upload por un trigger de IMAP/Drive, etc.
 ```
 workflows/                 los 4 JSON importables en n8n
 docs/                      arquitectura + doc por módulo
-modules/                   páginas por módulo (contexto del caso, capturas)
+modules/                   material y capturas por módulo
   └ 01-asistente-whatsapp/capturas/*
 samples/                   facturas de ejemplo + conversaciones (JSON)
 scripts/                   mock LLM, smoke test, generadores de workflow
