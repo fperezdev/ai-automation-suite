@@ -174,11 +174,15 @@
       "position": [
         880,
         240
-      ]
+      ],
+      "onError": "continueErrorOutput",
+      "options": {
+        "timeout": 30000
+      }
     },
     {
       "parameters": {
-        "jsCode": "const resp = $input.first().json;\nlet content = (resp.choices && resp.choices[0] && resp.choices[0].message.content) || '';\ncontent = content.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();\nconst start = content.indexOf('{');\nconst end = content.lastIndexOf('}');\n\nlet out;\nif (start === -1 || end === -1) {\n  // Model returned free text instead of JSON. Salvage a clean reply and only\n  // escalate if the wording really signals a handoff.\n  const t = content\n    .replace(/\\s*\"?\\b(intent|sentiment|handoff|handoff_reason)\\b\"?\\s*:[\\s\\S]*$/i, '')\n    .trim()\n    .replace(/[\\s,;:\"}]+$/, '');\n  const esc = /deriv|humano|una persona|urgencia dental 24|fuera de (nuestro )?horario/i.test(t);\n  out = { reply: t || 'En breve te contacta una persona del equipo.', intent: 'unstructured', sentiment: 'neutral', handoff: esc, handoff_reason: esc ? 'Derivación en respuesta libre' : '' };\n} else {\n  out = JSON.parse(content.slice(start, end + 1));\n}\n\nconst prev = $('Build Prompt').first().json;\n\n// Deterministic guard: normalise any voseo the model slips in.\nconst TUTEO = [\n  [/\\bten[eé]s\\b/gi, 'tienes'], [/\\bten[ií]s\\b/gi, 'tienes'], [/\\bpod[eé]s\\b/gi, 'puedes'],\n  [/\\bquer[eé]s\\b/gi, 'quieres'], [/\\bsab[eé]s\\b/gi, 'sabes'], [/\\bdec[ií]s\\b/gi, 'dices'],\n  [/\\bven[ií]s\\b/gi, 'vienes'], [/\\bsos\\b/gi, 'eres'], [/\\bvos\\b/gi, 'tú'],\n];\nconst norm = (s) => TUTEO.reduce((acc, [re, rep]) => acc.replace(re, rep), String(s || ''));\nconst reply = norm(out.reply || 'En breve te contacta una persona del equipo.');\n\nconst sender = prev.sender || 'test-user';\nconst transcript = (prev.messages || [])\n  .filter((m) => m.role !== 'system')\n  .map((m) => (m.role === 'user' ? 'Cliente: ' : 'Asistente: ') + m.content)\n  .join('\\n') + '\\nAsistente: ' + reply;\n\nreturn [{ json: {\n  reply,\n  intent: out.intent || 'unknown',\n  sentiment: out.sentiment || 'neutral',\n  handoff: Boolean(out.handoff),\n  handoff_reason: out.handoff_reason || '',\n  sender,\n  channel: (() => { try { return $('Parse Incoming').first().json.channel || 'test'; } catch (e) { return 'test'; } })(),\n  sources: prev.sources || [],\n  transcript,\n} }];\n"
+        "jsCode": "// Algunas veces el modelo devuelve el JSON anidado dentro de 'reply'\n// (p.ej. content = '{\"reply\": \"{\"reply\": \"Hola\"}\",\"intent\": ...}'). Sacamos\n// las capas sobrantes para no mostrar el JSON crudo al cliente.\nconst unwrapNestedJson = (s) => {\n  let t = String(s == null ? '' : s).trim();\n  for (let i = 0; i < 4; i++) {\n    const before = t;\n    t = t.replace(/^\\s*\\{?\\s*\"?reply\"?\\s*:\\s*\"?/i, '').trim();\n    if (t === before) break;\n  }\n  return t.replace(/[\\s,;:\"}]+$/, '').trim();\n};\n\nconst resp = $input.first().json;\nlet content = (resp.choices && resp.choices[0] && resp.choices[0].message.content) || '';\ncontent = content.trim().replace(/^```(?:json)?/i, '').replace(/```$/, '').trim();\nconst start = content.indexOf('{');\nconst end = content.lastIndexOf('}');\n\nlet out;\nif (start === -1 || end === -1) {\n  // Model returned free text instead of JSON. Salvage a clean reply and only\n  // escalate if the wording really signals a handoff.\n  let t = content\n    .replace(/\\s*\"?\\b(intent|sentiment|handoff|handoff_reason)\\b\"?\\s*:[\\s\\S]*$/i, '')\n    .trim()\n    .replace(/[\\s,;:\"}]+$/, '');\n  t = unwrapNestedJson(t);\n  const esc = /deriv|humano|una persona|urgencia dental 24|fuera de (nuestro )?horario/i.test(t);\n  out = { reply: t || 'En breve te contacta una persona del equipo.', intent: 'unstructured', sentiment: 'neutral', handoff: esc, handoff_reason: esc ? 'Derivación en respuesta libre' : '' };\n} else {\n  out = JSON.parse(content.slice(start, end + 1));\n}\n\nconst prev = $('Build Prompt').first().json;\n\n// Deterministic guard: normalise any voseo the model slips in.\nconst TUTEO = [\n  [/\\bten[eé]s\\b/gi, 'tienes'], [/\\bten[ií]s\\b/gi, 'tienes'], [/\\bpod[eé]s\\b/gi, 'puedes'],\n  [/\\bquer[eé]s\\b/gi, 'quieres'], [/\\bsab[eé]s\\b/gi, 'sabes'], [/\\bdec[ií]s\\b/gi, 'dices'],\n  [/\\bven[ií]s\\b/gi, 'vienes'], [/\\bsos\\b/gi, 'eres'], [/\\bvos\\b/gi, 'tú'],\n];\nconst norm = (s) => TUTEO.reduce((acc, [re, rep]) => acc.replace(re, rep), String(s || ''));\n// Si el modelo devolvio un reply vacio, no dejamos handoff=false: derivamos.\nconst emptyReply = !String(out.reply == null ? '' : out.reply).trim();\nconst reply = norm(unwrapNestedJson(out.reply) || 'En breve te contacta una persona del equipo.');\nif (emptyReply) { out.handoff = true; out.handoff_reason = 'respuesta vacía del modelo'; }\n\nconst sender = prev.sender || 'test-user';\nconst transcript = (prev.messages || [])\n  .filter((m) => m.role !== 'system')\n  .map((m) => (m.role === 'user' ? 'Cliente: ' : 'Asistente: ') + m.content)\n  .join('\\n') + '\\nAsistente: ' + reply;\n\nreturn [{ json: {\n  reply,\n  intent: out.intent || 'unknown',\n  sentiment: out.sentiment || 'neutral',\n  handoff: Boolean(out.handoff),\n  handoff_reason: out.handoff_reason || '',\n  sender,\n  channel: (() => { try { return $('Parse Incoming').first().json.channel || 'test'; } catch (e) { return 'test'; } })(),\n  sources: prev.sources || [],\n  transcript,\n} }];\n"
       },
       "id": "6b4c8278-ae6a-4e55-b4a1-0d4e79f0755d",
       "name": "Parse Reply",
@@ -381,6 +385,19 @@
       ],
       "disabled": true,
       "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Camino de emergencia: el LLM no respondio (timeout, 5xx, proveedor caido o sin saldo).\n// En vez de devolver un error 500 al visitante, respondemos algo util y derivamos.\nconst bp = (() => { try { return $('Build Prompt').first().json; } catch (e) { return {}; } })();\nconst sender = bp.sender || 'test-user';\nconst channel = (() => { try { return $('Parse Incoming').first().json.channel || 'test'; } catch (e) { return 'test'; } })();\nconst reply = 'Disculpa, en este momento no puedo responder automaticamente. Te paso con una persona del equipo para que te ayude.';\nreturn [{ json: {\n  reply,\n  intent: 'llm_unavailable',\n  sentiment: 'neutral',\n  handoff: true,\n  handoff_reason: 'asistente no disponible (sin respuesta del modelo)',\n  sender,\n  channel,\n  sources: [],\n  transcript: 'Asistente: ' + reply,\n} }];\n"
+      },
+      "id": "5a252123-1eca-462a-944b-a202154003d9",
+      "name": "Fallback Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        440
+      ]
     }
   ],
   "connections": {
@@ -472,6 +489,13 @@
             "type": "main",
             "index": 0
           }
+        ],
+        [
+          {
+            "node": "Fallback Reply",
+            "type": "main",
+            "index": 0
+          }
         ]
       ]
     },
@@ -537,6 +561,17 @@
         [
           {
             "node": "Log Handoff",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fallback Reply": {
+      "main": [
+        [
+          {
+            "node": "Send to WhatsApp?",
             "type": "main",
             "index": 0
           }
