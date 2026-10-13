@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Automation Suite — Automatización con IA para PyMEs (n8n + LLM)</title>
+<meta name="description" content="Suite de 4 módulos de automatización con IA sobre n8n + LLM: asistente de WhatsApp con RAG, facturas, captación de leads y soporte. Corre con un comando y sin API keys.">
+<style>
+  :root{
+    --bg:#0b0f17; --bg2:#111827; --card:#151c2c; --line:#26304a;
+    --fg:#e6ebf5; --muted:#9aa7bd; --accent:#6ea8fe; --accent2:#7ee0c0;
+    --hot:#ff6b6b; --warm:#ffb454; --cold:#6ea8fe;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -100px,#18233b 0%,var(--bg) 60%);color:var(--fg);
+       font:16px/1.65 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+  header{padding:72px 0 40px;text-align:center}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:26px}
+  .badge{font:600 12px/1 var(--mono);letter-spacing:.02em;color:var(--muted);
+         border:1px solid var(--line);background:var(--bg2);padding:7px 11px;border-radius:999px}
+  h1{font-size:clamp(30px,5vw,50px);line-height:1.1;margin:0 0 14px;letter-spacing:-.02em}
+  h1 span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:clamp(16px,2.2vw,20px);max-width:720px;margin:0 auto 26px}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 20px;border-radius:10px;font-weight:600;border:1px solid var(--line);background:var(--bg2);color:var(--fg)}
+  .btn.primary{background:linear-gradient(90deg,#3b6fe0,#5b9bff);border-color:transparent;color:#fff}
+  .btn:hover{text-decoration:none;filter:brightness(1.08)}
+  section{padding:44px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(22px,3vw,30px);margin:0 0 8px;letter-spacing:-.01em}
+  .lead{color:var(--muted);margin:0 0 26px;max-width:760px}
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g4{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{background:linear-gradient(180deg,var(--card),#121a29);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{margin:0 0 6px;font-size:17px}
+  .card .n{font:700 12px/1 var(--mono);color:var(--accent);letter-spacing:.08em}
+  .card p{margin:8px 0 0;color:var(--muted);font-size:14.5px}
+  .card img{width:100%;border-radius:9px;border:1px solid var(--line);margin-top:14px;display:block}
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:13px;text-transform:uppercase;letter-spacing:.04em}
+  .before{color:#ffb4b4}.after{color:var(--accent2)}
+  pre{background:#0a0e16;border:1px solid var(--line);border-radius:12px;padding:18px;overflow:auto;font:13.5px/1.6 var(--mono);color:#cdd7ea}
+  .pass{color:var(--accent2)}
+  .arch{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center}
+  .arch img{max-width:100%}
+  .tier{font:700 11px/1 var(--mono);padding:6px 9px;border-radius:999px;border:1px solid var(--line)}
+  .HOT{color:var(--hot)}.WARM{color:var(--warm)}.COLD{color:var(--cold)}
+  .shots{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .shots img{width:100%;border-radius:10px;border:1px solid var(--line);background:#fff}
+  footer{padding:40px 0 70px;color:var(--muted);font-size:14px;text-align:center}
+  code{font-family:var(--mono);background:#0a0e16;border:1px solid var(--line);border-radius:6px;padding:2px 6px;font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="badges">
+      <span class="badge">LICENCIA · MIT</span>
+      <span class="badge">BUILT WITH · n8n</span>
+      <span class="badge">LLM · COMPATIBLE OPENAI</span>
+      <span class="badge">SMOKE TEST · 12/12 ✅</span>
+      <span class="badge">CORRE SIN API KEYS</span>
+    </div>
+    <h1>AI Automation Suite<br><span>Automatización con IA para PyMEs, de punta a punta</span></h1>
+    <p class="sub">Cuatro módulos de automatización listos para producción, sobre <strong>n8n</strong> + un <strong>LLM</strong>.
+    Caso real: una clínica dental que atendía todo a mano. Corre entero con un comando y sin API keys.</p>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/fperezdev/ai-automation-suite">Ver el código en GitHub</a>
+      <a class="btn" href="#modulos">Ver los 4 módulos</a>
+    </div>
+  </header>
+
+  <section id="caso">
+    <h2>🦷 El caso de referencia</h2>
+    <p class="lead"><strong>Clínica Dental Sonrisa Ñuñoa</strong> — Santiago, Chile · 3 odontólogos + 2 asistentes.
+    Dolor: WhatsApp a mano todo el día, facturas de insumos tipeadas a planilla, consultas de noche sin responder, cero seguimiento a pacientes nuevos.</p>
+    <table>
+      <tr><th>Antes (a mano)</th><th>Después (con la suite)</th></tr>
+      <tr><td class="before">Respondían el WhatsApp uno por uno; los mensajes de la noche se perdían</td><td class="after"><strong>M1</strong> — asistente 24/7 que responde solo y deriva a una persona cuando corresponde</td></tr>
+      <tr><td class="before">Cada factura de insumos se copiaba a mano a una planilla</td><td class="after"><strong>M2</strong> — lee el PDF, valida los totales y registra el gasto solo</td></tr>
+      <tr><td class="before">Las consultas de la web quedaban sin seguimiento</td><td class="after"><strong>M3</strong> — las califica y redacta el email de seguimiento</td></tr>
+      <tr><td class="before">El personal preguntaba todo por interno</td><td class="after"><strong>M4</strong> — agente de soporte interno con la FAQ del equipo</td></tr>
+    </table>
+    <p class="lead" style="margin-top:16px">La suite es <strong>genérica</strong>: los 4 módulos sirven para cualquier PyME (retail, servicios, salud, gastronomía). La clínica es solo el ejemplo concreto.</p>
+  </section>
+
+  <section id="modulos">
+    <h2>🧩 Los 4 módulos</h2>
+    <p class="lead">El <strong>módulo 1 es la pieza estrella</strong>: corre sobre WhatsApp real con la Cloud API oficial de Meta y es el único con <strong>RAG</strong>.</p>
+    <div class="grid g2">
+      <div class="card">
+        <span class="n">MÓDULO 01</span>
+        <h3>Asistente de WhatsApp con RAG</h3>
+        <p>WhatsApp Cloud API → recuperación por relevancia (TF-IDF + coseno) sobre la base de conocimiento del negocio → respuestas fundamentadas + derivación a humano.</p>
+        <img src="modules/01-asistente-whatsapp/capturas/todas-las-conversaciones.png" alt="Conversaciones de prueba del asistente de WhatsApp">
+      </div>
+      <div class="card">
+        <span class="n">MÓDULO 02</span>
+        <h3>Automatización de facturas</h3>
+        <p>Sube un PDF → el LLM extrae los campos → reglas de negocio validan → planilla + reporte HTML con badge PASS/REVIEW.</p>
+        <img src="assets/capturas/m2-2-report-review.png" alt="Reporte de factura con total descuadrado marcado REVIEW">
+      </div>
+      <div class="card">
+        <span class="n">MÓDULO 03</span>
+        <h3>Captación de pacientes / leads</h3>
+        <p>Formulario → enriquecimiento (fetch del sitio) + scoring con IA <span class="tier HOT">HOT</span> <span class="tier WARM">WARM</span> <span class="tier COLD">COLD</span> → registro + borrador de seguimiento.</p>
+        <img src="assets/capturas/m3-1-lead-report.png" alt="Reporte de lead con score, tier y borrador de seguimiento">
+      </div>
+      <div class="card">
+        <span class="n">MÓDULO 04</span>
+        <h3>Agente de soporte interno</h3>
+        <p>Webchat que responde con los datos del negocio y <strong>deriva a una persona</strong> con el transcript completo cuando debe.</p>
+        <img src="assets/capturas/m4-1-webchat.png" alt="Webchat del agente de soporte">
+      </div>
+    </div>
+  </section>
+
+  <section id="arq">
+    <h2>🏗️ Arquitectura</h2>
+    <p class="lead"><strong>RAG sin vector DB:</strong> el módulo 1 recupera con TF-IDF + similitud coseno en un Code node (exacto y sin dependencias para bases chicas; se cambia por embeddings + pgvector cuando la base crece). El LLM redacta, pero el contenido lo aporta la base de conocimiento: si algo no está, no lo inventa y deriva.</p>
+    <div class="arch"><img src="assets/arquitectura.svg" alt="Diagrama de arquitectura de la suite"></div>
+  </section>
+
+  <section id="quickstart">
+    <h2>🚀 Quickstart — un comando, sin API keys</h2>
+    <p class="lead">El repo trae un <strong>LLM mock determinista</strong> (solo stdlib). Para usar un modelo real (DeepSeek, OpenAI, Groq, Ollama…) cambiás una URL.</p>
+    <pre><code>$ make up      # levanta n8n (:5688) + el LLM mock
+$ make demo    # maneja los workflows por HTTP real y verifica
+
+01 invoice automation
+  <span class="pass">PASS</span>  invoice_001.pdf -&gt; status PASS
+  <span class="pass">PASS</span>  invoice_003.pdf -&gt; status REVIEW (total descuadrado)
+02 lead generation &amp; scoring
+  <span class="pass">PASS</span>  hot lead  -&gt; tier HOT
+  <span class="pass">PASS</span>  vague lead -&gt; tier COLD
+03 AI support agent (webchat + handoff)
+  <span class="pass">PASS</span>  price question  -&gt; answered, uses documented price
+  <span class="pass">PASS</span>  refund request  -&gt; handoff true
+
+<span class="pass">✅ all 12 checks passed</span></code></pre>
+  </section>
+
+  <section id="stack">
+    <h2>🧰 Stack y qué demuestra</h2>
+    <div class="grid g4">
+      <div class="card"><h3>n8n</h3><p>Webhooks (GET+POST), Code nodes, Data Tables, IF, HTTP Request, respondToWebhook.</p></div>
+      <div class="card"><h3>RAG</h3><p>TF-IDF + coseno, chunking, grounding y trazabilidad de fuentes.</p></div>
+      <div class="card"><h3>LLM</h3><p>Salida JSON estructurada, prompt engineering, guardas deterministas de tono.</p></div>
+      <div class="card"><h3>WhatsApp Cloud API</h3><p>Verificación de webhook, parseo de payloads, envío por Graph API, handoff humano.</p></div>
+    </div>
+  </section>
+
+  <section id="capturas">
+    <h2>📸 Más capturas</h2>
+    <div class="shots">
+      <img src="modules/01-asistente-whatsapp/capturas/c1-precios-agenda.png" alt="Conversación: precios y agenda">
+      <img src="modules/01-asistente-whatsapp/capturas/c2-ubicacion-pagos.png" alt="Conversación: ubicación y pagos">
+      <img src="modules/01-asistente-whatsapp/capturas/c3-urgencia-handoff.png" alt="Conversación: urgencia y derivación a humano">
+      <img src="assets/capturas/m4-2-handoff.png" alt="Derivación a humano con transcript">
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Francisco Pérez</strong> · Ingeniero en Computación · automatización con IA (n8n + LLM)</p>
+    <p><a href="https://github.com/fperezdev/ai-automation-suite">github.com/fperezdev/ai-automation-suite</a> · Licencia MIT</p>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,5 +1,11 @@
 # AI Automation Suite
 
+[![Licencia: MIT](https://img.shields.io/badge/licencia-MIT-blue.svg)](LICENSE)
+[![n8n](https://img.shields.io/badge/built%20with-n8n-EA4B71.svg)](https://n8n.io)
+[![LLM](https://img.shields.io/badge/LLM-compatible%20OpenAI-000000.svg)](#-por-qué-un-llm-mock)
+[![Smoke test](https://img.shields.io/badge/smoke%20test-12%2F12%20passing-brightgreen.svg)](#-quickstart-un-comando-sin-api-keys)
+[![Sin API keys](https://img.shields.io/badge/corre%20sin-API%20keys-success.svg)](#-por-qué-un-llm-mock)
+
 ### Automatización con IA para PyMEs — de punta a punta
 
 Cuatro módulos de automatización **listos para producción**, construidos sobre

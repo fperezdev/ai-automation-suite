@@ -53,7 +53,8 @@ Docker Compose + Makefile + **smoke test** reproducible (12 chequeos reales).
 
 ### Enlaces
 
-- Código: `https://github.com/fperezdev/ai-automation-suite`  ← *(actualizar tras crear el repo)*
+- Código: https://github.com/fperezdev/ai-automation-suite
+- Demo (GitHub Pages): https://fperezdev.github.io/ai-automation-suite/
 - Capturas: `assets/capturas/` y `modules/01-asistente-whatsapp/capturas/`
 
 ---
