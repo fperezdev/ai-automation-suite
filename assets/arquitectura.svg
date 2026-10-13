@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" font-family="ui-sans-serif, system-ui, Segoe UI, Roboto, sans-serif">
+  <rect width="1200" height="760" fill="#0b1220"/>
+  <text x="600" y="52" text-anchor="middle" fill="#e8eefc" font-size="30" font-weight="700">AI Automation Suite — Clínica Dental Sonrisa Ñuñoa</text>
+  <text x="600" y="82" text-anchor="middle" fill="#8fa3c8" font-size="16">Cuatro módulos sobre n8n + un LLM · un negocio, automatizado de punta a punta</text>
+
+  <!-- Canales -->
+  <g>
+    <rect x="60" y="120" width="250" height="86" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="185" y="152" text-anchor="middle" fill="#e8eefc" font-size="17" font-weight="700">WhatsApp</text>
+    <text x="185" y="176" text-anchor="middle" fill="#8fa3c8" font-size="13">Cloud API (Meta)</text>
+    <text x="185" y="196" text-anchor="middle" fill="#8fa3c8" font-size="13">pacientes</text>
+
+    <rect x="475" y="120" width="250" height="86" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="600" y="152" text-anchor="middle" fill="#e8eefc" font-size="17" font-weight="700">Web de la clínica</text>
+    <text x="600" y="176" text-anchor="middle" fill="#8fa3c8" font-size="13">formulario · subida PDF · chat</text>
+
+    <rect x="890" y="120" width="250" height="86" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="1015" y="152" text-anchor="middle" fill="#e8eefc" font-size="17" font-weight="700">Facturas / Insumos</text>
+    <text x="1015" y="176" text-anchor="middle" fill="#8fa3c8" font-size="13">correo o carpeta</text>
+  </g>
+
+  <!-- flechas hacia n8n -->
+  <g stroke="#4f8cff" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M185 206 L185 250"/>
+    <path d="M600 206 L600 250"/>
+    <path d="M1015 206 L1015 250"/>
+  </g>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6 z" fill="#4f8cff"/>
+    </marker>
+  </defs>
+
+  <!-- n8n caja -->
+  <rect x="60" y="250" width="1080" height="300" rx="18" fill="#0e1730" stroke="#2a3c60"/>
+  <text x="84" y="282" fill="#8fa3c8" font-size="14" font-weight="700" letter-spacing="0.08em">N8N · ORQUESTACIÓN</text>
+
+  <!-- modulos -->
+  <g>
+    <rect x="90" y="304" width="240" height="216" rx="14" fill="#111b2e" stroke="#4f8cff" stroke-width="2"/>
+    <text x="210" y="334" text-anchor="middle" fill="#4f8cff" font-size="15" font-weight="700">M1 · Asistente WhatsApp</text>
+    <text x="110" y="362" fill="#e8eefc" font-size="13">• Webhook GET+POST</text>
+    <text x="110" y="384" fill="#e8eefc" font-size="13">• RAG (TF-IDF + coseno)</text>
+    <text x="110" y="406" fill="#e8eefc" font-size="13">• Respuestas fundamentadas</text>
+    <text x="110" y="428" fill="#e8eefc" font-size="13">• Handoff a humano</text>
+    <text x="110" y="450" fill="#e8eefc" font-size="13">• Envío por Graph API</text>
+    <text x="110" y="478" fill="#8fa3c8" font-size="12">KB: 7 chunks de la clínica</text>
+    <text x="110" y="500" fill="#8fa3c8" font-size="12">Data Table: wa_handoffs</text>
+
+    <rect x="350" y="304" width="240" height="216" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="470" y="334" text-anchor="middle" fill="#e8eefc" font-size="15" font-weight="700">M2 · Facturas</text>
+    <text x="370" y="362" fill="#e8eefc" font-size="13">• Extracción de PDF</text>
+    <text x="370" y="384" fill="#e8eefc" font-size="13">• LLM → JSON estructurado</text>
+    <text x="370" y="406" fill="#e8eefc" font-size="13">• Reglas de validación</text>
+    <text x="370" y="428" fill="#e8eefc" font-size="13">• Badge PASS / REVIEW</text>
+    <text x="370" y="456" fill="#8fa3c8" font-size="12">Data Table: invoices</text>
+
+    <rect x="610" y="304" width="240" height="216" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="730" y="334" text-anchor="middle" fill="#e8eefc" font-size="15" font-weight="700">M3 · Captación</text>
+    <text x="630" y="362" fill="#e8eefc" font-size="13">• Formulario web</text>
+    <text x="630" y="384" fill="#e8eefc" font-size="13">• Enriquecimiento (fetch)</text>
+    <text x="630" y="406" fill="#e8eefc" font-size="13">• Scoring HOT/WARM/COLD</text>
+    <text x="630" y="428" fill="#e8eefc" font-size="13">• Borrador de seguimiento</text>
+    <text x="630" y="456" fill="#8fa3c8" font-size="12">Data Table: leads</text>
+
+    <rect x="870" y="304" width="240" height="216" rx="14" fill="#111b2e" stroke="#1e2b45"/>
+    <text x="990" y="334" text-anchor="middle" fill="#e8eefc" font-size="15" font-weight="700">M4 · Soporte (webchat)</text>
+    <text x="890" y="362" fill="#e8eefc" font-size="13">• Chat web</text>
+    <text x="890" y="384" fill="#e8eefc" font-size="13">• Datos del negocio en el prompt</text>
+    <text x="890" y="406" fill="#e8eefc" font-size="13">• intent / sentiment</text>
+    <text x="890" y="428" fill="#e8eefc" font-size="13">• Derivación a humano</text>
+    <text x="890" y="456" fill="#8fa3c8" font-size="12">Data Table: handoffs</text>
+  </g>
+
+  <!-- flechas a LLM -->
+  <g stroke="#4f8cff" stroke-width="2" fill="none" marker-end="url(#a)">
+    <path d="M600 550 L600 596"/>
+  </g>
+
+  <!-- LLM -->
+  <rect x="330" y="596" width="540" height="92" rx="14" fill="#111b2e" stroke="#22c55e" stroke-width="2"/>
+  <text x="600" y="628" text-anchor="middle" fill="#22c55e" font-size="16" font-weight="700">Endpoint LLM (compatible OpenAI)</text>
+  <text x="600" y="652" text-anchor="middle" fill="#8fa3c8" font-size="13">mock determinista (sin keys) · o DeepSeek / OpenAI / Groq / Ollama</text>
+  <text x="600" y="672" text-anchor="middle" fill="#8fa3c8" font-size="13">messages → choices[0].message.content</text>
+
+  <text x="600" y="730" text-anchor="middle" fill="#5f7196" font-size="12">Un comando para correrlo: make up &amp;&amp; make demo · 12 chequeos end-to-end</text>
+</svg>
