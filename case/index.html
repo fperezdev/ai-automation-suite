@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clínica Dental Sonrisa Ñuñoa — Odontología en Ñuñoa, Santiago</title>
+<meta name="description" content="Clínica dental en Ñuñoa: limpiezas, blanqueamiento, resinas y urgencias. Fonasa e Isapre, hasta 3 cuotas. Agenda por WhatsApp en minutos, también con nuestro asistente virtual 24/7.">
+<meta property="og:title" content="Clínica Dental Sonrisa Ñuñoa">
+<meta property="og:description" content="Odontología general en Ñuñoa. Agenda por WhatsApp: precios claros, Fonasa e Isapre, urgencias con cupo el mismo día.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo-128.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6fafa; --bg-2:#eaf5f6; --ink:#12303a; --muted:#5d7b84;
+  --teal:#0e8f8f; --teal-2:#0b6f73; --sky:#3aa7d6; --mint:#d9f0ee; --line:rgba(14,143,143,.16);
+  --radius:18px; --shadow:0 18px 45px -24px rgba(11,63,73,.5); --max:1140px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Manrope,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.brand{font-family:Fraunces,Georgia,serif;line-height:1.14;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.eyebrow{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;padding:.85rem 1.45rem;border-radius:999px;transition:transform .15s ease,box-shadow .15s ease;border:1.5px solid transparent;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 12px 26px -12px rgba(14,143,143,.85)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--teal-2)}
+.btn svg{width:18px;height:18px}
+
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(246,250,250,.86);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:600;font-size:1.2rem;color:var(--teal-2)}
+.nav-links{display:flex;gap:1.5rem;font-size:.93rem;font-weight:600;color:var(--muted)}
+.nav-links a:hover{color:var(--teal)}
+@media(max-width:880px){.nav-links{display:none}}
+
+.hero{position:relative;overflow:hidden;padding:74px 0 84px;background:
+  radial-gradient(1000px 420px at 84% -10%,rgba(58,167,214,.16),transparent 60%),
+  radial-gradient(700px 380px at 4% 110%,rgba(14,143,143,.13),transparent 62%),var(--bg)}
+.hero-grid{display:grid;grid-template-columns:1.06fr .94fr;gap:54px;align-items:center}
+.hero h1{font-size:clamp(2.2rem,4.8vw,3.5rem);font-weight:600;color:var(--teal-2);margin:16px 0}
+.hero p.lead{font-size:1.1rem;color:var(--muted);max-width:34em}
+.hero-actions{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:28px}
+.trust{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px;color:var(--muted);font-size:.9rem}
+.trust b{display:block;font-family:Fraunces,serif;font-size:1.45rem;color:var(--teal-2)}
+.hero-art{position:relative;display:grid;place-items:center}
+.hero-art .blob{position:absolute;inset:-26px -12px -18px -26px;background:linear-gradient(150deg,#fff,var(--mint));border-radius:44% 56% 58% 42%/52% 44% 56% 48%;box-shadow:var(--shadow)}
+.hero-logo{position:relative;width:min(82%,340px);aspect-ratio:1;background:#fff;border-radius:50%;display:grid;place-items:center;padding:12%;box-shadow:0 22px 50px -26px rgba(11,63,73,.55);border:1px solid rgba(14,143,143,.10)}
+.hero-logo img{width:100%;height:auto;display:block}
+@media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:34px}.hero{padding:50px 0 58px}}
+
+section{padding:76px 0}
+.alt{background:var(--bg-2)}
+.section-head{max-width:640px;margin:0 auto 44px;text-align:center}
+.section-head h2{font-size:clamp(1.75rem,3.3vw,2.45rem);color:var(--teal-2);margin:12px 0}
+.section-head p{color:var(--muted)}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:0 12px 30px -22px rgba(11,63,73,.5);border:1px solid rgba(14,143,143,.08);transition:transform .2s ease}
+.card:hover{transform:translateY(-4px)}
+.card .ic{width:50px;height:50px;border-radius:14px;background:var(--mint);display:grid;place-items:center;color:var(--teal-2);margin-bottom:14px}
+.card h3{font-size:1.1rem;color:var(--teal-2);margin-bottom:6px}
+.card p{font-size:.93rem;color:var(--muted)}
+@media(max-width:900px){.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid3,.grid4{grid-template-columns:1fr}}
+
+.pricelist{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid rgba(14,143,143,.08)}
+.prow{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 26px;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:none}
+.prow .pname{font-weight:700}
+.prow .pdesc{font-size:.88rem;color:var(--muted)}
+.prow .price{font-family:Fraunces,serif;font-size:1.25rem;color:var(--teal);white-space:nowrap}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.split h2{font-size:clamp(1.7rem,3.2vw,2.3rem);color:var(--teal-2);margin:12px 0 16px}
+.checks{list-style:none;display:grid;gap:13px;margin-top:20px}
+.checks li{display:flex;gap:12px;align-items:flex-start;color:var(--muted)}
+.checks li svg{flex:0 0 21px;color:var(--teal);margin-top:3px}
+.panel{background:#fff;border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);border:1px solid rgba(14,143,143,.08)}
+.panel h3{color:var(--teal-2);margin-bottom:14px;font-size:1.2rem}
+.maplike{background:linear-gradient(135deg,#e2f4f3,#cfeaf0);border-radius:var(--radius);min-height:280px;display:grid;place-items:center;text-align:center;padding:26px;border:1px solid var(--line)}
+@media(max-width:900px){.split{grid-template-columns:1fr;gap:30px}}
+
+.banner{background:linear-gradient(125deg,var(--teal-2),var(--teal));color:#fff;border-radius:26px;padding:52px 30px;text-align:center;box-shadow:var(--shadow)}
+.banner h2{font-size:clamp(1.7rem,3.3vw,2.35rem);margin-bottom:12px}
+.banner p{opacity:.9;max-width:36em;margin:0 auto 24px}
+.banner .btn-primary{background:#fff;color:var(--teal-2);box-shadow:none}
+.tags{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.tag{background:rgba(255,255,255,.16);border-radius:999px;padding:.35rem .9rem;font-size:.82rem;font-weight:600}
+
+footer.site{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:.88rem}
+.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+.float{position:fixed;right:20px;bottom:20px;z-index:60;background:#25D366;color:#fff;width:58px;height:58px;border-radius:50%;display:grid;place-items:center;box-shadow:0 14px 30px -10px rgba(37,211,102,.85)}
+.float svg{width:30px;height:30px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="#top" aria-label="Clínica Dental Sonrisa Ñuñoa">
+        <img src="assets/logo-256.png" width="38" height="38" alt="Clínica Dental Sonrisa Ñuñoa">
+        Sonrisa Ñuñoa
+      </a>
+      <div class="nav-links">
+        <a href="#servicios">Servicios</a>
+        <a href="#precios">Precios</a>
+        <a href="#convenios">Convenios</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a href="#urgencias">Urgencias</a>
+      </div>
+      <a class="btn btn-primary" href="#agendar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        Agendar por WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Ñuñoa · Santiago</span>
+        <h1>Tu dentista de confianza en Ñuñoa</h1>
+        <p class="lead">Clínica dental familiar a 3 minutos del Metro Chile España. Atendemos Fonasa e Isapre, con precios claros y hasta 3 cuotas sin interés. Agenda por WhatsApp y te confirmamos la hora el mismo día.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#agendar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            Agendar una hora
+          </a>
+          <a class="btn btn-ghost" href="#precios">Ver precios</a>
+        </div>
+        <div class="trust">
+          <div><b>3 dentistas</b>+ 2 asistentes</div>
+          <div><b>Lun–Sáb</b>hasta las 19:00</div>
+          <div><b>24/7</b>asistente por WhatsApp</div>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="blob" aria-hidden="true"></div>
+        <div class="hero-logo">
+          <img src="assets/logo.png" alt="Logo de Clínica Dental Sonrisa Ñuñoa">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="servicios">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Servicios</span>
+        <h2>Odontología general para toda la familia</h2>
+        <p>Desde una limpieza hasta endodoncias y atención de niños. Si necesitás algo que no aparece acá, escribinos.</p>
+      </div>
+      <div class="grid3">
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-2.4 0-3.2 1-4.8 1S7 3 6 4.2C4.7 5.8 4.9 9 5.6 12c.6 2.6 1.1 4.7 1.7 6.4.3 1 .9 2.1 2 2.1 1.2 0 1.6-1.1 1.8-2.4.3-1.4.5-3 1.9-3s1.6 1.6 1.9 3c.2 1.3.6 2.4 1.8 2.4 1.1 0 1.7-1.1 2-2.1.6-1.7 1.1-3.8 1.7-6.4.7-3 .9-6.2-.4-7.8C18.2 3 17.2 4 15.6 4S14.4 3 12 3Z"/></svg></div><h3>Limpieza dental</h3><p>Destartraje y pulido con ultrasonido. Incluye revisión general.</p></div>
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.2 4.9 5.3.6-4 3.6 1.1 5.2L12 14.8 7.4 17.3l1.1-5.2-4-3.6 5.3-.6L12 3Z"/></svg></div><h3>Blanqueamiento</h3><p>Aclaramiento en consulta, con control de sensibilidad.</p></div>
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg></div><h3>Resinas y restauraciones</h3><p>Tapaduras estéticas del color del diente, en una sesión.</p></div>
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-7 7c0 2.4 1.2 4.5 3 5.7V19h8v-4.3c1.8-1.2 3-3.3 3-5.7a7 7 0 0 0-7-7Z"/><path d="M8 22h8"/></svg></div><h3>Endodoncia</h3><p>Tratamiento de conducto para salvar el diente, sin dolor.</p></div>
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l3 6-9 12L3 9l3-6Z"/><path d="M3 9h18"/></svg></div><h3>Extracciones</h3><p>Incluye terceros molinos y dientes de leche, con anestesia.</p></div>
+        <div class="card"><div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M4 20c0-3 2.2-5 5-5s5 2 5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.8"/><path d="M18 20c0-2.4-1-4.2-2.6-5.1"/></svg></div><h3>Odontopediatría</h3><p>Atención de niños en un ambiente tranquilo y sin apuro.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="precios">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Precios</span>
+        <h2>Precios claros, sin sorpresas</h2>
+        <p>Valores de referencia en pesos chilenos. El presupuesto final se confirma en la primera consulta.</p>
+      </div>
+      <div class="pricelist">
+        <div class="prow"><div><div class="pname">Consulta de evaluación</div><div class="pdesc">Revisión completa + plan de tratamiento</div></div><div class="price">$15.000</div></div>
+        <div class="prow"><div><div class="pname">Limpieza dental</div><div class="pdesc">Destartraje y pulido</div></div><div class="price">$35.000</div></div>
+        <div class="prow"><div><div class="pname">Blanqueamiento</div><div class="pdesc">En consulta, sesión completa</div></div><div class="price">$120.000</div></div>
+        <div class="prow"><div><div class="pname">Resina (tapadura)</div><div class="pdesc">Por pieza, restauración estética</div></div><div class="price">$45.000</div></div>
+        <div class="prow"><div><div class="pname">Urgencia dental</div><div class="pdesc">Dolor agudo, cupo el mismo día</div></div><div class="price">desde $25.000</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="convenios">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Convenios y pagos</span>
+        <h2>Fonasa e Isapre, y hasta 3 cuotas</h2>
+        <p>Queremos que el tratamiento no se postergue por el presupuesto. Trabajamos con las previsiones más comunes y con descuentos para empresas de la zona.</p>
+        <ul class="checks">
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Fonasa e Isapre: aplicamos el bono en el momento.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Débito y crédito hasta 3 cuotas sin interés.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> 15 % de descuento con credencial de empresa.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg> Presupuesto por escrito antes de empezar.</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>¿Atiendes por convenio con tu Isapre?</h3>
+        <p style="color:var(--muted);font-size:.95rem">Escríbenos por WhatsApp con tu previsión y el tratamiento que necesitas. Te confirmamos cobertura, valor a pagar y cuotas disponibles en el mismo chat.</p>
+        <div style="margin-top:20px"><a class="btn btn-primary" href="#agendar">Consultar por WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="ubicacion">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Ubicación y horarios</span>
+        <h2>A pasos del Metro Chile España</h2>
+        <p>Estamos en Av. Irarrázaval 3421, Ñuñoa — a 3 minutos caminando de la salida del Metro Chile España (Línea 3).</p>
+        <ul class="checks">
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg> Av. Irarrázaval 3421, Ñuñoa, Santiago.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Lunes a viernes, 9:00 – 19:00 h.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Sábado, 10:00 – 14:00 h.</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m8 12 2.5 2.5L16 9"/></svg> Domingos y festivos: cerrado (urgencias por WhatsApp).</li>
+        </ul>
+      </div>
+      <div class="maplike">
+        <div>
+          <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <p style="margin-top:10px;font-weight:800;color:var(--teal-2)">Av. Irarrázaval 3421</p>
+          <p style="font-size:.9rem;color:var(--muted)">Ñuñoa · Metro Chile España (L3), 3 min a pie</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt" id="urgencias">
+    <div class="wrap">
+      <div class="banner">
+        <h2>¿Dolor de diente ahora?</h2>
+        <p>Reservamos cupos de urgencia todos los días. Escribinos por WhatsApp y te decimos si hay hora disponible hoy mismo. Fuera de horario, un asistente virtual recibe tu mensaje al instante y te orienta.</p>
+        <a class="btn btn-primary" href="demo.html" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Escribir por WhatsApp
+        </a>
+        <div class="tags">
+          <span class="tag">Cupo el mismo día</span>
+          <span class="tag">Atención 24/7 por WhatsApp</span>
+          <span class="tag">Fonasa e Isapre</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="agendar">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Agendar</span>
+        <h2>Reserva tu hora en minutos</h2>
+        <p>Escribinos por WhatsApp o Instagram con tu nombre, RUT y el horario que prefieres. Te confirmamos la disponibilidad el mismo día.</p>
+        <ul class="checks">
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> WhatsApp: +56 9 5555 0101</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg> Instagram: @sonrisanunoa</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="m4 7 8 6 8-6"/></svg> contacto@sonrisanunoa.cl</li>
+          <li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"/></svg> Fijo: (2) 2345 6789</li>
+        </ul>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="demo.html" target="_blank" rel="noopener">Agendar por WhatsApp</a>
+          <a class="btn btn-ghost" href="mailto:contacto@sonrisanunoa.cl">Escribir un correo</a>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>Nuestro asistente virtual</h3>
+        <p style="color:var(--muted);font-size:.95rem">Nuestro WhatsApp tiene un asistente con IA que responde al instante las dudas más comunes: horarios, precios, cómo llegar, convenios y urgencias. Si necesitas hablar con una persona, te deriva con el equipo y deja registrada tu consulta.</p>
+        <p style="color:var(--muted);font-size:.95rem;margin-top:12px">Así no se pierde ningún mensaje, ni siquiera de noche.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>© <span id="y"></span> Clínica Dental Sonrisa Ñuñoa · Odontología general</div>
+    <div>Av. Irarrázaval 3421, Ñuñoa · contacto@sonrisanunoa.cl</div>
+  </div>
+</footer>
+
+<a class="float" href="demo.html" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.5-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6.1-.2.4-.5.6-.7.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.2.2 2 3.1 5 4.3.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2"/></svg>
+</a>
+
+<script>document.getElementById('y').textContent=new Date().getFullYear();</script>
+</body>
+</html>

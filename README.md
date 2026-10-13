@@ -201,9 +201,9 @@ assets/                    diagrama y capturas del proyecto
 
 ![Conversaciones de prueba del asistente WhatsApp](modules/01-asistente-whatsapp/capturas/todas-las-conversaciones.png)
 
-> **Probalo en vivo:** [demo.html](https://fperezdev.github.io/clinica-sonrisa-nunoa/demo.html) —
+> **Probalo en vivo:** [demo.html](https://fperezdev.github.io/ai-automation-suite/case/demo.html) —
 > chat estilo WhatsApp que conversa por HTTP con este mismo flujo (n8n + RAG). El número de
-> teléfono del [sitio del caso](https://fperezdev.github.io/clinica-sonrisa-nunoa/) es ficticio:
+> teléfono del [sitio del caso](https://fperezdev.github.io/ai-automation-suite/case/) es ficticio:
 > la demo **no** es WhatsApp.
 
 ## 📄 Licencia
