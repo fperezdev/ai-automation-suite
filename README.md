@@ -205,6 +205,10 @@ assets/                    diagrama y capturas del proyecto
 > chat estilo WhatsApp que conversa por HTTP con este mismo flujo (n8n + RAG). El número de
 > teléfono del [sitio del caso](https://fperezdev.github.io/ai-automation-suite/case/) es ficticio:
 > la demo **no** es WhatsApp.
+>
+> **Rate limit:** el endpoint público (`https://wa.fperez.top/webhook/whatsapp-dental`) está detrás
+> de un proxy local con límites por IP (10/min, 200/día) y un tope global de 90/min
+> (`/home/fperez/homelab/scripts/wa-ratelimit-proxy.py`, systemd user `wa-ratelimit-proxy`: cloudflared → proxy → n8n).
 
 ## 📄 Licencia
 

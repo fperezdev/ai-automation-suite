@@ -103,7 +103,7 @@ a{color:inherit}
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
   </div>
-  <div class="hint" id="hint">Demo con límite de uso: 1 mensaje cada 3 s, hasta 15 mensajes.</div>
+  <div class="hint" id="hint">Demo con límite de uso: 1 mensaje cada 3 s, hasta 15 por sesión (y un tope por IP del lado del servidor).</div>
 </div>
 
 <div class="foot">
@@ -154,6 +154,12 @@ async function ask(text){
   try{
     const r=await fetch(ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({from:SESSION,text})});
+    if(r.status===429){
+      typing(false);
+      const d=await r.json().catch(()=>({}));
+      add("Llegaste al límite de uso de esta demo"+(d.retry_after?" (esperá ~"+d.retry_after+" s)":"")+". Es una demo con tope de mensajes por IP.","in");
+      return;
+    }
     if(!r.ok) throw new Error("HTTP "+r.status);
     const d=await r.json();
     typing(false);
