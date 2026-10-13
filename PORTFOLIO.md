@@ -55,6 +55,9 @@ Docker Compose + Makefile + **smoke test** reproducible (12 chequeos reales).
 
 - Código: https://github.com/fperezdev/ai-automation-suite
 - Demo (GitHub Pages): https://fperezdev.github.io/ai-automation-suite/
+- **Probar el asistente en vivo:** https://fperezdev.github.io/clinica-sonrisa-nunoa/demo.html
+  (chat estilo WhatsApp que conversa por HTTP con el flujo real de n8n + RAG)
+- Sitio del caso (Clínica Dental Sonrisa Ñuñoa): https://fperezdev.github.io/clinica-sonrisa-nunoa/
 - Capturas: `assets/capturas/` y `modules/01-asistente-whatsapp/capturas/`
 
 ---
