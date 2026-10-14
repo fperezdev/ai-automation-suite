@@ -45,8 +45,9 @@ Entrega: copy de la página, copy del mensaje de WhatsApp y la lista de datos qu
 | Versión | Cambio | Motivo |
 |---|---|---|
 | v1 | Checklist de 10 puntos, tono folleto | Demasiado larga y genérica: «más pasta no es mejor» ya está en el reel. Se bajó a 7. |
-| **v2 (actual)** | 7 puntos orientados a la decisión + precio + circuito del asistente | Cada punto responde a una razón por la que la gente **no** se blanquea. |
-| v3 (pendiente) | Revisión del odontólogo del equipo | Los 5 puntos clínicos marcados `validar` no se publican sin esa revisión. |
+| v2 | 7 puntos orientados a la decisión + precio + circuito del asistente | Cada punto responde a una razón por la que la gente **no** se blanquea. |
+| **v3 (actual)** | Retoque de tono: las afirmaciones taxativas pasan a «en general» / «lo confirmamos en la evaluación» | Evita que la página suene a promesa clínica propia; el número de tonos queda sujeto a la evaluación. |
+| v4 (pendiente) | Revisión del odontólogo del equipo | Los 5 puntos clínicos marcados `validar` no se publican sin esa revisión. |
 
 ## 4. Copy del primer mensaje de WhatsApp
 
