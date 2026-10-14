@@ -144,6 +144,16 @@ a observar.
 
 ---
 
+### Dónde está aplicada
+
+- **Copy del caso y piezas**: `index.html`, `calendario.html`, `lead-magnet.html`, `guion-piezas.md`
+  y los textos quemados en los reels/placas (barrido de voseo antes de cada publicación).
+- **El asistente de WhatsApp**: el prompt del flujo n8n (`workflows/whatsapp-dental-agent.json`,
+  nodo *Build Prompt*) incluye las reglas de voz, y el nodo *Parse Reply* tiene un normalizador
+  determinista de voseo (incluidos los imperativos: *escribinos, agendá, consultá, guardá, mandá,
+  dejanos, contame, decime*).
+- **Pendiente de la revisión clínica**: los 5 puntos de `lead-magnet.html` marcados `validar`.
+
 ### Historial (por qué existe esta guía)
 
 - Se detectó **voseo** en piezas y páginas públicas del caso (reels, `calendario.html`, `index.html`,

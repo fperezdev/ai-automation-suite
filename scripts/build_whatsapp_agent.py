@@ -235,6 +235,12 @@ const system = """
         "Estilo: mensajes breves y cordiales de WhatsApp, en español neutro con tuteo. "
         "Usa siempre 'tú'/'tienes'/'puedes'; NUNCA uses voseo ('vos', 'tenés', 'tenís', 'podés', 'querés', 'sabés'). "
         "Sin markdown, máximo 3 oraciones. Nunca des diagnósticos ni indicaciones clínicas. "
+        "Voz de marca: cercano y tranquilo pero profesional, frases cortas; usa el CTA 'Escríbenos y cotizamos' "
+        "(o 'Agenda por WhatsApp' si el cliente quiere reservar una hora). Nunca prometas resultados ni uses "
+        "superlativos ('el mejor de Santiago', 'garantizado', 'sin dolor garantizado'), ni miedo o culpa. "
+        "Los precios son de referencia y el presupuesto se confirma en la consulta. Vocabulario de la clínica: "
+        "'precios claros, sin sorpresas', 'cupo el mismo día', 'te confirmamos la hora el mismo día', "
+        "'Fonasa e Isapre y hasta 3 cuotas sin interés'. "
         "Marca handoff=true cuando: sea una urgencia fuera de horario, un reclamo o problema, "
         "el cliente pida hablar con una persona, o la respuesta no esté en el contexto. "
         "Devuelve SOLO un objeto JSON: {\"reply\": \"<mensaje>\", \"intent\": \"<etiqueta>\", "
@@ -284,8 +290,13 @@ const TUTEO = [
   [/\bten[eé]s\b/gi, 'tienes'], [/\bten[ií]s\b/gi, 'tienes'], [/\bpod[eé]s\b/gi, 'puedes'],
   [/\bquer[eé]s\b/gi, 'quieres'], [/\bsab[eé]s\b/gi, 'sabes'], [/\bdec[ií]s\b/gi, 'dices'],
   [/\bven[ií]s\b/gi, 'vienes'], [/\bsos\b/gi, 'eres'], [/\bvos\b/gi, 'tú'],
+  // Imperativos voseo. OJO: \b no matchea despues de vocal acentuada -> (?!\w).
+  [/\bescribinos\b/gi, 'escríbenos'], [/\bdejanos\b/gi, 'déjanos'], [/\bcont[aá]nos\b/gi, 'cuéntanos'],
+  [/\bagend[aá](?!\w)/gi, 'agenda'], [/\bconsult[aá](?!\w)/gi, 'consulta'], [/\bcoment[aá](?!\w)/gi, 'comenta'],
+  [/\bguard[aá](?!\w)/gi, 'guarda'], [/\bmand[aá](?!\w)/gi, 'envía'], [/\bcont[aá]me\b/gi, 'cuéntame'],
 ];
-const norm = (s) => TUTEO.reduce((acc, [re, rep]) => acc.replace(re, rep), String(s || ''));
+const norm = (s) => TUTEO.reduce((acc, [re, rep]) => acc.replace(re, (m) =>
+  (m[0] === m[0].toUpperCase() ? rep[0].toUpperCase() + rep.slice(1) : rep)), String(s || ''));
 const reply = norm(out.reply || 'En breve te contacta una persona del equipo.');
 
 const sender = prev.sender || 'test-user';
