@@ -98,7 +98,7 @@ a{color:inherit}
   </div>
 
   <div class="composer">
-    <input id="in" type="text" placeholder="Escribí un mensaje…" autocomplete="off" maxlength="300">
+    <input id="in" type="text" placeholder="Escribe un mensaje…" autocomplete="off" maxlength="300">
     <button id="send" aria-label="Enviar">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21 23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
@@ -146,8 +146,8 @@ function lock(state){ busy=state; send.disabled=state; inp.disabled=state; chips
 async function ask(text){
   const now=Date.now();
   if(busy) return;
-  if(used>=MAX_MSGS){ add("Alcanzaste el límite de esta demo (15 mensajes). Recargá la página para seguir probando.","in"); return; }
-  if(now-last<MIN_GAP){ hint.textContent="Esperá un momento antes de mandar otro mensaje…"; return; }
+  if(used>=MAX_MSGS){ add("Alcanzaste el límite de esta demo (15 mensajes). Recarga la página para seguir probando.","in"); return; }
+  if(now-last<MIN_GAP){ hint.textContent="Espera un momento antes de mandar otro mensaje…"; return; }
   last=now; used++; inp.value="";
   hint.textContent=`Mensajes usados: ${used}/${MAX_MSGS} · demo con límite de uso.`;
   add(text,"out"); typing(true); lock(true);
@@ -157,7 +157,7 @@ async function ask(text){
     if(r.status===429){
       typing(false);
       const d=await r.json().catch(()=>({}));
-      add("Llegaste al límite de uso de esta demo"+(d.retry_after?" (esperá ~"+d.retry_after+" s)":"")+". Es una demo con tope de mensajes por IP.","in");
+      add("Llegaste al límite de uso de esta demo"+(d.retry_after?" (espera ~"+d.retry_after+" s)":"")+". Es una demo con tope de mensajes por IP.","in");
       return;
     }
     if(!r.ok) throw new Error("HTTP "+r.status);
@@ -166,7 +166,7 @@ async function ask(text){
     add(d.reply||"(sin respuesta)","in",{sources:d.sources,handoff:d.handoff,reason:d.handoff_reason});
   }catch(e){
     typing(false);
-    add("Uy, no pude conectar con el asistente. Probá de nuevo en unos segundos.","in");
+    add("Uy, no pude conectar con el asistente. Prueba de nuevo en unos segundos.","in");
   }finally{ lock(false); inp.focus(); }
 }
 
@@ -174,7 +174,7 @@ send.addEventListener("click",()=>{const t=inp.value.trim(); if(t) ask(t);});
 inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); const t=inp.value.trim(); if(t) ask(t);} });
 chips.forEach(c=>c.addEventListener("click",()=>ask(c.dataset.q)));
 
-add("¡Hola! 👋 Soy el asistente virtual de la Clínica Dental Sonrisa Ñuñoa. Te puedo ayudar con horarios, precios, ubicación, convenios y agendar una hora. ¿Qué necesitás?","in");
+add("¡Hola! 👋 Soy el asistente virtual de la Clínica Dental Sonrisa Ñuñoa. Te puedo ayudar con horarios, precios, ubicación, convenios y agendar una hora. ¿Qué necesitas?","in");
 inp.focus();
 </script>
 </body>
