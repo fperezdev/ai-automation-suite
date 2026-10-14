@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist gratis: ¿está tu boca lista para blanquearte? — Clínica Dental Sonrisa Ñuñoa</title>
+<meta name="description" content="Checklist de 7 puntos que revisa un odontólogo antes de un blanqueamiento. Se envía por WhatsApp y el asistente virtual responde al instante. Caso de portafolio: negocio ficticio.">
+<meta property="og:title" content="Checklist gratis: ¿está tu boca lista para blanquearte?">
+<meta property="og:description" content="7 puntos para saber si tu blanqueamiento va a funcionar. Te la enviamos por WhatsApp.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo-128.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6fafa; --bg-2:#eaf5f6; --ink:#12303a; --muted:#5d7b84;
+  --teal:#0e8f8f; --teal-2:#0b6f73; --sky:#3aa7d6; --mint:#d9f0ee; --line:rgba(14,143,143,.16);
+  --radius:18px; --shadow:0 18px 45px -24px rgba(11,63,73,.5); --max:1140px;
+  --wa-header:#075e54; --wa-header-2:#128c7e; --wa-out:#dcf8c6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Manrope,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.62;-webkit-font-smoothing:antialiased}
+h1,h2,h3,.brand{font-family:Fraunces,Georgia,serif;line-height:1.14;letter-spacing:-.01em}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+.eyebrow{display:inline-block;font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.btn{display:inline-flex;align-items:center;gap:.5rem;font-weight:700;font-size:.95rem;padding:.85rem 1.45rem;border-radius:999px;transition:transform .15s ease,box-shadow .15s ease;border:1.5px solid transparent;cursor:pointer}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--teal);color:#fff;box-shadow:0 12px 26px -12px rgba(14,143,143,.85)}
+.btn-ghost{background:transparent;border-color:var(--line);color:var(--teal-2)}
+.btn svg{width:18px;height:18px}
+
+header{position:sticky;top:0;z-index:50;backdrop-filter:blur(10px);background:rgba(246,250,250,.86);border-bottom:1px solid var(--line)}
+nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.brand{display:flex;align-items:center;gap:.6rem;font-weight:600;font-size:1.2rem;color:var(--teal-2)}
+.nav-links{display:flex;gap:1.5rem;font-size:.93rem;font-weight:600;color:var(--muted)}
+.nav-links a:hover{color:var(--teal)}
+@media(max-width:880px){.nav-links{display:none}}
+
+.hero{position:relative;overflow:hidden;padding:64px 0 72px;background:
+  radial-gradient(1000px 420px at 84% -10%,rgba(58,167,214,.16),transparent 60%),
+  radial-gradient(700px 380px at 4% 110%,rgba(14,143,143,.13),transparent 62%),var(--bg)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start}
+.hero h1{font-size:clamp(2rem,4.2vw,3.1rem);font-weight:600;color:var(--teal-2);margin:16px 0}
+.hero p.lead{font-size:1.08rem;color:var(--muted);max-width:36em}
+.hero-actions{display:flex;gap:.9rem;flex-wrap:wrap;margin-top:26px}
+.trust{display:flex;gap:26px;flex-wrap:wrap;margin-top:30px;color:var(--muted);font-size:.9rem}
+.trust b{display:block;font-family:Fraunces,serif;font-size:1.4rem;color:var(--teal-2)}
+@media(max-width:920px){.hero-grid{grid-template-columns:1fr;gap:34px}.hero{padding:48px 0 56px}}
+
+section{padding:72px 0}
+.alt{background:var(--bg-2)}
+.section-head{max-width:680px;margin:0 auto 40px;text-align:center}
+.section-head h2{font-size:clamp(1.7rem,3.2vw,2.4rem);color:var(--teal-2);margin:12px 0}
+.section-head p{color:var(--muted)}
+.card{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:0 12px 30px -22px rgba(11,63,73,.5);border:1px solid rgba(14,143,143,.08)}
+.card h3{font-size:1.1rem;color:var(--teal-2);margin-bottom:8px}
+.card p,.card li{font-size:.94rem;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.grid2,.grid3,.grid4{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.grid2,.grid3,.grid4{grid-template-columns:1fr}}
+
+/* formulario */
+.formcard{background:#fff;border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);border:1px solid rgba(14,143,143,.08)}
+.formcard h3{color:var(--teal-2);font-size:1.2rem;margin-bottom:6px}
+.formcard .sub{font-size:.92rem;color:var(--muted);margin-bottom:18px}
+label{display:block;font-size:.82rem;font-weight:700;color:var(--teal-2);margin:14px 0 5px}
+input[type=text],input[type=tel],select{width:100%;font:inherit;font-size:.95rem;padding:.75rem .9rem;border-radius:12px;border:1.5px solid var(--line);background:#fbfdfd;color:var(--ink);outline:none}
+input:focus,select:focus{border-color:var(--teal);background:#fff}
+.check{display:flex;gap:.6rem;align-items:flex-start;margin:16px 0 4px;font-size:.84rem;color:var(--muted)}
+.check input{margin-top:4px;flex:0 0 auto}
+.formcard .btn-primary{width:100%;justify-content:center;margin-top:16px}
+.mini{font-size:.78rem;color:var(--muted);margin-top:10px}
+.warn{background:#fff7e6;border:1px solid #f0d69a;color:#7a5b12;border-radius:12px;padding:11px 14px;font-size:.84rem;margin-top:18px}
+
+/* burbujas de WhatsApp */
+.wa{background:#e5ddd5;border-radius:16px;padding:16px 14px;margin-top:18px;display:none}
+.wa.on{display:block}
+.wa .row{display:flex;margin-bottom:10px}
+.wa .row.out{justify-content:flex-end}
+.bub{max-width:86%;padding:9px 12px 7px;border-radius:12px;font-size:.9rem;box-shadow:0 1px 1px rgba(0,0,0,.08);white-space:pre-wrap;background:#fff;border-top-left-radius:3px}
+.wa .out .bub{background:var(--wa-out);border-top-left-radius:12px;border-top-right-radius:3px}
+.bub b{color:var(--teal-2)}
+.wa-head{display:flex;align-items:center;gap:.6rem;margin-bottom:12px;color:#fff;background:linear-gradient(120deg,var(--wa-header),var(--wa-header-2));border-radius:12px;padding:10px 12px}
+.wa-head img{width:34px;height:34px;background:#fff;border-radius:50%;padding:3px}
+.wa-head .who{font-weight:700;font-size:.92rem}
+.wa-head .st{font-size:.74rem;opacity:.85}
+
+ol.checklist{counter-reset:c;list-style:none;display:grid;gap:16px}
+ol.checklist li{counter-increment:c;position:relative;padding:20px 22px 20px 62px;background:#fff;border-radius:var(--radius);border:1px solid rgba(14,143,143,.08);box-shadow:0 12px 30px -24px rgba(11,63,73,.5)}
+ol.checklist li::before{content:counter(c);position:absolute;left:20px;top:20px;width:28px;height:28px;border-radius:9px;background:var(--mint);color:var(--teal-2);font-weight:800;font-size:.9rem;display:grid;place-items:center}
+ol.checklist strong{color:var(--teal-2)}
+ol.checklist span{display:block;font-size:.93rem;color:var(--muted);margin-top:4px}
+.vd{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;background:#fdeee3;color:#a5561c;border-radius:999px;padding:.15rem .5rem;margin-left:6px;vertical-align:middle}
+
+.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+@media(max-width:900px){.flow{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.flow{grid-template-columns:1fr}}
+.step{background:#fff;border-radius:var(--radius);padding:22px;border:1px solid rgba(14,143,143,.08);box-shadow:0 12px 30px -24px rgba(11,63,73,.5)}
+.step b{display:block;font-family:Fraunces,serif;color:var(--teal-2);font-size:1.05rem;margin-bottom:6px}
+.step p{font-size:.9rem;color:var(--muted)}
+.step .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;font-size:.82rem;margin-bottom:10px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stats .s b{display:block;font-family:Fraunces,serif;font-size:1.5rem;color:var(--teal-2)}
+.stats .s span{font-size:.85rem;color:var(--muted)}
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}}
+
+.msg{background:#e8f4f3;border:1px dashed var(--line);border-radius:14px;padding:16px 18px;font-size:.92rem;color:var(--teal-2);white-space:pre-wrap;line-height:1.6}
+.tag{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.04em;padding:.22rem .6rem;border-radius:999px;background:var(--mint);color:var(--teal-2);white-space:nowrap}
+.tag.ready{background:#0e8f8f;color:#fff}
+.note{font-size:.85rem;color:var(--muted);margin-top:14px}
+footer.site{border-top:1px solid var(--line);padding:32px 0;color:var(--muted);font-size:.88rem}
+.foot{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="index.html">
+        <img src="assets/logo-256.png" width="38" height="38" alt="Clínica Dental Sonrisa Ñuñoa">
+        Sonrisa Ñuñoa
+      </a>
+      <div class="nav-links">
+        <a href="index.html">Sitio del negocio</a>
+        <a href="calendario.html">Calendario</a>
+        <a href="demo.html">Asistente WhatsApp</a>
+        <a href="#checklist">Checklist</a>
+      </div>
+      <a class="btn btn-primary" href="#formulario">Recibir por WhatsApp</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Recurso gratis · Blanqueamiento</span>
+        <h1>¿Está tu boca lista para blanquearte?</h1>
+        <p class="lead">Antes de gastar $120.000 en un blanqueamiento, hay <strong>7 cosas</strong> que conviene revisar: desde tu última limpieza hasta las manchas que el blanqueamiento no saca. Déjanos tu WhatsApp y te llega la checklist completa, más el precio de referencia y qué incluye la sesión.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#formulario">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            Enviármela por WhatsApp
+          </a>
+          <a class="btn btn-ghost" href="#checklist">Ver los 7 puntos</a>
+        </div>
+        <div class="trust">
+          <div><b>1 min</b>llega el mensaje</div>
+          <div><b>7 puntos</b>los que revisa el odontólogo</div>
+          <div><b>24/7</b>responde el asistente</div>
+        </div>
+      </div>
+
+      <div class="formcard" id="formulario">
+        <h3>Recibir la checklist</h3>
+        <p class="sub">Llega por WhatsApp en menos de un minuto. Sin llamadas ni spam.</p>
+        <form id="lead">
+          <label for="nombre">Nombre</label>
+          <input id="nombre" type="text" placeholder="Tu nombre" autocomplete="name" required>
+          <label for="fono">WhatsApp</label>
+          <input id="fono" type="tel" placeholder="+56 9 ..." autocomplete="tel" required>
+          <label for="interes">¿Qué te interesa?</label>
+          <select id="interes">
+            <option>Blanqueamiento</option>
+            <option>Limpieza dental</option>
+            <option>Urgencia: me duele un diente</option>
+            <option>Otra cosa (te escribo la duda)</option>
+          </select>
+          <label class="check"><input id="ok" type="checkbox" required> Acepto que la clínica me contacte por WhatsApp con la checklist y el precio de referencia.</label>
+          <button class="btn btn-primary" type="submit">Enviármela por WhatsApp</button>
+          <p class="mini">Caso ficticio: el formulario no envía datos a ningún servidor. En producción, este mismo formulario entra al asistente (n8n + WhatsApp API) y el lead queda registrado en la agenda.</p>
+        </form>
+
+        <div class="wa" id="wa">
+          <div class="wa-head">
+            <img src="assets/logo-256.png" alt="">
+            <div><div class="who">Clínica Dental Sonrisa Ñuñoa</div><div class="st">en línea · asistente virtual</div></div>
+          </div>
+          <div class="row"><div class="bub" id="b1">¡Hola! 👋 Te mando la <b>checklist de blanqueamiento</b>: los 7 puntos que revisamos antes de empezar, con qué incluye la sesión y el precio de referencia ($120.000).</div></div>
+          <div class="row"><div class="bub">Para orientarte mejor: <b>¿hace cuánto te hiciste la última limpieza?</b> Si fue hace más de 6 meses, te conviene primero una limpieza ($35.000) para que el blanqueamiento rinda.</div></div>
+          <div class="row"><div class="bub">¿Quieres que te reserve una <b>evaluación</b> (revisión + plan de tratamiento, $15.000)? Tenemos cupo el mismo día para urgencias. 🦷</div></div>
+          <div class="row out"><div class="bub">Sí, quiero hora para el sábado en la mañana</div></div>
+          <div class="row"><div class="bub">Listo. Te reservo el <b>sábado 10:30</b> y te confirmo con la dirección (Av. Irarrázaval 3421, a 3 minutos del Metro Chile España). ¿Me confirmas tu nombre completo y RUT para dejarte la hora tomada?</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="checklist" class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">La checklist</span>
+        <h2>7 puntos antes de decidir</h2>
+        <p>Esto es exactamente lo que te llega por WhatsApp. No explica todo el blanqueamiento: resuelve la pregunta que frena la decisión — «¿me va a servir a mí?».</p>
+      </div>
+      <ol class="checklist">
+        <li><strong>¿Cuándo fue tu última limpieza?</strong><span>Si pasó más de 6 meses, la placa y el sarro frenan el resultado: primero se hace una limpieza dental ($35.000) y después el blanqueamiento.</span></li>
+        <li><strong>Sensibilidad al frío o al calor</strong><span>Si te duele, primero se revisa la causa: puede haber una caries o esmalte desgastado, y blanquear sobre eso molesta más.<span class="vd">validar</span></span></li>
+        <li><strong>Resinas, carillas o coronas</strong><span>El blanqueamiento no aclara las restauraciones: si tienes una resina al frente, puede quedar una diferencia de tono con el diente que sí aclaró.<span class="vd">validar</span></span></li>
+        <li><strong>Manchas internas (por medicamentos o fluorosis)</strong><span>Las manchas de adentro del diente aclaran poco o nada con blanqueamiento: se evalúa si conviene otro tratamiento.<span class="vd">validar</span></span></li>
+        <li><strong>Embarazo o lactancia</strong><span>En este caso el blanqueamiento se posterga hasta después, por precaución.<span class="vd">validar</span></span></li>
+        <li><strong>Fumas o tomas mucho café, té o vino</strong><span>El resultado vuelve a mancharse antes. No descarta el tratamiento, pero se planifica el retoque y se ajustan los hábitos de la primera semana.</span></li>
+        <li><strong>¿Cuánto es «blanco» para ti?</strong><span>Se aclara entre 2 y 4 tonos sobre tu tono natural. El blanco de publicidad no se logra con blanqueamiento: eso es carillas. Mejor saberlo antes.<span class="vd">validar</span></span></li>
+      </ol>
+      <p class="note">Los puntos marcados <span class="tag" style="background:#fdeee3;color:#a5561c">validar</span> los revisa y ajusta un odontólogo del equipo antes de publicar: son información de salud y no se publican sin esa revisión.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">El circuito</span>
+        <h2>Del formulario a la hora agendada, sin que nadie atienda el teléfono</h2>
+        <p>El lead magnet no es un PDF suelto: es la puerta de entrada del asistente de WhatsApp que ya tiene la clínica. Así funciona.</p>
+      </div>
+      <div class="flow">
+        <div class="step"><span class="n">1</span><b>Deja el dato</b><p>Nombre y WhatsApp en el formulario (o escribiendo la palabra CHECKLIST al chat de la clínica).</p></div>
+        <div class="step"><span class="n">2</span><b>El asistente responde</b><p>En menos de un minuto llega la checklist completa, el precio de referencia y qué incluye la sesión. 24/7.</p></div>
+        <div class="step"><span class="n">3</span><b>Califica</b><p>Dos preguntas: última limpieza y sensibilidad. Con eso el sistema sabe si conviene limpieza, evaluación o urgencia.</p></div>
+        <div class="step"><span class="n">4</span><b>Agenda y registra</b><p>Ofrece el cupo disponible, confirma la hora y deja el lead registrado con la duda que traía. Si es algo sensible, deriva a una persona.</p></div>
+      </div>
+      <div class="grid2" style="margin-top:26px">
+        <div class="card">
+          <h3>Lo que dice el primer mensaje</h3>
+          <p class="msg" style="margin-top:12px">¡Hola, {nombre}! 👋 Soy el asistente de Sonrisa Ñuñoa. Te paso la checklist de blanqueamiento: los 7 puntos que revisamos antes de empezar.
+
+¿Te la envío ahora o prefieres que te cuente primero cómo es la sesión y cuánto sale?
+
+— Si quieres, también puedes responder CHECKLIST y te la mando al tiro.</p>
+        </div>
+        <div class="card">
+          <h3>Por qué un checklist y no un ebook</h3>
+          <ul style="margin-left:18px;display:grid;gap:8px;margin-top:10px">
+            <li>Un ebook de 20 páginas se lee poco. Una checklist se usa: se marca punto por punto.</li>
+            <li>Resuelve <strong>un problema chico y concreto</strong>: «¿me conviene blanquearme ahora?».</li>
+            <li>Atrae gente que ya está considerando el tratamiento, no solo curiosos.</li>
+            <li>Reutiliza contenido que ya existe: los 3 mitos del cepillado y el carrusel de precios alimentan la conversación.</li>
+            <li>El costo por lead es $0: se difunde en las redes de la clínica y en el perfil.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Medición</span>
+        <h2>Qué se mira cada semana</h2>
+        <p>Un lead magnet sin métricas es una caja negra. Estos cuatro números dicen si la promesa y el mensaje funcionan.</p>
+      </div>
+      <div class="stats">
+        <div class="s card"><b>Leads/sem</b><span>formularios completados y gente que escribe CHECKLIST al chat</span></div>
+        <div class="s card"><b>&lt; 1 min</b><span>tiempo de primera respuesta (lo mide el asistente)</span></div>
+        <div class="s card"><b>% que responde</b><span>cuántos contestan la pregunta de calificación</span></div>
+        <div class="s card"><b>% que agenda</b><span>cuántos pasan de lead a hora reservada y qué tratamiento piden</span></div>
+      </div>
+      <p class="note">Si bajan las respuestas de calificación, se testea otro primer mensaje (más corto, con una sola pregunta). Si agendan poco, el problema está en la oferta de hora, no en la checklist.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="card" style="max-width:900px;margin:0 auto">
+        <h3>Cómo se armó (y qué falta validar)</h3>
+        <p style="margin-top:10px">El contenido salió de la información real de la clínica (servicios, precios, convenios) y del tema que ya estaba planificado en el calendario; la redacción siguió la guía de voz de marca del caso (castellano neutro, tuteo, CTA «Escríbenos y cotizamos»).</p>
+        <ul style="margin-left:18px;display:grid;gap:8px;margin-top:12px">
+          <li>Los puntos clínicos marcados <span class="tag" style="background:#fdeee3;color:#a5561c">validar</span> quedan pendientes de la revisión de un odontólogo antes de publicarse.</li>
+          <li>El formulario es una simulación estática: no envía datos ni guarda contactos (el negocio y el número son ficticios).</li>
+          <li>Para producción faltaría: la plantilla de WhatsApp aprobada por la plataforma para el primer mensaje, el aviso de privacidad de datos personales y el registro del consentimiento.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap foot">
+    <div>© <span id="y"></span> Clínica Dental Sonrisa Ñuñoa · Recurso gratuito de portafolio</div>
+    <div><a href="index.html">Sitio del negocio</a> · <a href="calendario.html">Calendario</a> · <a href="demo.html">Asistente WhatsApp</a></div>
+  </div>
+</footer>
+
+<script>
+document.getElementById('y').textContent = new Date().getFullYear();
+
+// Demo local: no se envía nada. Muestra cómo respondería el asistente al dejar el dato.
+document.getElementById('lead').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var nombre = (document.getElementById('nombre').value || '').trim();
+  var interes = document.getElementById('interes').value;
+  var b1 = document.getElementById('b1');
+  b1.innerHTML = '¡Hola' + (nombre ? ', ' + nombre : '') + '! 👋 Te mando la <b>checklist de blanqueamiento</b>: los 7 puntos que revisamos antes de empezar, con qué incluye la sesión y el precio de referencia ($120.000).' +
+    (interes.indexOf('Urgencia') === 0 ? '\n\nVeo que te duele un diente: eso lo vemos hoy mismo, tenemos cupo de urgencia.' : '');
+  document.getElementById('wa').classList.add('on');
+  document.getElementById('wa').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+</script>
+</body>
+</html>
