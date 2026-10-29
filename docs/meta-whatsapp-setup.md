@@ -16,7 +16,18 @@
 3. **Business Portfolio de Meta** (business.facebook.com) con los datos de la clínica.
 4. **Método de pago** cargado en Meta: los mensajes de servicio dentro de la ventana de
    24 h son gratis, pero las plantillas iniciadas por el negocio (recordatorios) se cobran.
-5. **Nombre visible** del número: `Clínica Dental Sonrisa Ñuñoa` (puede quedar en revisión).
+5. **Nombre visible del número:** `Automatizaciones Fperez` — **no** el de la clínica.
+   Meta rechaza display names sin relación con el negocio verificado, y presentar el
+   asistente como si fuéramos la clínica sería deshonesto en el portfolio. El nombre de la
+   clínica va en el saludo y en la KB del asistente (es la demo del sector dental).
+
+## Datos del portfolio de negocio (modal "información comercial")
+
+- **Nombre:** `Automatizaciones Fperez` (debe coincidir con el documento si más adelante
+  Meta pide verificación; como persona natural, el nombre del SII)
+- **Categoría:** Tecnología de la información / Servicios de TI
+- **País:** Chile
+- **Zona horaria:** (GMT-03:00) America/Santiago
 
 ## Pasos de alta
 
@@ -41,3 +52,9 @@
 - Si el chip se queda sin saldo o la línea se suspende, el número se pierde para Meta.
 - El número no se puede recuperar para uso personal después del alta sin desregistrarlo de la API.
 - Costo de plantillas: verificar tarifa vigente para Chile antes de prometer precios al cliente.
+
+## URL del sitio (campo "URL del sitio" en Meta)
+
+`https://ai.fperez.top` — sitio del negocio publicado en el homelab
+(systemd user `ai-site.service` en 127.0.0.1:8790, Caddy hace el TLS).
+Sirve contenido estático desde `ai-automation-suite/site/`.
