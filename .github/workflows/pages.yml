@@ -25,10 +25,6 @@ jobs:
           set -e
           mkdir -p _site
           cp -r site/. _site/
-          cp -r case _site/case
-          cp -r assets _site/assets
-          cp -r modules _site/modules
-          cp -r docs _site/docs
           cp README.md LICENSE _site/ 2>/dev/null || true
           echo "Sitio armado:" && find _site -type f | wc -l
 
