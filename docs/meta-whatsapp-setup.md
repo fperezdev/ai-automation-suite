@@ -58,3 +58,14 @@
 `https://ai.fperez.top` — sitio del negocio publicado en el homelab
 (systemd user `ai-site.service` en 127.0.0.1:8790, Caddy hace el TLS).
 Sirve contenido estático desde `ai-automation-suite/site/`.
+
+## Sitio para la validación de Meta (resuelto)
+
+Meta devuelve `INVALID` en `xfb_check_whatsapp_business_website_validity` para `ai.fperez.top`
+porque el crawler recibe un challenge de Cloudflare. **Confirmado con el usuario: pasa con**
+`https://fperezdev.github.io/ai-automation-suite/` (mismo contenido, servido por GitHub Pages).
+
+- Campo "URL del sitio" en Meta -> usar la URL de GitHub Pages.
+- `https://ai.fperez.top` sigue siendo el sitio del negocio para portfolio y propuestas.
+- Si más adelante se quiere usar el dominio propio en Meta, crear en el dashboard de Cloudflare una
+  regla WAF que salte el challenge para el UA `facebookexternalhit` / `Meta-ExternalAgent`.
