@@ -25,6 +25,10 @@ jobs:
           set -e
           mkdir -p _site
           cp -r site/. _site/
+          # las páginas de caso con las demos viven en case/ (ReplyDesk ya está)
+          mkdir -p _site/case
+          cp case/*.html _site/case/ 2>/dev/null || true
+          [ -d case/assets ] && cp -r case/assets _site/case/ || true
           cp README.md LICENSE _site/ 2>/dev/null || true
           echo "Sitio armado:" && find _site -type f | wc -l
 
