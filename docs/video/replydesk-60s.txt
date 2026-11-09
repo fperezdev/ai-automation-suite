@@ -1,4 +1,4 @@
-Este es ReplyDesk: el agente de WhatsApp que atiende a los clientes de una PyME y deriva a recepción cuando hace falta.
+Este es Reply Desk: el agente de WhatsApp que atiende a los clientes de una pyme y deriva a recepción cuando hace falta.
 
 Llega un mensaje preguntando cuánto sale la limpieza dental. Responde con el valor real del negocio, en un segundo y medio, y ofrece coordinar la hora.
 
@@ -6,6 +6,6 @@ Si el mensaje es una urgencia, no consulta al modelo: una regla determinista le 
 
 Cuando la consulta está fuera de lo que el negocio tiene documentado, responde lo que sí sabe y deriva el resto, en vez de inventar.
 
-Recepción ve todo en el panel: el estado de cada conversación, la latencia, los tokens y el costo. Puede tomar el chat, y el bot se calla.
+En el panel, recepción ve el estado de cada conversación, la latencia, los tokens y el costo. Puede tomar el chat, y el bot deja de responder.
 
 La calidad está medida: cuarenta preguntas del negocio, cuarenta respuestas correctas, y el número queda guardado en la base.
