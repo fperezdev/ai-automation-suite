@@ -69,3 +69,61 @@ descuadrado a propósito** (`REVIEW`) para mostrar la validación.
 
 Las reglas son JavaScript plano en el nodo *Parse & Validate*: se extienden con chequeos
 propios (proveedor duplicado, orden de compra, topes de gasto).
+
+---
+
+## La misma pieza dentro de la suite (InvoiceFlow)
+
+El demo de arriba usa un LLM para extraer. En el producto, la extracción es
+**determinista**: el texto del PDF se parsea con reglas, sin modelo en el camino crítico.
+Así el resultado es reproducible, medible y no cuesta tokens por factura.
+
+- `apps/api/invoiceflow.py` — funciones puras `pdf_text()` → `evaluate_text()` → campos + estado.
+  Se pueden correr sin base de datos, que es lo que usa la evaluación.
+- `db/migrations/004_invoiceflow.sql` — maestro de proveedores por tenant (`vendors`), campos
+  fiscales en `invoices` (RUT, emisión, neto, IVA, líneas, motivos, correcciones) e
+  idempotencia por `sha256` del archivo (subir dos veces el mismo PDF no duplica).
+- `POST /api/invoices/upload` → lee el PDF, extrae, valida contra el maestro y el historial
+  (folio duplicado) y deja la factura en `pass` o `review` con los motivos.
+- `PATCH /api/invoices/{id}` → aprobar, rechazar o devolver a revisión; guarda quién lo hizo
+  y las correcciones de campos como `corrections`.
+- Panel: cola con filtros, detalle de campos extraídos (el campo culpable en rojo), motivos
+  con código y texto, líneas del documento, texto leído del PDF y exportación a CSV.
+
+### Reglas
+
+| Código | Qué detecta |
+|---|---|
+| `missing_field` | Falta un campo obligatorio (proveedor, folio, fecha, total) |
+| `invalid_rut` | RUT con dígito verificador incorrecto |
+| `unknown_vendor` | RUT válido pero fuera del maestro de proveedores |
+| `total_mismatch` | Neto + IVA no cuadra con el total (tolerancia 1 CLP / 0,02 USD) |
+| `iva_mismatch` | El IVA no es el 19% del neto |
+| `lines_mismatch` | La suma de las líneas no cuadra con el neto |
+| `duplicate_folio` | Ese folio ya existe para el mismo proveedor |
+| `date_out_of_range` | Fecha fuera de la ventana aceptada |
+| `total_over_cap` | Monto sobre el tope configurado del negocio (8.000.000 por defecto) |
+| `no_text` | PDF escaneado o protegido: no hay texto que leer |
+
+### Evaluación medida
+
+Set dorado de 12 facturas chilenas (`scripts/make_invoice_golden.py` → `samples/invoiceflow/`,
+con `golden.json`): 2 limpias y 10 con un defecto distinto cada una, de modo que cada motivo
+tenga su caso.
+
+```
+docker cp apps/api/eval_invoiceflow.py suite-api:/app/
+docker cp samples/invoiceflow suite-api:/samples/
+docker exec suite-api python /app/eval_invoiceflow.py --samples /samples/invoiceflow
+```
+
+Resultado del último run (queda registrado en `eval_runs`):
+
+| Métrica | Valor |
+|---|---|
+| Casos | 12 / 12 correctos |
+| Precisión por campo (proveedor, folio, fecha, neto, IVA, total, moneda) | 100% |
+| Estado (pass / review) | 100% |
+| Precisión y recall de motivos | 100% |
+| Latencia de extracción | p50 2,8 ms · máx 80 ms |
+

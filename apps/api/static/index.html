@@ -59,7 +59,7 @@ main{min-width:0;display:flex;flex-direction:column}
   padding:16px 28px;border-bottom:1px solid var(--line);background:rgba(247,245,240,.86);
   backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;
 }
-.topbar h1{font-size:17px}
+.topbar h1{font-size:20px}
 .topbar .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
 .tools{display:flex;align-items:center;gap:10px}
 select,input,button{font-family:inherit;font-size:13.5px}
@@ -96,7 +96,7 @@ select{
 .grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:stretch}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column}
 .panel > header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
-.panel > header h3{font-size:13.5px}
+.panel > header h3{font-size:12.8px}
 .panel > header .hint{font-size:11.5px;color:var(--muted)}
 .panel .body{padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:center}
 
@@ -179,7 +179,51 @@ td .sub{color:var(--muted);font-size:11.8px;margin-top:2px}
 .kbitem p{margin:4px 0 0;font-size:13px;color:var(--ink-soft)}
 .kbitem .price{font:500 11.5px var(--mono);color:var(--accent-ink)}
 
+
+/* ---------- facturas (InvoiceFlow) ---------- */
+a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.drop{display:flex;align-items:center;gap:14px;border:1px dashed var(--line-2);border-radius:var(--radius);background:#fbf9f4;padding:13px 16px;margin-bottom:14px;cursor:pointer;transition:background .15s,border-color .15s}
+.drop:hover,.drop:focus-visible{border-color:var(--accent);background:var(--accent-soft)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop.busy{opacity:.55;cursor:progress;pointer-events:none}
+.drop svg{flex:none;color:var(--accent-ink)}
+.drop-copy{display:flex;flex-direction:column;gap:1px;min-width:0}
+.drop-copy b{font-size:13.2px}
+.drop-copy span{font-size:12.2px;color:var(--muted)}
+.drop-act{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--accent-ink);white-space:nowrap}
+.inv-stats{display:grid;gap:8px;margin-bottom:14px}
+.inv-stats .statline{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12.4px;color:var(--muted)}
+.inv-stats .statline b{font:500 13px var(--mono);color:var(--ink);margin-right:4px}
+.segmented{display:flex;height:6px;border-radius:3px;overflow:hidden;background:#e8e5dd}
+.segmented i{display:block;height:100%}
+.inv-legend{display:flex;gap:14px;font-size:11.4px;color:var(--muted)}
+.inv-legend i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:5px}
+.inbox.inv .chipf{padding:3px 9px;font-size:11.7px}
+.inbox.inv{grid-template-columns:370px 1fr;height:clamp(460px,calc(100vh - 340px),700px)}
+.invrow .amt{font:500 12.5px var(--mono)}
+.invdoc{padding:0 16px 18px;overflow:auto;min-height:0}
+.invdoc .sec{border-bottom:1px solid var(--line);padding:14px 0}
+.invdoc .sec:last-child{border-bottom:0;padding-bottom:0}
+.invdoc h4{margin:0 0 9px;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:24px}
+.f{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #eeeae0;font-size:12.8px}
+.f span{color:var(--muted)}
+.f b{font:500 12.6px var(--mono);font-variant-numeric:tabular-nums;text-align:right}
+.f b.bad{color:var(--danger)}
+.rlist{display:grid;gap:7px;margin:0;padding:0;list-style:none}
+.rlist li{background:var(--warn-soft);border-radius:4px;padding:8px 11px;font-size:12.6px;color:var(--ink-soft);line-height:1.45}
+.rlist code{display:block;font:500 10.2px var(--mono);color:var(--warn);letter-spacing:.05em;margin-bottom:3px;text-transform:uppercase}
+.rlist li.ok{background:var(--accent-soft);color:var(--accent-ink)}
+.lines{width:100%;border-collapse:collapse;font-size:12.4px}
+.lines th{text-align:left;font:500 10.5px var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:0 0 6px;border-bottom:1px solid var(--line)}
+.lines td{padding:7px 0;border-bottom:1px solid #eeeae0}
+.lines td.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums}
+details.raw{margin-top:12px}
+details.raw summary{font-size:12px;color:var(--accent-ink);cursor:pointer}
+details.raw pre{margin:8px 0 0;max-height:220px;overflow:auto;background:#f4f1e9;border:1px solid var(--line);border-radius:4px;padding:10px;font:400 11.5px/1.55 var(--mono);color:var(--ink-soft);white-space:pre-wrap}
+
 /* ---------- estados ---------- */
+.sr-only{font-size:16px;position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .skel{height:12px;border-radius:4px;background:linear-gradient(90deg,#eee9dd,#e3ded2,#eee9dd);background-size:200% 100%;animation:sh 1.1s infinite linear}
 @keyframes sh{to{background-position:-200% 0}}
 .empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:13px}
@@ -191,14 +235,20 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
 @media(max-width:1080px){
   .measures{grid-template-columns:repeat(2,minmax(0,1fr))}
   .grid-2{grid-template-columns:1fr}
-  .inbox{grid-template-columns:1fr}
+  .inbox,.inbox.inv{grid-template-columns:1fr;height:auto}
+  .invbox{height:auto}
   .list{border-right:0;border-bottom:1px solid var(--line)}
-  .rows{max-height:260px}
+  .rows{max-height:300px}
+  .invdoc{max-height:none;padding-bottom:8px}
 }
 @media(max-width:760px){
   .shell{grid-template-columns:1fr}
   aside{position:static;height:auto;flex-direction:row;overflow:auto;align-items:center;gap:14px;padding:12px}
   .brand small,aside .foot{display:none}
+  .drop-act{display:none}
+  .fields{grid-template-columns:1fr}
+  .f{border-bottom:0;padding:5px 0}
+  .f + .f{border-top:1px solid #eeeae0}
   .nav{flex-direction:row}
   .view,.topbar{padding-left:16px;padding-right:16px}
 }
@@ -238,6 +288,7 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
 
     <!-- RESUMEN -->
     <section class="view active" id="view-resumen">
+      <h2 class="sr-only">Resumen del negocio</h2>
       <div class="measures" id="measures"></div>
       <div class="grid-2">
         <div class="panel">
@@ -276,9 +327,32 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
     <!-- FACTURAS -->
     <section class="view" id="view-facturas">
       <div class="view-head">
-        <div><h2>Facturas recibidas</h2><p>Se extraen, se validan contra el maestro de proveedores y se registran. Lo que no cuadra queda en revisión con el motivo escrito.</p></div>
+        <div><h2>Facturas recibidas</h2><p>El PDF se lee, se extraen los campos fiscales y se validan contra el maestro de proveedores. Lo que no cuadra queda en revisión con el motivo escrito y el campo culpable marcado.</p></div>
+        <div class="tools"><a class="btn" id="inv-export" href="#" role="button">Exportar CSV</a></div>
       </div>
-      <div class="panel"><div class="body" style="padding:0"><div id="inv-table"></div></div></div>
+
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir facturas en PDF">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 14V4m0 0L6.2 7.8M10 4l3.8 3.8M3.5 13.5v1.8A1.7 1.7 0 0 0 5.2 17h9.6a1.7 1.7 0 0 0 1.7-1.7v-1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="drop-copy"><b>Soltá el PDF acá</b><span>o elegí el archivo · se procesa al instante, sin salir del panel</span></div>
+        <span class="drop-act">Elegir archivo</span>
+        <input type="file" id="inv-file" accept="application/pdf,.pdf" multiple hidden>
+      </div>
+
+      <div class="inv-stats" id="inv-stats"></div>
+
+      <div class="inbox inv">
+        <div class="list">
+          <div class="filters" id="inv-filters">
+            <button class="chipf" data-f="all" aria-pressed="true">Todas</button>
+            <button class="chipf" data-f="review" aria-pressed="false">En revisión</button>
+            <button class="chipf" data-f="pass" aria-pressed="false">Automáticas</button>
+            <button class="chipf" data-f="approved" aria-pressed="false">Aprobadas</button>
+            <button class="chipf" data-f="rejected" aria-pressed="false">Rechazadas</button>
+          </div>
+          <div class="rows" id="inv-rows"></div>
+        </div>
+        <div class="thread" id="inv-detail"></div>
+      </div>
     </section>
 
     <!-- LEADS -->
@@ -506,30 +580,195 @@ async function selectConversation(id) {
   }));
 }
 
-/* ---------- facturas ---------- */
+/* ---------- facturas (InvoiceFlow) ---------- */
+const INV = { rows: [], filter: 'all', selected: null };
+const INV_STATUS = { pass: 'automática', review: 'en revisión', approved: 'aprobada', rejected: 'rechazada' };
+const INV_FIELD = { vendor: 'Proveedor', vendor_rut: 'RUT', invoice_no: 'Folio', issue_date: 'Emisión',
+  neto: 'Neto', iva: 'IVA', total: 'Total', currency: 'Moneda' };
+const INV_BAD = {
+  total_mismatch: ['total'], total_over_cap: ['total'], iva_mismatch: ['iva'], lines_mismatch: ['neto'],
+  invalid_rut: ['vendor_rut'], unknown_vendor: ['vendor'], duplicate_folio: ['invoice_no'], date_out_of_range: ['issue_date']
+};
+
+function invMoney(v, cur) {
+  if (v === null || v === undefined) return '—';
+  const n = Number(v);
+  const cents = Math.round(n * 100) % 100 !== 0;
+  if (cur === 'USD') return 'US$ ' + n.toLocaleString('es-CL', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return '$' + n.toLocaleString('es-CL', { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 });
+}
+
+function invStats() {
+  const rows = INV.rows, n = rows.length;
+  const count = s => rows.filter(r => r.status === s).length;
+  const pass = count('pass'), approved = count('approved'), review = count('review'), rejected = count('rejected');
+  const auto = pass + approved, pct = n ? Math.round(auto / n * 100) : 0;
+  $('#c-inv').textContent = review;
+  const seg = (v, color, label) => v ? `<i style="width:${(v / n) * 100}%;background:${color}" title="${v} ${label}"></i>` : '';
+  $('#inv-stats').innerHTML = n ? `
+    <div class="statline">
+      <span><b>${n}</b>recibidas</span>
+      <span><b>${pct}%</b>sin intervención (${auto} de ${n})</span>
+      <span><b>${review}</b>por revisar</span>
+      ${rejected ? `<span><b>${rejected}</b>rechazadas</span>` : ''}
+    </div>
+    <div class="segmented">${seg(pass, 'var(--accent)', 'automáticas')}${seg(approved, '#8fa6c4', 'aprobadas a mano')}${seg(review, '#bd8a3e', 'en revisión')}${seg(rejected, 'var(--danger)', 'rechazadas')}</div>
+    <div class="inv-legend">
+      <span><i style="background:var(--accent)"></i>automática</span>
+      <span><i style="background:#8fa6c4"></i>aprobada a mano</span>
+      <span><i style="background:#bd8a3e"></i>en revisión</span>
+      ${rejected ? '<span><i style="background:var(--danger)"></i>rechazada</span>' : ''}
+    </div>` : '';
+  const exp = $('#inv-export');
+  if (exp) exp.href = '/api/invoices/export.csv?tenant=' + encodeURIComponent(TENANT);
+}
+
+function invRenderList() {
+  const rows = INV.rows.filter(r => INV.filter === 'all' || r.status === INV.filter);
+  if (!rows.length) {
+    $('#inv-rows').innerHTML = `<div class="empty"><b>${INV.filter === 'all' ? 'La cola está vacía' : 'Nada en este filtro'}</b>${INV.filter === 'all' ? 'Arrastrá un PDF arriba y aparece con su estado.' : 'Probá con otro estado.'}</div>`;
+    return;
+  }
+  $('#inv-rows').innerHTML = rows.map(r => {
+    const rs = r.reasons || [];
+    const tail = rs.length ? `${rs.length} ${rs.length === 1 ? 'motivo' : 'motivos'} · ${rs[0].text.slice(0, 76)}${rs[0].text.length > 76 ? '…' : ''}` : 'campos y totales cuadran';
+    return `<button class="row invrow" data-id="${r.id}" aria-selected="${r.id === INV.selected}">
+      <div class="l1"><span class="name">${esc(r.vendor || 'sin proveedor')}</span><span class="amt">${invMoney(r.total, r.currency)}</span></div>
+      <div class="l1" style="margin-top:5px">
+        <span class="pill ${r.status}">${INV_STATUS[r.status] || r.status}</span>
+        <span class="when">${esc(r.invoice_no || 'sin folio')} · ${esc(r.issue_date || '')}</span>
+      </div>
+      <div class="l2"${r.status === 'review' ? ' style="color:var(--warn)"' : ''}>${esc(tail)}</div>
+    </button>`;
+  }).join('');
+}
+
+async function selectInvoice(id) {
+  INV.selected = id;
+  $$('#inv-rows .row').forEach(r => r.setAttribute('aria-selected', String(r.dataset.id === id)));
+  $('#inv-detail').innerHTML = `<div class="invdoc">${skeleton(5)}</div>`;
+  let d;
+  try { d = await api('/api/invoices/' + id); }
+  catch (err) { $('#inv-detail').innerHTML = `<div class="empty"><b>No se pudo abrir la factura</b>${esc(err.message)}</div>`; return; }
+
+  const reasons = d.reasons || [];
+  const bad = new Set(reasons.flatMap(r => INV_BAD[r.code] || []));
+  const money = k => ['neto', 'iva', 'total'].includes(k);
+  const fields = ['vendor', 'vendor_rut', 'invoice_no', 'issue_date', 'neto', 'iva', 'total', 'currency'].map(k => {
+    const raw = d[k];
+    const val = money(k) ? invMoney(raw, d.currency) : (raw === null || raw === undefined || raw === '' ? '—' : raw);
+    return `<div class="f"><span>${INV_FIELD[k]}</span><b class="${bad.has(k) ? 'bad' : ''}">${esc(val)}</b></div>`;
+  }).join('');
+
+  const lines = d.lines || [];
+  const linesHtml = lines.length ? `<table class="lines">
+      <thead><tr><th>Detalle</th><th style="text-align:right">Cant.</th><th style="text-align:right">Precio</th><th style="text-align:right">Monto</th></tr></thead>
+      <tbody>${lines.map(l => `<tr>
+        <td>${esc(l.desc || l.description || '—')}</td>
+        <td class="n">${l.qty ?? '—'}</td>
+        <td class="n">${invMoney(l.price ?? l.unit_price, d.currency)}</td>
+        <td class="n">${invMoney(l.amount ?? l.total, d.currency)}</td>
+      </tr>`).join('')}</tbody></table>` : '';
+
+  const corr = (d.corrections || []).length;
+  $('#inv-detail').innerHTML = `
+    <header>
+      <div class="who">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <b>${esc(d.vendor || 'proveedor sin identificar')}</b>
+          <span class="pill ${d.status}">${INV_STATUS[d.status] || d.status}</span>
+        </div>
+        <div>${esc(d.file_name || '')}${d.reviewed_by ? ' · revisó ' + esc(d.reviewed_by) : ''}${corr ? ' · ' + corr + ' corrección(es)' : ''}</div>
+      </div>
+      <div class="acts">
+        ${d.status === 'review' ? '<button class="btn solid" data-act="approved">Aprobar</button><button class="btn" data-act="rejected">Rechazar</button>' : ''}
+        ${d.status === 'approved' || d.status === 'rejected' ? '<button class="btn" data-act="review">Devolver a revisión</button>' : ''}
+      </div>
+    </header>
+    <div class="invdoc">
+      <div class="sec"><h4>Campos extraídos</h4><div class="fields">${fields}</div></div>
+      <div class="sec"><h4>Validación</h4>
+        <ul class="rlist">${reasons.length
+          ? reasons.map(r => `<li><code>${esc(r.code)}</code>${esc(r.text)}</li>`).join('')
+          : '<li class="ok">Reglas en verde: RUT válido, IVA 19%, totales y líneas cuadran, folio nuevo y monto bajo el tope.</li>'}</ul>
+      </div>
+      ${linesHtml ? `<div class="sec"><h4>Líneas del documento</h4>${linesHtml}</div>` : ''}
+      ${d.raw_text ? `<details class="raw"><summary>Texto leído del PDF</summary><pre>${esc(d.raw_text.slice(0, 4000))}</pre></details>` : ''}
+    </div>`;
+
+  $('#inv-detail').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async () => {
+    b.disabled = true;
+    try {
+      const r = await fetch('/api/invoices/' + d.id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: b.dataset.act, reviewed_by: 'Javiera' }) });
+      if (!r.ok) throw new Error(await r.text());
+      toast(b.dataset.act === 'approved' ? 'Factura aprobada y registrada' : b.dataset.act === 'rejected' ? 'Factura rechazada' : 'Devuelta a la cola de revisión');
+      await loadInvoices(); loadSummary();
+    } catch (err) { toast('No se pudo: ' + err.message); b.disabled = false; }
+  }));
+}
+
 async function loadInvoices() {
-  $('#inv-table').innerHTML = `<div class="body">${skeleton(5)}</div>`;
+  $('#inv-rows').innerHTML = skeleton(6);
   try {
-    const rows = await api('/api/invoices');
-    $('#c-inv').textContent = rows.length;
-    $('#inv-table').innerHTML = rows.length ? `<table>
-      <thead><tr><th>Proveedor</th><th>Archivo</th><th style="text-align:right">Monto</th><th>Estado</th><th>Motivo / acción</th></tr></thead>
-      <tbody>${rows.map(i => `<tr>
-        <td><b>${esc(i.vendor)}</b><div class="sub">${esc(i.invoice_no || '')}</div></td>
-        <td><span style="font-family:var(--mono);font-size:11.8px;color:var(--muted)">${esc(i.file_name || '')}</span></td>
-        <td class="num">${fmt.clp(i.total)}</td>
-        <td><span class="pill ${i.status}">${i.status}</span></td>
-        <td>${i.reason ? `<span style="color:var(--warn);font-size:12.3px">${esc(i.reason)}</span>` : '<span class="sub">Validación automática OK</span>'}
-          ${i.status === 'review' ? `<div style="margin-top:6px"><button class="btn" data-approve="${i.id}" style="padding:3px 9px;font-size:12px">Aprobar a mano</button></div>` : ''}
-          ${i.reviewed_by ? `<div class="sub">por ${esc(i.reviewed_by)}</div>` : ''}</td>
-      </tr>`).join('')}</tbody></table>` : '<div class="empty"><b>Sin facturas</b>Subí un PDF y aparecerá con su estado.</div>';
-    $$('[data-approve]').forEach(b => b.addEventListener('click', async () => {
-      try {
-        await fetch('/api/invoices/' + b.dataset.approve, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'approved', reviewed_by: 'Javiera' }) });
-        toast('Factura aprobada'); loadInvoices(); loadSummary();
-      } catch (err) { toast('No se pudo aprobar'); }
-    }));
-  } catch (err) { $('#inv-table').innerHTML = `<div class="empty"><b>Error al leer facturas</b>${esc(err.message)}</div>`; }
+    INV.rows = await api('/api/invoices?limit=200');
+    invStats();
+    if (INV.rows.length) {
+      if (!INV.rows.some(r => r.id === INV.selected)) INV.selected = INV.rows[0].id;
+      invRenderList();
+      await selectInvoice(INV.selected);
+    } else {
+      INV.selected = null;
+      invRenderList();
+      $('#inv-detail').innerHTML = '<div class="empty"><b>Sin facturas</b>Subí un PDF arriba y lo procesamos en el momento.</div>';
+    }
+  } catch (err) {
+    $('#inv-rows').innerHTML = '';
+    $('#inv-detail').innerHTML = `<div class="empty"><b>Error al leer facturas</b>${esc(err.message)}</div>`;
+  }
+}
+
+$('#inv-filters').addEventListener('click', e => {
+  const b = e.target.closest('.chipf'); if (!b) return;
+  $$('#inv-filters .chipf').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  b.setAttribute('aria-pressed', 'true'); INV.filter = b.dataset.f; invRenderList();
+});
+$('#inv-rows').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if (r) selectInvoice(r.dataset.id);
+});
+
+const drop = $('#drop'), fileIn = $('#inv-file');
+drop.addEventListener('click', () => fileIn.click());
+drop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileIn.click(); } });
+['dragenter', 'dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+drop.addEventListener('drop', e => uploadInvoices(e.dataTransfer.files));
+fileIn.addEventListener('change', () => { uploadInvoices(fileIn.files); fileIn.value = ''; });
+
+async function uploadInvoices(files) {
+  const pdfs = [...files].filter(f => /\.pdf$/i.test(f.name) || f.type === 'application/pdf');
+  if (!pdfs.length) { toast('Solo se aceptan archivos PDF'); return; }
+  drop.classList.add('busy');
+  const out = [];
+  for (const f of pdfs) {
+    const fd = new FormData();
+    fd.append('tenant', TENANT);
+    fd.append('file', f);
+    try {
+      const r = await fetch('/api/invoices/upload', { method: 'POST', body: fd });
+      const j = await r.json();
+      if (!r.ok) throw new Error(j.detail || r.status);
+      out.push({ name: f.name, ...j });
+      INV.selected = j.id;
+    } catch (err) { out.push({ name: f.name, error: String(err.message || err) }); }
+  }
+  drop.classList.remove('busy');
+  const pass = out.filter(o => o.status === 'pass').length;
+  const review = out.filter(o => o.status === 'review').length;
+  const bad = out.filter(o => o.error).length;
+  const dup = out.filter(o => o.duplicate_file).length;
+  toast(bad ? `${bad} archivo(s) no se pudieron leer`
+    : `${pdfs.length} procesada(s) · ${pass} automática(s) · ${review} a revisión${dup ? ` · ${dup} ya estaba` : ''}`);
+  await loadInvoices(); loadSummary();
 }
 
 /* ---------- leads ---------- */

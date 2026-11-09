@@ -11,13 +11,14 @@ import os
 import pathlib
 from datetime import datetime, timedelta, timezone
 
-from fastapi import FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import db
+import invoiceflow as iflow
 from webhooks import router as replydesk_router
 
 APP_DIR = pathlib.Path(__file__).parent
@@ -91,6 +92,10 @@ def metrics(tenant: str, days: int = Query(7, ge=1, le=90)) -> dict:
     handoff = db.one("SELECT * FROM v_handoff WHERE tenant_id=%s", (tid,)) or {}
     latency = db.one("SELECT * FROM v_latency WHERE tenant_id=%s", (tid,)) or {}
     inv = db.one("SELECT * FROM v_invoices WHERE tenant_id=%s", (tid,)) or {}
+    inv_daily = db.query("""SELECT day, received, auto_pass, need_review, booked_total
+                            FROM v_invoices_daily WHERE tenant_id=%s AND day >= %s ORDER BY day""",
+                         (tid, since.date()))
+    vendors = db.one("SELECT count(*) AS total FROM vendors WHERE tenant_id=%s", (tid,)) or {}
     leads = db.one("""SELECT count(*) AS total,
                              count(*) FILTER (WHERE tier='HOT') AS hot,
                              count(*) FILTER (WHERE status='contacted') AS contacted
@@ -103,7 +108,8 @@ def metrics(tenant: str, days: int = Query(7, ge=1, le=90)) -> dict:
                        FROM conversations c LEFT JOIN messages m ON m.conversation_id=c.id
                        WHERE c.tenant_id=%s AND c.created_at >= %s""", (tid, since)) or {}
     return {"tenant": tenant, "days": days, "daily": daily, "totals": totals,
-            "handoff": handoff, "latency": latency, "invoices": inv, "leads": leads,
+            "handoff": handoff, "latency": latency, "invoices": inv, "invoices_daily": inv_daily,
+            "vendors": vendors, "leads": leads,
             "cost": cost, "eval": ev}
 
 
@@ -200,56 +206,174 @@ def ingest_message(m: MessageIn) -> dict:
             "duplicate": msg is None}
 
 
-# ---------------------------------------------------------------- facturas
+# ---------------------------------------------------------------- facturas (InvoiceFlow)
+class VendorIn(BaseModel):
+    tenant: str
+    rut: str
+    name: str
+
+
+@app.get("/api/vendors")
+def vendors(tenant: str) -> list[dict]:
+    return db.query("SELECT id, rut, name, active FROM vendors WHERE tenant_id=%s ORDER BY name",
+                    (tenant_id(tenant),))
+
+
+@app.post("/api/vendors", status_code=201)
+def vendor_add(v: VendorIn) -> dict:
+    rut, valid = iflow.normalize_rut(v.rut)
+    if not valid:
+        raise HTTPException(422, "RUT inválido")
+    return db.execute("""INSERT INTO vendors (tenant_id, rut, name) VALUES (%s,%s,%s)
+                         ON CONFLICT (tenant_id, rut) DO UPDATE SET name=EXCLUDED.name, active=true
+                         RETURNING id, rut, name""", (tenant_id(v.tenant), rut, v.name))
+
+
 @app.get("/api/invoices")
 def invoices(tenant: str, status: str | None = None, limit: int = 100) -> list[dict]:
     tid = tenant_id(tenant)
-    sql = """SELECT id, file_name, vendor, invoice_no, total, currency, status, reason, reviewed_by,
-                    reviewed_at, created_at FROM invoices WHERE tenant_id=%s"""
+    sql = """SELECT i.id, i.file_name, i.vendor, i.vendor_rut, i.invoice_no, i.issue_date,
+                    i.neto, i.iva, i.total, i.currency, i.status, i.reason, i.reasons, i.confidence,
+                    i.reviewed_by, i.reviewed_at, i.created_at,
+                    i.duplicate_of, jsonb_typeof(i.corrections) AS corr_type,
+                    coalesce(jsonb_array_length(i.corrections), 0) AS corrections,
+                    round(extract(epoch FROM (coalesce(i.reviewed_at, now()) - i.created_at))/60.0::numeric, 1) AS age_minutes
+             FROM invoices i WHERE i.tenant_id=%s"""
     params: list = [tid]
     if status:
-        sql += " AND status=%s"
+        sql += " AND i.status=%s"
         params.append(status)
-    sql += " ORDER BY created_at DESC LIMIT %s"
+    sql += " ORDER BY (i.status='review') DESC, i.created_at DESC LIMIT %s"
     params.append(limit)
     return db.query(sql, tuple(params))
 
 
-class InvoiceIn(BaseModel):
-    tenant: str
-    file_name: str | None = None
-    vendor: str | None = None
-    invoice_no: str | None = None
-    total: float | None = None
-    currency: str = "CLP"
-    status: str = "pending"
-    reason: str | None = None
-    extracted: dict = Field(default_factory=dict)
-
-
-@app.post("/api/invoices", status_code=201)
-def create_invoice(i: InvoiceIn) -> dict:
+@app.post("/api/invoices/upload", status_code=201)
+async def upload_invoice(tenant: str = Form(...), file: UploadFile = File(...)) -> dict:
+    """PDF -> texto -> campos -> reglas -> PASS / REVIEW. Idempotente por sha256 del archivo."""
+    import hashlib
     import json
-    tid = tenant_id(i.tenant)
-    return db.execute("""INSERT INTO invoices (tenant_id, file_name, vendor, invoice_no, total, currency, status, reason, extracted)
-                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id, status, total""",
-                      (tid, i.file_name, i.vendor, i.invoice_no, i.total, i.currency, i.status, i.reason,
-                       json.dumps(i.extracted)))
+    tid = tenant_id(tenant)
+    data = await file.read()
+    if not data:
+        raise HTTPException(422, "archivo vacío")
+    digest = hashlib.sha256(data).hexdigest()
+    prev = db.one("SELECT id, status, total FROM invoices WHERE tenant_id=%s AND source_sha256=%s", (tid, digest))
+    if prev:
+        return {"id": str(prev["id"]), "status": prev["status"], "duplicate_file": True}
+
+    try:
+        text = iflow.pdf_text(data)
+    except Exception as exc:  # PDF corrupto o protegido
+        text = ""
+        reason_text = f"No se pudo leer el PDF ({type(exc).__name__})"
+    else:
+        reason_text = None
+
+    trow = db.one("SELECT config FROM tenants WHERE id=%s", (tid,)) or {}
+    vendor_rows = db.query("SELECT rut, name, active FROM vendors WHERE tenant_id=%s", (tid,))
+    existing = db.query("""SELECT vendor_rut, invoice_no, file_name FROM invoices
+                           WHERE tenant_id=%s AND status IN ('pass','review','approved')""", (tid,))
+
+    if reason_text:
+        result = {"fields": {}, "status": "review", "confidence": 0.0,
+                  "reasons": [{"code": "no_text", "text": reason_text}]}
+    else:
+        result = iflow.evaluate_text(text, vendors=vendor_rows, existing=existing,
+                                     config=trow.get("config") or {})
+    f = result["fields"]
+    row = db.execute("""INSERT INTO invoices
+        (tenant_id, file_name, vendor, vendor_rut, invoice_no, issue_date, neto, iva, total, currency,
+         status, reason, reasons, lines, extracted, raw_text, source_sha256, confidence)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id, status""",
+        (tid, file.filename, f.get("vendor"), f.get("vendor_rut"), f.get("invoice_no"),
+         f.get("issue_date"), f.get("neto"), f.get("iva"), f.get("total"), f.get("currency") or "CLP",
+         result["status"], "; ".join(r["text"] for r in result["reasons"]) or None,
+         json.dumps(result["reasons"], ensure_ascii=False),
+         json.dumps(f.get("lines") or [], ensure_ascii=False),
+         json.dumps({k: (v.isoformat() if hasattr(v, "isoformat") else
+                         (float(v) if hasattr(v, "quantize") else v)) for k, v in f.items()},
+                    ensure_ascii=False, default=str),
+         text[:60000], digest, result["confidence"]))
+    db.execute("""INSERT INTO events (tenant_id, entity, entity_id, action, meta)
+                  VALUES (%s,'invoice',%s,'extracted',%s)""",
+               (tid, row["id"], json.dumps({"status": result["status"],
+                                            "reasons": [r["code"] for r in result["reasons"]]})))
+    return {"id": str(row["id"]), "status": row["status"], "reasons": result["reasons"],
+            "confidence": result["confidence"], "fields": {k: (str(v) if v is not None else None)
+                                                           for k, v in f.items() if k != "lines"},
+            "lines": f.get("lines") or [], "duplicate_file": False}
 
 
-class InvoicePatch(BaseModel):
-    status: str
-    reviewed_by: str = "operador"
+@app.get("/api/invoices/export.csv")
+def export_invoices(tenant: str, status: str | None = None):
+    import csv
+    import io as _io
+    from fastapi.responses import Response
+    tid = tenant_id(tenant)
+    sql = """SELECT i.* FROM invoices i WHERE i.tenant_id=%s"""
+    params: list = [tid]
+    if status:
+        sql += " AND i.status=%s"
+        params.append(status)
+    sql += " ORDER BY i.issue_date NULLS LAST, i.created_at"
+    rows = db.query(sql, tuple(params))
+    buf = _io.StringIO()
+    w = csv.writer(buf, delimiter=";", lineterminator="\n")
+    w.writerow(["archivo", "fecha", "proveedor", "rut", "folio", "neto", "iva", "total",
+                "moneda", "estado", "revisado_por", "motivos"])
+    for r in rows:
+        w.writerow(iflow.to_csv_row(r))
+    return Response(buf.getvalue(), media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": f'attachment; filename="facturas-{tenant}.csv"'})
 
 
-@app.patch("/api/invoices/{iid}")
-def patch_invoice(iid: str, p: InvoicePatch) -> dict:
-    row = db.execute("""UPDATE invoices SET status=%s, reviewed_by=%s, reviewed_at=now()
-                        WHERE id=%s RETURNING id, status, reviewed_by, reviewed_at""",
-                     (p.status, p.reviewed_by, iid))
+@app.get("/api/invoices/{iid}")
+def invoice_detail(iid: str) -> dict:
+    row = db.one("""SELECT i.*, round(extract(epoch FROM (i.reviewed_at - i.created_at))/60.0::numeric, 1) AS review_minutes
+                    FROM invoices i WHERE i.id=%s""", (iid,))
     if not row:
         raise HTTPException(404, "factura no encontrada")
     return row
+
+
+class InvoiceReview(BaseModel):
+    status: str = "approved"                       # approved | rejected | review
+    reviewed_by: str = "operador"
+    reason: str | None = None
+    fields: dict = Field(default_factory=dict)     # correcciones del humano
+
+
+@app.patch("/api/invoices/{iid}")
+def patch_invoice(iid: str, p: InvoiceReview) -> dict:
+    import json
+    if p.status not in ("approved", "rejected", "review", "pass"):
+        raise HTTPException(422, "estado inválido")
+    inv = db.one("SELECT * FROM invoices WHERE id=%s", (iid,))
+    if not inv:
+        raise HTTPException(404, "factura no encontrada")
+    original = {k: inv.get(k) for k in ("vendor", "vendor_rut", "invoice_no", "issue_date",
+                                        "neto", "iva", "total", "currency")}
+    diffs = iflow.wrong_fields(original, p.fields or {})
+    allowed = {"vendor", "vendor_rut", "invoice_no", "issue_date", "neto", "iva", "total", "currency"}
+    fields = {k: v for k, v in (p.fields or {}).items() if k in allowed and v not in (None, "")}
+    corrections = (inv.get("corrections") or []) + diffs
+    sets, vals = [], []
+    for k, v in fields.items():
+        sets.append(f"{k}=%s")
+        vals.append(v)
+    sets += ["status=%s", "reviewed_by=%s", "reviewed_at=now()", "corrections=%s", "reason=%s"]
+    vals += [p.status, p.reviewed_by, json.dumps(corrections, ensure_ascii=False, default=str),
+             p.reason or ("; ".join(r["text"] for r in (inv.get("reasons") or [])) or None)]
+    row = db.execute(f"UPDATE invoices SET {', '.join(sets)} WHERE id=%s "
+                     f"RETURNING id, status, reviewed_by, reviewed_at", tuple(vals + [iid]))
+    db.execute("""INSERT INTO events (tenant_id, entity, entity_id, action, meta)
+                  VALUES (%s,'invoice',%s,%s,%s)""",
+               (inv["tenant_id"], iid, p.status,
+                json.dumps({"by": p.reviewed_by, "corrections": diffs}, ensure_ascii=False, default=str)))
+    return {**row, "corrections": diffs}
+
+
 
 
 # ---------------------------------------------------------------- leads

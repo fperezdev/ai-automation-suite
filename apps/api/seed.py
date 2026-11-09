@@ -82,16 +82,41 @@ CONVERSATIONS = [
 ]
 
 # (archivo, proveedor, número, total, estado, motivo, días atrás)
+def _dv(body: str) -> str:
+    factor, total = 2, 0
+    for ch in reversed(body):
+        total += int(ch) * factor
+        factor = 2 if factor == 7 else factor + 1
+    rest = 11 - (total % 11)
+    return "0" if rest == 11 else "K" if rest == 10 else str(rest)
+
+
+def _rut(body: str) -> str:
+    return f"{int(body):,}".replace(",", ".") + "-" + _dv(body)
+
+
+VENDORS = [
+    ("Dental Supply SpA", _rut("77234567")),
+    ("Insumos Norte Ltda", _rut("78345678")),
+    ("Limpieza Pro SpA", _rut("77678901")),
+    ("Implantes CL SpA", _rut("79456789")),
+    ("Ortodoncia Insumos Ltda", _rut("76567890")),
+]
+
+# (archivo, proveedor, folio, total, estado, motivos, correcciones, días atrás)
 INVOICES = [
-    ("factura-dental-supply-0912.pdf", "Dental Supply SpA", "F-00912", 428900, "pass", None, 0),
+    ("factura-dental-supply-0912.pdf", "Dental Supply SpA", "F-00912", 428900, "pass", [], [], 0),
     ("factura-insumos-norte-0455.pdf", "Insumos Norte Ltda", "F-00455", 199030, "review",
-     "Total no cuadra: la suma de ítems da 189.030", 1),
-    ("factura-limpieza-pro-0231.pdf", "Limpieza Pro", "F-00231", 89000, "approved", None, 2),
-    ("factura-implantes-cl-0778.pdf", "Implantes CL", "F-00778", 1250000, "pass", None, 3),
-    ("factura-rayos-x-0344.pdf", "Rayos X Digital", "F-00344", 156000, "review",
-     "Proveedor no registrado en el maestro de proveedores", 4),
-    ("factura-ortodoncia-insumos-0121.pdf", "Ortodoncia Insumos", "F-00121", 312400, "pass", None, 5),
-    ("factura-dental-supply-0901.pdf", "Dental Supply SpA", "F-00901", 275600, "approved", None, 6),
+     [{"code": "lines_mismatch", "text": "La suma de las líneas no cuadra con el neto (189030.0 ≠ 167252.10)"}],
+     [], 1),
+    ("factura-limpieza-pro-0231.pdf", "Limpieza Pro SpA", "F-00231", 89000, "approved", [],
+     [{"field": "total", "from": 84000.0, "to": 89000.0}], 2),
+    ("factura-implantes-cl-0778.pdf", "Implantes CL SpA", "F-00778", 1250000, "pass", [], [], 3),
+    ("factura-rayos-x-0344.pdf", "Rayos X Digital SpA", "F-00344", 156000, "review",
+     [{"code": "unknown_vendor", "text": "Proveedor no registrado en el maestro (76.111.222-3)"}], [], 4),
+    ("factura-ortodoncia-insumos-0121.pdf", "Ortodoncia Insumos Ltda", "F-00121", 312400, "pass", [], [], 5),
+    ("factura-dental-supply-0901.pdf", "Dental Supply SpA", "F-00901", 275600, "approved", [],
+     [{"field": "issue_date", "from": "2026-11-01", "to": "2026-10-31"}], 6),
 ]
 
 LEADS = [
@@ -113,7 +138,8 @@ def run() -> None:
     db.execute("DELETE FROM tenants WHERE slug=%s", (TENANT,))
     t = db.execute("""INSERT INTO tenants (slug, name, industry, config) VALUES (%s,%s,%s,%s) RETURNING id""",
                    (TENANT, "Clínica Dental Sonrisa Ñuñoa", "salud",
-                    json.dumps({"ciudad": "Santiago", "horario": "L-V 09:00-19:00, S 09:00-14:00"})))
+                    json.dumps({"ciudad": "Santiago", "horario": "L-V 09:00-19:00, S 09:00-14:00",
+                                "max_invoice_total": 8000000})))
     tid = t["id"]
 
     for topic, answer, price in KB:
@@ -141,15 +167,29 @@ def run() -> None:
                         round(random.uniform(0.0004, 0.0021), 6) if direction == "out" else None,
                         start + timedelta(minutes=3 * j)))
 
-    for fname, vendor, number, total, status, reason, days_ago in INVOICES:
+    for vendor_name, vendor_rut in VENDORS:
+        db.execute("""INSERT INTO vendors (tenant_id, rut, name) VALUES (%s,%s,%s)
+                      ON CONFLICT (tenant_id, rut) DO NOTHING""", (tid, vendor_rut, vendor_name))
+    rut_by_name = dict(VENDORS)
+
+    for fname, vendor, number, total, status, reasons, corrections, days_ago in INVOICES:
         created = now - timedelta(days=days_ago, hours=random.randint(1, 6))
-        db.execute("""INSERT INTO invoices (tenant_id, file_name, vendor, invoice_no, total, status, reason, extracted,
-                                            reviewed_by, reviewed_at, created_at)
-                      VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                   (tid, fname, vendor, number, total, status, reason,
-                    json.dumps({"neto": round(total / 1.19), "iva": round(total - total / 1.19)}),
-                    "Javiera" if status == "approved" else None,
-                    created + timedelta(minutes=random.randint(6, 40)) if status == "approved" else None,
+        neto = round(total / 1.19)
+        iva = total - neto
+        reviewed = status == "approved"
+        db.execute("""INSERT INTO invoices (tenant_id, file_name, vendor, vendor_rut, invoice_no, issue_date,
+                                            neto, iva, total, currency, status, reason, reasons, corrections,
+                                            extracted, confidence, reviewed_by, reviewed_at, created_at)
+                      VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'CLP',%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                   (tid, fname, vendor, rut_by_name.get(vendor), number, created.date(),
+                    neto, iva, total, status,
+                    "; ".join(r["text"] for r in reasons) or None,
+                    json.dumps(reasons, ensure_ascii=False),
+                    json.dumps(corrections, ensure_ascii=False),
+                    json.dumps({"neto": neto, "iva": iva, "total": total, "currency": "CLP"}),
+                    88.5 if not reasons else 62.5,
+                    "Javiera" if reviewed else None,
+                    created + timedelta(minutes=random.randint(6, 40)) if reviewed else None,
                     created))
 
     for name, email, source, score, tier, reasons, days_ago in LEADS:
