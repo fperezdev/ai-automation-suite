@@ -11,8 +11,99 @@ from datetime import datetime, timedelta, timezone
 
 import db
 import leadscore
+import reportbot
 
 TENANT = "clinica-sonrisa-nunoa"
+
+DEMO_VENTAS_OCT = """fecha;monto;categoria;detalle
+01/10/2026;$180.000;Ortodoncia;control mensual
+01/10/2026;$35.000;Limpieza;destartraje
+02/10/2026;$184.000;Ortodoncia;control mensual
+02/10/2026;$35.000;Limpieza;destartraje
+03/10/2026;$188.000;Ortodoncia;control mensual
+03/10/2026;$35.000;Limpieza;destartraje
+05/10/2026;$196.000;Ortodoncia;control mensual
+05/10/2026;$35.000;Limpieza;destartraje
+05/10/2026;$1.250.000;Implantes;instalación
+06/10/2026;$200.000;Ortodoncia;control mensual
+06/10/2026;$35.000;Limpieza;destartraje
+07/10/2026;$204.000;Ortodoncia;control mensual
+07/10/2026;$35.000;Limpieza;destartraje
+08/10/2026;$208.000;Ortodoncia;control mensual
+08/10/2026;$35.000;Limpieza;destartraje
+09/10/2026;$212.000;Ortodoncia;control mensual
+09/10/2026;$35.000;Limpieza;destartraje
+10/10/2026;$216.000;Ortodoncia;control mensual
+10/10/2026;$35.000;Limpieza;destartraje
+12/10/2026;$224.000;Ortodoncia;control mensual
+12/10/2026;$35.000;Limpieza;destartraje
+12/10/2026;$1.250.000;Implantes;instalación
+13/10/2026;$228.000;Ortodoncia;control mensual
+13/10/2026;$35.000;Limpieza;destartraje
+14/10/2026;$232.000;Ortodoncia;control mensual
+14/10/2026;$35.000;Limpieza;destartraje
+15/10/2026;$236.000;Ortodoncia;control mensual
+15/10/2026;$35.000;Limpieza;destartraje
+16/10/2026;$240.000;Ortodoncia;control mensual
+16/10/2026;$35.000;Limpieza;destartraje
+17/10/2026;$244.000;Ortodoncia;control mensual
+17/10/2026;$35.000;Limpieza;destartraje
+19/10/2026;$252.000;Ortodoncia;control mensual
+19/10/2026;$70.000;Limpieza;destartraje
+19/10/2026;$1.250.000;Implantes;instalación
+20/10/2026;$256.000;Ortodoncia;control mensual
+20/10/2026;$35.000;Limpieza;destartraje
+21/10/2026;$260.000;Ortodoncia;control mensual
+21/10/2026;$35.000;Limpieza;destartraje
+22/10/2026;$264.000;Ortodoncia;control mensual
+22/10/2026;$35.000;Limpieza;destartraje
+23/10/2026;$268.000;Ortodoncia;control mensual
+23/10/2026;$35.000;Limpieza;destartraje
+24/10/2026;$272.000;Ortodoncia;control mensual
+24/10/2026;$35.000;Limpieza;destartraje
+26/10/2026;$280.000;Ortodoncia;control mensual
+26/10/2026;$35.000;Limpieza;destartraje
+26/10/2026;$1.250.000;Implantes;instalación
+27/10/2026;$284.000;Ortodoncia;control mensual
+27/10/2026;$35.000;Limpieza;destartraje
+28/10/2026;$288.000;Ortodoncia;control mensual
+28/10/2026;$35.000;Limpieza;destartraje
+29/10/2026;$292.000;Ortodoncia;control mensual
+29/10/2026;$35.000;Limpieza;destartraje
+30/10/2026;$296.000;Ortodoncia;control mensual
+30/10/2026;$35.000;Limpieza;destartraje
+31/10/2026;$300.000;Ortodoncia;control mensual
+31/10/2026;$35.000;Limpieza;destartraje
+"""
+
+DEMO_VENTAS_NOV = """fecha;monto;categoria;detalle
+02/11/2026;$215.000;Ortodoncia;control mensual
+02/11/2026;$70.000;Limpieza;destartraje y pulido
+03/11/2026;$220.000;Ortodoncia;control mensual
+03/11/2026;$70.000;Limpieza;destartraje y pulido
+04/11/2026;$225.000;Ortodoncia;control mensual
+04/11/2026;$70.000;Limpieza;destartraje y pulido
+05/11/2026;$230.000;Ortodoncia;control mensual
+05/11/2026;$70.000;Limpieza;destartraje y pulido
+05/11/2026;$1.250.000;Implantes;instalación de implante
+06/11/2026;$235.000;Ortodoncia;control mensual
+06/11/2026;$70.000;Limpieza;destartraje y pulido
+07/11/2026;$240.000;Ortodoncia;control mensual
+07/11/2026;$70.000;Limpieza;destartraje y pulido
+09/11/2026;$250.000;Ortodoncia;control mensual
+09/11/2026;$70.000;Limpieza;destartraje y pulido
+10/11/2026;$255.000;Ortodoncia;control mensual
+10/11/2026;$70.000;Limpieza;destartraje y pulido
+11/11/2026;$260.000;Ortodoncia;control mensual
+11/11/2026;$70.000;Limpieza;destartraje y pulido
+12/11/2026;$265.000;Ortodoncia;control mensual
+12/11/2026;$70.000;Limpieza;destartraje y pulido
+13/11/2026;$270.000;Ortodoncia;control mensual
+13/11/2026;$70.000;Limpieza;destartraje y pulido
+14/11/2026;$275.000;Ortodoncia;control mensual
+14/11/2026;$70.000;Limpieza;destartraje y pulido
+"""
+
 random.seed(7)
 
 KB = [
@@ -149,7 +240,8 @@ def run() -> None:
     db.execute("DELETE FROM tenants WHERE slug=%s", (TENANT,))
     t = db.execute("""INSERT INTO tenants (slug, name, industry, config) VALUES (%s,%s,%s,%s) RETURNING id""",
                    (TENANT, "Clínica Dental Sonrisa Ñuñoa", "salud",
-                    json.dumps({"ciudad": "Santiago", "horario": "L-V 09:00-19:00, S 09:00-14:00",
+                    json.dumps({"negocio": "Clínica Sonrisa Ñuñoa", "ciudad": "Santiago",
+                                "horario": "L-V 09:00-19:00, S 09:00-14:00",
                                 "max_invoice_total": 8000000})))
     tid = t["id"]
 
@@ -227,6 +319,22 @@ def run() -> None:
                           verdict["next_action"]["kind"], due, created))
         if key and not dup and row:
             seen[key] = row["id"]
+
+    # ReportBot: dos planillas de ventas ya procesadas (octubre y la primera quincena de noviembre).
+    import hashlib
+    for label, csv_text in (("ventas-octubre-2026.csv", DEMO_VENTAS_OCT),
+                            ("ventas-noviembre-2026.csv", DEMO_VENTAS_NOV)):
+        rows = reportbot.parse_csv(csv_text)
+        m = reportbot.aggregate(rows)
+        out = reportbot.report(m, "Clínica Sonrisa Ñuñoa")
+        db.execute("""INSERT INTO sales_reports
+            (tenant_id, file_name, source_sha256, period_start, period_end, rows_count, total,
+             prev_total, delta_pct, currency, metrics, text, created_at)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s,%s)""",
+            (tid, label, hashlib.sha256(csv_text.encode()).hexdigest(),
+             m["period_start"], m["period_end"], m["rows"], m["total"], m["prev_total"],
+             m["delta_pct"], m["currency"], json.dumps(m, ensure_ascii=False, default=str),
+             out["text"], now - timedelta(days=3 if "nov" in label else 12)))
 
     # La calidad NO se siembra: se mide corriendo `python eval_replydesk.py`.
     print("seed listo:", TENANT, "(para la tarjeta de calidad: docker compose exec -T api python eval_replydesk.py)")

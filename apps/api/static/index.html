@@ -197,6 +197,49 @@ td .sub{color:var(--muted);font-size:11.8px;margin-top:2px}
 .ldoc .why{font-size:12.6px;color:var(--ink-soft);line-height:1.5}
 .ldraft{white-space:pre-wrap;font-size:12.8px;line-height:1.55;background:#fbf9f2;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px;color:var(--ink-soft)}
 .lactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
+/* reportes */
+.inbox.reps{grid-template-columns:320px 1fr}
+.reprow{padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer}
+.reprow:hover{background:#fbf9f2}
+.reprow[aria-selected="true"]{background:var(--accent-soft)}
+.reprow .fn{font-size:12.6px;font-weight:600;overflow-wrap:anywhere}
+.reprow .per{font:400 11.4px var(--mono);color:var(--muted);margin-top:3px}
+.reprow .val{display:flex;justify-content:space-between;align-items:baseline;margin-top:7px;gap:8px}
+.reprow .val b{font:500 13.4px var(--mono)}
+.repdelta{font:500 11.6px var(--mono);padding:2px 6px;border-radius:20px;background:#eae6da;color:var(--muted)}
+.repdelta.up{background:#e2f0e6;color:#2f6b3d}
+.repdelta.down{background:#f7e3df;color:var(--danger)}
+.rdoc{padding:0 20px 22px;overflow:auto;min-height:0}
+.rdoc .head{display:flex;gap:16px;align-items:flex-start;border-bottom:1px solid var(--line);padding:16px 0 14px}
+.rdoc .head .who{flex:1;min-width:0}
+.rdoc .head h3{margin:0 0 4px;font-size:15.4px}
+.rdoc .head .meta{font-size:12px;color:var(--muted)}
+.rdoc .big{text-align:right;flex:none}
+.rdoc .big b{display:block;font:500 29px/1 var(--mono);letter-spacing:-.02em}
+.rdoc .big span{display:block;margin-top:5px;font-size:11.4px;color:var(--muted)}
+.rdoc .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.rdoc .kpi .k{font:500 10.4px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.rdoc .kpi .v{font:500 15px var(--mono);margin-top:4px}
+.rdoc .sec{border-bottom:1px solid var(--line);padding:14px 0}
+.rdoc .sec:last-child{border-bottom:0}
+.rdoc h4{margin:0 0 8px;font:500 10.8px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.rdoc .why{font-size:12.6px;color:var(--ink-soft)}
+.daybars{display:flex;align-items:flex-end;gap:3px;height:44px;margin:10px 0 2px}
+.daybars i{flex:1;background:var(--accent);opacity:.32;border-radius:2px 2px 0 0;min-height:2px}
+.daybars i.max{opacity:.85}
+.daybars i.zero{background:var(--line);opacity:1}
+.cap{font:400 11.2px var(--mono);color:var(--muted);margin-top:5px}
+.catrow{display:grid;grid-template-columns:112px 1fr 92px 46px;gap:10px;align-items:center;padding:4px 0;font-size:12.6px}
+.catrow .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catrow .bar{height:7px;background:#eae6da;border-radius:6px;overflow:hidden}
+.catrow .bar i{display:block;height:100%;background:var(--accent);opacity:.6}
+.catrow .vl{text-align:right;font:500 12px var(--mono)}
+.catrow .sh{text-align:right;font:400 11.4px var(--mono);color:var(--muted)}
+.ins{display:flex;gap:8px;align-items:baseline;font-size:12.8px;line-height:1.5;padding:3px 0;color:var(--ink-soft)}
+.ins .dot{flex:none;width:6px;height:6px;border-radius:50%;background:var(--muted);margin-top:6px}
+.ins.good .dot{background:#2f6b3d}
+.ins.warn .dot{background:#c98a1e}
+.ins.down .dot{background:var(--danger)}
 
 /* ---------- KB ---------- */
 .kblist{display:grid;gap:10px}
@@ -289,6 +332,7 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
       <button data-view="conversaciones">Conversaciones <span class="count" id="c-conv">—</span></button>
       <button data-view="facturas">Facturas <span class="count" id="c-inv">—</span></button>
       <button data-view="leads">Leads <span class="count" id="c-leads">—</span></button>
+      <button data-view="reportes">Reportes <span class="count" id="c-rep">—</span></button>
       <button data-view="kb">Base de conocimiento</button>
     </nav>
     <div class="foot">
@@ -359,7 +403,7 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
 
       <div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir facturas en PDF">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 14V4m0 0L6.2 7.8M10 4l3.8 3.8M3.5 13.5v1.8A1.7 1.7 0 0 0 5.2 17h9.6a1.7 1.7 0 0 0 1.7-1.7v-1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div class="drop-copy"><b>Soltá el PDF acá</b><span>o elegí el archivo · se procesa al instante, sin salir del panel</span></div>
+        <div class="drop-copy"><b>Suelta el PDF aquí</b><span>o elige el archivo · se procesa al instante, sin salir del panel</span></div>
         <span class="drop-act">Elegir archivo</span>
         <input type="file" id="inv-file" accept="application/pdf,.pdf" multiple hidden>
       </div>
@@ -403,6 +447,28 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
       </div>
     </section>
 
+
+    <!-- REPORTES -->
+    <section class="view" id="view-reportes">
+      <div class="view-head">
+        <div><h2>Reportes de ventas</h2><p>Se sube la planilla del mes y sale el resumen escrito. Cada cifra del texto viene de una cuenta sobre el archivo: si un dato no está en la planilla, no aparece en el reporte.</p></div>
+      </div>
+
+      <div class="drop" id="rep-drop" tabindex="0" role="button" aria-label="Subir planilla de ventas en CSV">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 14V4m0 0L6.2 7.8M10 4l3.8 3.8M3.5 13.5v1.8A1.7 1.7 0 0 0 5.2 17h9.6a1.7 1.7 0 0 0 1.7-1.7v-1.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="drop-copy"><b>Suelta la planilla aquí</b><span>CSV con fecha, monto y categoría · se calcula al instante</span></div>
+        <span class="drop-act">Elegir archivo</span>
+        <input type="file" id="rep-file" accept=".csv,text/csv" hidden>
+      </div>
+
+      <div class="inbox inv reps">
+        <div class="list">
+          <div class="rows" id="rep-rows"></div>
+        </div>
+        <div class="thread" id="rep-detail"></div>
+      </div>
+    </section>
+
     <!-- KB -->
     <section class="view" id="view-kb">
       <div class="view-head">
@@ -440,6 +506,11 @@ const fmt = {
     const span = abs < 60 ? `${Math.max(1, Math.round(abs))} min` : `${Math.round(abs / 60)} h`;
     return diff < 0 ? `vencida hace ${span}` : `en ${span}`;
   },
+  date: iso => {
+    if (!iso) return '—';
+    const [y, m, d] = String(iso).slice(0, 10).split('-');
+    return `${d}/${m}`;
+  },
   when: iso => {
     if (!iso) return '';
     const d = new Date(iso), now = new Date(), diff = (now - d) / 60000;
@@ -473,6 +544,7 @@ $('#nav').addEventListener('click', e => {
   if (b.dataset.view === 'conversaciones') loadConversations();
   if (b.dataset.view === 'facturas') loadInvoices();
   if (b.dataset.view === 'leads') loadLeads();
+  if (b.dataset.view === 'reportes') loadReports();
   if (b.dataset.view === 'kb') loadKb();
 });
 $('#refresh').addEventListener('click', () => { loadAll(); toast('Datos actualizados'); });
@@ -558,7 +630,7 @@ async function loadConversations() {
       state.selected = list[0].id;
       await selectConversation(list[0].id);
     }
-    else if (!list.length) $('#thread').innerHTML = '<div class="empty"><b>Sin conversación</b>Elegí una de la lista.</div>';
+    else if (!list.length) $('#thread').innerHTML = '<div class="empty"><b>Sin conversación</b>Elige una de la lista.</div>';
   } catch (err) {
     $('#conv-rows').innerHTML = `<div class="empty"><b>Error al leer la bandeja</b>${esc(err.message)}</div>`;
   }
@@ -772,7 +844,7 @@ async function loadInvoices() {
     } else {
       INV.selected = null;
       invRenderList();
-      $('#inv-detail').innerHTML = '<div class="empty"><b>Sin facturas</b>Subí un PDF arriba y lo procesamos en el momento.</div>';
+      $('#inv-detail').innerHTML = '<div class="empty"><b>Sin facturas</b>Sube un PDF arriba y lo procesamos en el momento.</div>';
     }
   } catch (err) {
     $('#inv-rows').innerHTML = '';
@@ -905,7 +977,7 @@ function leadRenderList() {
 
 function leadRenderDetail() {
   const l = LEAD.rows.find(r => r.id === LEAD.selected);
-  if (!l) { $('#lead-detail').innerHTML = '<div class="empty"><b>Elegí un lead</b>La cola se ordena por score y por vencimiento.</div>'; return; }
+  if (!l) { $('#lead-detail').innerHTML = '<div class="empty"><b>Elige un lead</b>La cola se ordena por score y por vencimiento.</div>'; return; }
   const reasons = l.score_breakdown && l.score_breakdown.length ? l.score_breakdown
     : (l.reasons || []).map(t => ({ code: '', points: 0, text: t }));
   const next = l.duplicate_of
@@ -969,6 +1041,124 @@ $('#lead-detail').addEventListener('click', async e => {
   } catch (err) { toast('No se pudo actualizar: ' + err.message); }
 });
 
+/* ---------- reportes ---------- */
+let REPORTS = [], REP_CUR = null;
+
+async function loadReports() {
+  $('#rep-rows').innerHTML = skeleton(3);
+  $('#rep-detail').innerHTML = '';
+  try { REPORTS = await api('/api/reports?limit=50'); }
+  catch (err) { $('#rep-rows').innerHTML = `<div class="empty"><b>Error</b>${esc(err.message)}</div>`; return; }
+  $('#c-rep').textContent = REPORTS.length;
+  repList();
+  if (REPORTS.length) repOpen(REPORTS[0].id);
+  else $('#rep-detail').innerHTML = '<div class="empty"><b>Sin reportes todavía</b>' +
+    'Sube una planilla CSV con fecha, monto y categoría.</div>';
+}
+
+function repList() {
+  $('#rep-rows').innerHTML = REPORTS.length ? REPORTS.map(r => {
+    const d = Number(r.delta_pct || 0);
+    const dir = Math.abs(d) < 0.5 ? '' : (d > 0 ? 'up' : 'down');
+    return `<div class="reprow" data-id="${r.id}" role="button" tabindex="0" aria-selected="${r.id === (REP_CUR && REP_CUR.id)}">
+      <div class="fn">${esc(r.file_name || 'planilla.csv')}</div>
+      <div class="per">${fmt.date(r.period_start)} → ${fmt.date(r.period_end)} · ${fmt.int(r.rows_count)} mov.</div>
+      <div class="val"><b>${fmt.clp(r.total)}</b><span class="repdelta ${dir}">${fmt.pct(d)}</span></div>
+    </div>`;
+  }).join('') : '<div class="empty"><b>Sin reportes</b>Sube una planilla para ver el resumen.</div>';
+}
+
+async function repOpen(id) {
+  let r;
+  try { r = await api('/api/reports/' + id); } catch (err) { toast('No se pudo abrir: ' + err.message); return; }
+  REP_CUR = r; repList();
+  const m = r.metrics || {};
+  const d = Number(m.delta_pct || 0);
+  const dir = Math.abs(d) < 0.5 ? '' : (d > 0 ? 'up' : 'down');
+  const top = m.top_category ? `<span class="repdelta">top: ${esc(m.top_category)}</span>` : '';
+  const daily = m.daily || [];
+  const maxDay = Math.max(...daily.map(x => Math.abs(Number(x.total) || 0)), 1);
+  const bars = daily.map(x => {
+    const v = Number(x.total) || 0;
+    const h = Math.max(2, Math.round(Math.abs(v) / maxDay * 100));
+    return `<i class="${v === 0 ? 'zero' : (Math.abs(v) === maxDay ? 'max' : '')}" style="height:${h}%" title="${esc(x.date)}: ${fmt.clp(v)}"></i>`;
+  }).join('');
+  const cats = (m.by_category || []).map(c => `
+    <div class="catrow"><span class="nm">${esc(c.category)}</span>
+      <span class="bar"><i style="width:${Math.min(100, Math.max(0, Number(c.share) || 0))}%"></i></span>
+      <span class="vl">${fmt.clp(c.total)}</span><span class="sh">${fmt.pct(c.share)}</span></div>`).join('');
+  const ins = (m.insights || []).map(i =>
+    `<div class="ins ${esc(i.severity || 'info')}"><span class="dot"></span><span>${esc(i.text)}</span></div>`).join('');
+
+  $('#rep-detail').innerHTML = `<div class="rdoc">
+    <div class="head">
+      <div class="who"><h3>${esc(r.file_name || 'Planilla de ventas')}</h3>
+        <div class="meta">${fmt.date(m.period_start)} → ${fmt.date(m.period_end)} · contra ${fmt.clp(m.prev_total)} del período anterior ${top}</div></div>
+      <div class="big"><b>${fmt.clp(m.total)}</b><span class="repdelta ${dir}">${fmt.pct(d)} vs. anterior</span></div>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Movimientos</div><div class="v">${fmt.int(m.rows)}</div></div>
+      <div class="kpi"><div class="k">Ticket promedio</div><div class="v">${fmt.clp(m.avg_ticket)}</div></div>
+      <div class="kpi"><div class="k">Mejor día</div><div class="v">${m.best_day ? fmt.clp(m.best_day.total) : '—'}</div></div>
+      <div class="kpi"><div class="k">Día más bajo</div><div class="v">${m.worst_day ? fmt.clp(m.worst_day.total) : '—'}</div></div>
+    </div>
+    <div class="sec"><h4>Ventas por día</h4><div class="daybars">${bars}</div>
+      <div class="cap">${daily.length} días · máximo ${fmt.clp(maxDay)} · la barra alta es el mejor día</div></div>
+    <div class="sec"><h4>Por categoría</h4>${cats || '<div class="why">La planilla no trae categorías.</div>'}</div>
+    <div class="sec"><h4>Qué dicen los números</h4>${ins || '<div class="why">Sin observaciones.</div>'}</div>
+    <div class="sec"><h4>Resumen para enviar</h4>
+      <div class="ldraft" id="rep-text">${esc(r.text || '')}</div>
+      <div class="lactions">
+        <button class="btn" id="rep-copy" type="button">Copiar resumen</button>
+        <a class="btn" id="rep-md" href="#" role="button">Descargar .md</a>
+      </div>
+    </div>
+  </div>`;
+
+  $('#rep-copy').onclick = async () => {
+    try { await navigator.clipboard.writeText(r.text || ''); toast('Resumen copiado'); }
+    catch { toast('No se pudo copiar'); }
+  };
+  $('#rep-md').href = `/api/reports/${r.id}.md?tenant=${encodeURIComponent(TENANT)}`;
+}
+
+$('#rep-rows').addEventListener('click', e => {
+  const row = e.target.closest('.reprow'); if (row) repOpen(row.dataset.id);
+});
+$('#rep-rows').addEventListener('keydown', e => {
+  const row = e.target.closest('.reprow');
+  if (row && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); repOpen(row.dataset.id); }
+});
+
+async function repUpload(file) {
+  if (!file) return;
+  toast('Procesando ' + file.name + '…');
+  const fd = new FormData();
+  fd.append('tenant', TENANT);
+  fd.append('file', file);
+  try {
+    const r = await fetch('/api/reports/upload', { method: 'POST', body: fd });
+    if (!r.ok) throw new Error((await r.json()).detail || r.status);
+    const rep = await r.json();
+    await loadReports();
+    repOpen(rep.id);
+    toast(rep.duplicate_file ? 'Esa planilla ya estaba: abro el reporte existente'
+                             : `${fmt.clp(rep.total)} · ${rep.rows_count} movimientos`);
+  } catch (err) { toast('No se pudo procesar: ' + err.message); }
+}
+$('#rep-file').addEventListener('change', e => { repUpload(e.target.files[0]); e.target.value = ''; });
+$('#rep-drop').addEventListener('click', () => $('#rep-file').click());
+$('#rep-drop').addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#rep-file').click(); }
+});
+['dragenter', 'dragover'].forEach(ev => $('#rep-drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#rep-drop').classList.add('over');
+}));
+['dragleave', 'drop'].forEach(ev => $('#rep-drop').addEventListener(ev, e => {
+  e.preventDefault(); $('#rep-drop').classList.remove('over');
+}));
+$('#rep-drop').addEventListener('drop', e => repUpload(e.dataTransfer.files[0]));
+
 /* ---------- kb ---------- */
 async function loadKb() {
   $('#kblist').innerHTML = skeleton(4);
@@ -991,6 +1181,7 @@ async function loadAll() {
   if (active === 'conversaciones') loadConversations();
   if (active === 'facturas') loadInvoices();
   if (active === 'leads') loadLeads();
+  if (active === 'reportes') loadReports();
   if (active === 'kb') loadKb();
   if (active === 'resumen') { loadConversations(); loadInvoices(); loadLeads(); }
 }

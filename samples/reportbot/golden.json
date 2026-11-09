@@ -1,0 +1,462 @@
+[
+  {
+    "file": "rep-001-mes-dental-crecimiento.csv",
+    "total": 2480000,
+    "prev_total": 2045000,
+    "delta_pct": 21.3,
+    "top_category": "Implantes",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "total_up",
+      "top_category",
+      "best_day"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-002-caida-implantes.csv",
+    "total": 515000,
+    "prev_total": 1800000,
+    "delta_pct": -71.4,
+    "top_category": "Implantes",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "total_down",
+      "category_drop"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-003-plano.csv",
+    "total": 1400000,
+    "prev_total": 1400000,
+    "delta_pct": 0.0,
+    "top_category": "Limpieza",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "total_flat",
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-004-primera-semana.csv",
+    "total": 480000,
+    "prev_total": 0,
+    "delta_pct": 0.0,
+    "top_category": "Ortodoncia",
+    "rows": 1,
+    "period_start": "2026-11-02",
+    "period_end": "2026-11-02",
+    "must": [
+      "no_previous"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-005-concentrado.csv",
+    "total": 2600000,
+    "prev_total": 2270000,
+    "delta_pct": 14.5,
+    "top_category": "Implantes",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "concentration",
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-006-con-devoluciones.csv",
+    "total": 1290000,
+    "prev_total": 1275000,
+    "delta_pct": 1.2,
+    "top_category": "Limpieza",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "refunds"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-007-periodo-negativo.csv",
+    "total": -725000,
+    "prev_total": 2220000,
+    "delta_pct": -132.7,
+    "top_category": null,
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "negative_total"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-008-pocos-movimientos.csv",
+    "total": 245000,
+    "prev_total": 200000,
+    "delta_pct": 22.5,
+    "top_category": "Limpieza",
+    "rows": 2,
+    "period_start": "2026-11-05",
+    "period_end": "2026-11-06",
+    "must": [
+      "low_volume"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-009-iso-miles.csv",
+    "total": 3395000,
+    "prev_total": 2415000,
+    "delta_pct": 40.6,
+    "top_category": "Ortodoncia",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "total_up"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-010-decimales-coma.csv",
+    "total": 277001.5,
+    "prev_total": 264991.5,
+    "delta_pct": 4.5,
+    "top_category": "Limpieza",
+    "rows": 7,
+    "period_start": "2026-10-12",
+    "period_end": "2026-10-18",
+    "must": [
+      "total_up"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-011-headers-ingles.csv",
+    "total": 1890000,
+    "prev_total": 1890000,
+    "delta_pct": 0.0,
+    "top_category": "Cleaning",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-012-tab.csv",
+    "total": 1380000,
+    "prev_total": 1360000,
+    "delta_pct": 1.5,
+    "top_category": "Limpieza",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-013-sin-categoria.csv",
+    "total": 1555000,
+    "prev_total": 1455000,
+    "delta_pct": 6.9,
+    "top_category": "sin categoría",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-014-ticket-alto.csv",
+    "total": 4100000,
+    "prev_total": 3600000,
+    "delta_pct": 13.9,
+    "top_category": "Implantes",
+    "rows": 6,
+    "period_start": "2026-10-16",
+    "period_end": "2026-10-21",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-015-dias-vacios.csv",
+    "total": 650000,
+    "prev_total": 250000,
+    "delta_pct": 160.0,
+    "top_category": "Ortodoncia",
+    "rows": 11,
+    "period_start": "2026-10-11",
+    "period_end": "2026-10-21",
+    "must": [
+      "total_up"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-016-fin-de-semana.csv",
+    "total": 1600000,
+    "prev_total": 1600000,
+    "delta_pct": 0.0,
+    "top_category": "Ortodoncia",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "best_day"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-017-filas-invalidas.csv",
+    "total": 560000,
+    "prev_total": 530000,
+    "delta_pct": 5.7,
+    "top_category": "Limpieza",
+    "rows": 7,
+    "period_start": "2026-10-08",
+    "period_end": "2026-10-14",
+    "must": [
+      "total_up"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-018-cruce-categorias.csv",
+    "total": 3710000,
+    "prev_total": 2255000,
+    "delta_pct": 64.5,
+    "top_category": "Implantes",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "category_jump",
+      "category_drop"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-019-montos-planos.csv",
+    "total": 1540000,
+    "prev_total": 1500000,
+    "delta_pct": 2.7,
+    "top_category": "Limpieza",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-020-dos-semanas.csv",
+    "total": 605000,
+    "prev_total": 450000,
+    "delta_pct": 34.4,
+    "top_category": "Ortodoncia",
+    "rows": 7,
+    "period_start": "2026-11-09",
+    "period_end": "2026-11-15",
+    "must": [
+      "total_up"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-021-empate-categorias.csv",
+    "total": 1400000,
+    "prev_total": 1400000,
+    "delta_pct": 0.0,
+    "top_category": "Limpieza",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-022-caida-chica.csv",
+    "total": 1606000,
+    "prev_total": 1636000,
+    "delta_pct": -1.8,
+    "top_category": "Ortodoncia",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "total_flat"
+    ],
+    "absent": [
+      "category_drop"
+    ],
+    "note": ""
+  },
+  {
+    "file": "rep-023-categoria-desaparece.csv",
+    "total": 902000,
+    "prev_total": 1258000,
+    "delta_pct": -28.3,
+    "top_category": "Ortodoncia",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "category_drop"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-024-crecimiento-lineal.csv",
+    "total": 1225000,
+    "prev_total": 725000,
+    "delta_pct": 69.0,
+    "top_category": "Limpieza",
+    "rows": 10,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-24",
+    "must": [
+      "total_up",
+      "best_day"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-025-miles-y-decimales.csv",
+    "total": 7370.34,
+    "prev_total": 7037.01,
+    "delta_pct": 4.7,
+    "top_category": "Insumos",
+    "rows": 6,
+    "period_start": "2026-10-07",
+    "period_end": "2026-10-12",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-026-muchas-filas.csv",
+    "total": 1047000,
+    "prev_total": 1023000,
+    "delta_pct": 2.3,
+    "top_category": "Implantes",
+    "rows": 21,
+    "period_start": "2026-10-08",
+    "period_end": "2026-10-14",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-027-pico-unico.csv",
+    "total": 1175000,
+    "prev_total": 1940000,
+    "delta_pct": -39.4,
+    "top_category": "Ortodoncia",
+    "rows": 14,
+    "period_start": "2026-10-15",
+    "period_end": "2026-10-28",
+    "must": [
+      "best_day"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-028-una-jornada.csv",
+    "total": 150000,
+    "prev_total": 0,
+    "delta_pct": 0.0,
+    "top_category": "Ortodoncia",
+    "rows": 1,
+    "period_start": "2026-11-07",
+    "period_end": "2026-11-07",
+    "must": [
+      "no_previous",
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-029-casi-vacio.csv",
+    "total": 250000,
+    "prev_total": 0,
+    "delta_pct": 0.0,
+    "top_category": "Limpieza",
+    "rows": 5,
+    "period_start": "2026-10-06",
+    "period_end": "2026-10-10",
+    "must": [
+      "no_previous"
+    ],
+    "absent": [],
+    "note": ""
+  },
+  {
+    "file": "rep-030-planilla-grande.csv",
+    "total": 4308406.0,
+    "prev_total": 3305455.0,
+    "delta_pct": 30.3,
+    "top_category": "Insumos",
+    "rows": 40,
+    "period_start": "2026-10-16",
+    "period_end": "2026-10-30",
+    "must": [
+      "top_category"
+    ],
+    "absent": [],
+    "note": ""
+  }
+]

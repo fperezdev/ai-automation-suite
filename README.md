@@ -78,6 +78,7 @@ recepción, el bot no responde; (3) el modelo, con la base de conocimiento del t
 | **2** | **Automatización de facturas** | Sube un PDF → extracción **determinista** de los campos fiscales (sin LLM en el camino crítico) → reglas chilenas (RUT, IVA 19%, cuadre de líneas y total, tope de monto) → cola PASS/REVIEW en el panel con el motivo escrito | [cómo funciona](docs/modulo-02-facturacion.md) · [página de caso](case/invoiceflow.html) · [video 60 s](docs/video/invoiceflow-60s.mp4) |
 | **3** | **Captación de pacientes/leads** | Consulta entrante → scoring **determinista** por reglas con nombre (servicio, urgencia, presupuesto, precio, contacto, detalle) → **HOT/WARM/COLD** + próxima acción + dedupe por email/teléfono → cola en el panel | [cómo funciona](docs/modulo-03-captacion.md) · [página de caso](case/leadscore.html) |
 | **4** | **Agente de soporte interno** | Webchat que responde con los datos del negocio y **deriva a una persona** con el transcript completo cuando debe | [ver](docs/modulo-04-soporte.md) |
+| **5** | **Reportes de ventas** | Sube el CSV del negocio → totales, comparación contra el período anterior, ventas por día y por categoría, calculados **sin LLM** → resumen escrito donde cada cifra sale de una cuenta del archivo, panel y `.md` descargable | [cómo funciona](docs/modulo-05-reportes.md) · [página de caso](case/reportbot.html) |
 
 El **módulo 1 es la pieza estrella**: es el que corre sobre **WhatsApp real** con la
 Cloud API oficial de Meta y el único con **RAG** (respuestas ancladas a una base de

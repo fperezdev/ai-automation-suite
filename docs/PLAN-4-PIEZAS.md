@@ -23,7 +23,7 @@ Conclusión: **nombre propio + caso con números + demo que se toca en 60 s**, e
 | **InvoiceFlow** | factura PDF → extracción → validación → registro + cola de revisión | **productizada y medida**: extracción determinista, reglas chilenas, cola PASS/REVIEW, eval 30/30, página de caso | `case/invoiceflow.html` |
 | **ReplyDesk** | agente WhatsApp con KB del negocio, bandeja y derivación a humano | **productizada y medida**: reglas + LLM, webhook firmado e idempotente, take-over, eval 40/40, página de caso | `case/replydesk.html` |
 | **LeadScore** | consulta entrante → scoring por reglas con motivos → cola de seguimiento | **productizada y medida**: scorer determinista de 13 reglas, tiers + próxima acción, dedupe por email/teléfono, cola y export CSV, eval 30/30 | `case/leadscore.html` |
-| **ReportBot** | planilla → variaciones → resumen con LLM → mail/Telegram | **no existe** | `/reportbot` |
+| **ReportBot** | planilla de ventas → variaciones → resumen escrito → panel/`.md` | **productizada y medida**: lectura tolerante de CSV, cifras deterministas sin LLM, 13 observaciones con código, idempotencia por hash, eval 30/30, página de caso | `case/reportbot.html` |
 
 ## Qué significa "nivel de producto" (checklist común)
 
@@ -68,10 +68,16 @@ Se aplica a las 4, sin excepción. Es lo que separa esto de un demo:
   normalizado, migración 005, endpoints GET/POST/CSV/PATCH, panel con desglose y acciones,
   `eval_leadscore.py` con **30/30** de tier, motivos 100/100, dedupe 100%, p50 0,05 ms.
   Página de caso en `case/leadscore.html`.
-- Siguiente: **F5 — ReportBot**.
+- **F5 — ReportBot: cerrada y medida.** `reportbot.py` (lectura tolerante de CSV, dos mitades para
+  comparar, 13 observaciones con código, texto por plantillas), migración 006 con tabla
+  **`sales_reports`** (se renombró porque `reports` ya era de ReplyDesk), endpoints upload/list/detail/`.md`
+  con idempotencia por sha256, vista **Reportes** en el panel con subida por arrastre, y
+  `eval_reportbot.py` con **30/30**, cifras 100%, observaciones 100%, texto 100%, p50 0,6 ms.
+  Página de caso en `case/reportbot.html`.
+- **Siguiente: F6 — Publicación** (casos, capturas y videos al sitio y al portfolio).
 
 ## Fases (plan original)
-: migraciones Postgres, modelo `tenant`, panel shell con
+- **F1 — Base compartida** (2 días): migraciones Postgres, modelo `tenant`, panel shell con
   bandeja y métricas, `.env.example`, runbook. Sin esto las demás fases duplican trabajo.
 - **F2 — ReplyDesk** (2–3 días): persistencia de conversaciones + historial, handoff con motivo,
   take-over, KB editable, eval de 30 preguntas. Es la pieza que más se vende (6/14 avisos).

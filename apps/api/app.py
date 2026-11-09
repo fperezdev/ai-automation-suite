@@ -23,6 +23,7 @@ from pydantic import BaseModel, Field
 import db
 import invoiceflow as iflow
 import leadscore as lscore
+import reportbot as rbot
 from webhooks import router as replydesk_router
 
 APP_DIR = pathlib.Path(__file__).parent
@@ -510,6 +511,79 @@ def leads_export(tenant: str) -> Response:
                     r["created_at"].isoformat() if r["created_at"] else "", r["message"] or ""])
     return Response(content=out.getvalue(), media_type="text/csv; charset=utf-8",
                     headers={"Content-Disposition": 'attachment; filename="leads.csv"'})
+
+
+# ---------------------------------------------------------------- ReportBot
+REPORT_COLS = ("id, file_name, period_start, period_end, rows_count, total, prev_total, "
+               "delta_pct, currency, metrics, text, created_at")
+
+
+@app.post("/api/reports/upload", status_code=201)
+async def upload_report(tenant: str = Form(...), file: UploadFile = File(...),
+                        business: str = Form("")) -> dict:
+    """CSV de ventas -> números -> resumen escrito. Idempotente por sha256 del archivo."""
+    import hashlib
+    tid = tenant_id(tenant)
+    data = await file.read()
+    if not data:
+        raise HTTPException(422, "archivo vacío")
+    digest = hashlib.sha256(data).hexdigest()
+    prev = db.one(f"SELECT {REPORT_COLS} FROM sales_reports WHERE tenant_id=%s AND source_sha256=%s",
+                  (tid, digest))
+    if prev:
+        prev = dict(prev)
+        prev["duplicate_file"] = True
+        return prev
+
+    try:
+        text = data.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        text = data.decode("latin-1")
+    rows = rbot.parse_csv(text)
+    if not rows:
+        raise HTTPException(422, "no encontré filas con fecha y monto: la planilla necesita "
+                                 "una columna de fecha y una de monto")
+    trow = db.one("SELECT config FROM tenants WHERE id=%s", (tid,)) or {}
+    cfg = trow.get("config") or {}
+    name = (business or cfg.get("negocio") or cfg.get("name") or tenant).strip()
+    metrics = rbot.aggregate(rows)
+    out = rbot.report(metrics, name)
+
+    row = db.execute("""INSERT INTO sales_reports
+        (tenant_id, file_name, source_sha256, period_start, period_end, rows_count, total,
+         prev_total, delta_pct, currency, metrics, text)
+        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING """ + REPORT_COLS,
+        (tid, file.filename, digest, metrics["period_start"], metrics["period_end"],
+         metrics["rows"], metrics["total"], metrics["prev_total"], metrics["delta_pct"],
+         metrics["currency"], json.dumps(metrics, ensure_ascii=False, default=str),
+         out["text"]))
+    if not row:
+        raise HTTPException(500, "no se pudo guardar el reporte")
+    return dict(row)
+
+
+@app.get("/api/reports")
+def reports_list(tenant: str, limit: int = Query(50, ge=1, le=200)) -> list[dict]:
+    cols = "id, file_name, period_start, period_end, rows_count, total, prev_total, delta_pct, created_at"
+    return db.query(f"SELECT {cols} FROM sales_reports WHERE tenant_id=%s "
+                    f"ORDER BY created_at DESC LIMIT %s", (tenant_id(tenant), limit))
+
+
+@app.get("/api/reports/{report_id}")
+def report_detail(report_id: str, tenant: str) -> dict:
+    row = db.one(f"SELECT {REPORT_COLS} FROM sales_reports WHERE id=%s AND tenant_id=%s",
+                 (report_id, tenant_id(tenant)))
+    if not row:
+        raise HTTPException(404, "reporte no encontrado")
+    return dict(row)
+
+
+@app.get("/api/reports/{report_id}.md")
+def report_markdown(report_id: str, tenant: str) -> Response:
+    row = report_detail(report_id, tenant)
+    return Response(content=row["text"], media_type="text/markdown; charset=utf-8",
+                    headers={"Content-Disposition":
+                             f'attachment; filename="reporte-{row["period_end"] or "sin-fecha"}.md"'})
 
 
 # ---------------------------------------------------------------- KB

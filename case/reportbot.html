@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReportBot — de la planilla de ventas al resumen escrito, con cifras que se pueden verificar</title>
+<meta name="description" content="Módulo de reportes para pymes: se sube el CSV de ventas y sale un resumen escrito donde cada cifra viene de una cuenta sobre el archivo. 30/30 planillas del set de prueba, 0,6 ms por reporte.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f5ef; --card:#fffdf8; --ink:#1d2430; --ink-soft:#3d4652; --muted:#5b636c;
+    --line:#e2ddd1; --line-2:#c8c1b1; --accent:#1d2430; --amber:#b4761f; --amber-soft:#f4e6cd;
+    --ok:#2f6b4f; --bad:#8c2f2f; --radius:12px; --shadow:0 1px 2px rgba(29,36,48,.05), 0 8px 24px -16px rgba(29,36,48,.25);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 16px/1.62 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+       -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px}
+  header.top{border-bottom:1px solid var(--line);background:rgba(247,245,239,.86);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
+  .dot{width:9px;height:9px;border-radius:2px;background:var(--amber)}
+  nav a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-left:18px}
+  nav a:hover{color:var(--ink)}
+  nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:6px;text-decoration-thickness:2px}
+
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a12}
+  h1{font-size:clamp(30px,4.4vw,46px);line-height:1.1;letter-spacing:-.025em;margin:16px 0 0;max-width:26ch;font-weight:600;text-wrap:balance}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:18px 0 0}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:38px 0 0;border-top:1px solid var(--line-2)}
+  .stat{padding:16px 18px 4px 0;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+
+  .shot{margin:34px 0 0}
+  .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:24px;line-height:1.25;letter-spacing:-.015em;margin:0 0 8px;font-weight:600}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px;max-width:64ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .card p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .card p + p{margin-top:8px}
+  code{font:400 12.5px "JetBrains Mono",monospace;background:#efeade;padding:1px 5px;border-radius:4px}
+  pre{font:400 12.5px/1.62 "JetBrains Mono",monospace;background:#fbf9f2;border:1px solid var(--line);
+      border-radius:var(--radius);padding:16px 18px;overflow:auto;color:var(--ink-soft);margin:0}
+
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line-2)}
+  td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  td b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+  ul.flat{margin:0;padding-left:18px;font-size:15px;color:var(--ink-soft)}
+  ul.flat li{margin-bottom:8px}
+
+  footer{padding:36px 0 56px;color:var(--muted);font-size:13.5px}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;
+       padding:11px 18px;border-radius:8px;font-weight:500;font-size:14.5px;margin-top:6px}
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stat{border-right:0;border-bottom:1px solid var(--line);padding-bottom:14px}
+    .grid2{grid-template-columns:1fr}
+    .hero{padding:44px 0 30px}
+    pre{font-size:11.6px}
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>ReportBot</div>
+  <nav><a href="#como" class="on">Cómo funciona</a><a href="#resultados">Resultados</a><a href="#decisiones">Decisiones</a><a href="#limites">Límites</a></nav>
+</div></header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Automatización con IA · Reportes</div>
+    <h1>La planilla del mes entra, el resumen escrito sale; cada cifra se puede verificar.</h1>
+    <p class="lede">Módulo de reportes para pymes. Se sube el CSV de ventas y el sistema calcula totales, comparación
+    con el período anterior, mejor y peor día, reparto por categoría y las observaciones que esos números sostienen.
+    El texto se arma con plantillas: no hay un modelo inventando cifras, así que el reporte siempre coincide con la
+    planilla. Cero costo por reporte.</p>
+    <div class="stats">
+      <div class="stat"><b>30/30</b><span>planillas del set, con las cifras exactas</span></div>
+      <div class="stat"><b>0,6 ms</b><span>mediana por reporte, sin red ni tokens</span></div>
+      <div class="stat"><b>US$ 0</b><span>costo por reporte generado</span></div>
+      <div class="stat"><b>13</b><span>observaciones con código estable</span></div>
+    </div>
+    <figure class="shot">
+      <img src="assets/reportbot-panel.png" alt="Panel de reportes: lista de planillas procesadas a la izquierda y, a la derecha, el detalle con total, comparación contra el período anterior, ventas por día, reparto por categoría y el resumen escrito.">
+      <figcaption>El reporte de octubre de la clínica de demo: $6.821.000 contra $5.663.000 del período anterior,
+      reparto por categoría, ventas por día y el resumen listo para copiar o descargar en Markdown.</figcaption>
+    </figure>
+  </section>
+
+  <section id="como">
+    <h2>Cómo funciona</h2>
+    <p class="sub">Todo son funciones puras sobre el archivo: la misma planilla da siempre el mismo reporte, y cada
+    frase del texto se puede rastrear hasta una cuenta.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>1 · Leer la planilla como venga</h3>
+        <p>Detecta el separador (<code>;</code>, <code>,</code> o tab), las cabeceras en español o inglés
+        (<code>fecha/date</code>, <code>monto/amount</code>, <code>categoría/category</code>) y los montos en formato
+        chileno (<code>$1.240.000</code>), con decimales (<code>1.234,56</code>) o planos. Las fechas pueden venir ISO
+        o <code>dd/mm/aaaa</code>. Las filas que no tienen fecha y monto válidos se ignoran en vez de romper el
+        reporte.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Calcular, no estimar</h3>
+        <p>El período se parte en dos mitades iguales: la segunda es el período del reporte y la primera es con lo que
+        se compara. De ahí salen total, variación porcentual, ticket promedio, mejor y peor día, reparto y variación
+        por categoría. Si no hay período anterior con ventas, el reporte lo dice en vez de inventar un +100%.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Observar sólo lo que los números sostienen</h3>
+        <p>Trece observaciones con código estable: <code>total_up</code>, <code>total_down</code>,
+        <code>category_drop</code>, <code>category_jump</code>, <code>concentration</code>, <code>best_day</code>,
+        <code>refunds</code>, <code>negative_total</code>, <code>no_previous</code>, <code>low_volume</code>, entre
+        otras. Cada una tiene un umbral (por ejemplo, concentración cuando una categoría pasa el 60% del total). Si
+        ninguna se cumple, el texto no adorna: dice lo que hay.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Entregar el resumen, no un PDF más</h3>
+        <p>El panel muestra el reporte con sus barras y lo deja copiar al portapapeles o descargar en Markdown, listo
+        para pegarlo en el correo o en el grupo del negocio. Cada planilla se guarda con su hash: si se sube el mismo
+        archivo dos veces, se abre el reporte existente en vez de duplicarlo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <h2>Resultados medidos</h2>
+    <p class="sub">Set de 30 planillas armadas para cubrir lo que llega de verdad: meses completos, caídas y
+    crecimientos fuertes, períodos planos, primera planilla sin historial, una sola categoría, devoluciones en
+    negativo, meses en rojo, pocos movimientos, días vacíos, fin de semana concentrado, filas inválidas mezcladas y
+    formatos de archivo distintos. Se corre con <code>eval_reportbot.py</code> y cada corrida queda guardada en la
+    base.</p>
+    <table>
+      <thead><tr><th>Métrica</th><th>Valor</th><th>Cómo se mide</th></tr></thead>
+      <tbody>
+        <tr><td>Planillas con cifras correctas</td><td><b>30/30 (100%)</b></td><td>total, período anterior y variación contra la aritmética directa sobre el archivo</td></tr>
+        <tr><td>Categoría principal</td><td><b>30/30</b></td><td>la de mayor venta en el período, con desempate estable</td></tr>
+        <tr><td>Observaciones</td><td><b>100%</b></td><td>códigos que debían aparecer y códigos que no debían aparecer</td></tr>
+        <tr><td>Total presente en el texto</td><td><b>100%</b></td><td>el resumen escrito cita el total con formato chileno</td></tr>
+        <tr><td>Latencia por planilla</td><td><b>0,6 ms mediana · 2,8 ms máximo</b></td><td>de CSV a texto, en el contenedor de la API</td></tr>
+        <tr><td>Costo por reporte</td><td><b>US$ 0</b></td><td>no hay llamada a modelo ni servicio externo</td></tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:16px">Ejemplo del texto que sale, sin retocar (reporte de octubre de la demo):</p>
+    <pre>**Resumen de Clínica Sonrisa Ñuñoa** — 16/10 a 31/10
+
+Total: **6.821.000** (período anterior 5.663.000, +20,4%)
+Movimientos: 30 · ticket promedio 227.366,67
+Por día: ▂▂▁█▂▂▂▂▂▁▇▂▂▂▂▂
+
+Por categoría:
+· Ortodoncia: 3.796.000 (55,7%, +40,2%)
+· Implantes: 2.500.000 (36,7%, +0,0%)
+· Limpieza: 525.000 (7,7%, +15,4%)
+
+Qué dicen los números:
+· Sube 20,4%: 6.821.000 contra 5.663.000 del período anterior.
+· «Ortodoncia» explica 3.796.000 (55,7% del total, +40,2%).
+· Mejor día: lunes 19, con 1.572.000.
+· Día más bajo: domingo 18, con 0.</pre>
+  </section>
+
+  <section id="decisiones">
+    <h2>Decisiones de diseño</h2>
+    <p class="sub">Las tres que cambian el resultado y el costo de operarlo.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Las cifras no las escribe un modelo</h3>
+        <p>Un LLM redacta bien, pero si inventa un número el reporte es un problema, no un ahorro. Acá la aritmética
+        y las frases se arman con código: el total del texto es el mismo número que salió de la suma, siempre. Si más
+        adelante se quiere un texto más conversacional, el modelo puede reescribir el resumen con las cifras ya
+        fijadas, sin tocarlas.</p>
+      </div>
+      <div class="card">
+        <h3>Comparar contra algo real</h3>
+        <p>Casi todo reporte automático se cae en la primera línea: «subió 300%» contra un período que no existía. Acá
+        la comparación es explícita y, cuando no hay base, el texto lo declara. Es menos vistoso y más útil para
+        decidir.</p>
+      </div>
+      <div class="card">
+        <h3>Observaciones con umbral, no comentarios</h3>
+        <p>«Las ventas vienen bien» no se puede auditar. Cada observación tiene un código y un umbral escrito (una
+        caída de categoría sólo se marca si supera el porcentaje definido), así que se puede discutir la regla y
+        ajustarla, igual que en el resto de la suite.</p>
+      </div>
+      <div class="card">
+        <h3>Medido, no «funciona»</h3>
+        <p>Las 30 planillas viven en el repo con su <code>golden.json</code>, y el eval escribe cada corrida en la
+        base. Si mañana se cambia un umbral o un formato de lectura, la cifra sube o baja y se ve. Publicar «30/30»
+        sin el set que lo respalda es exactamente lo que este eval evita.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="limites">
+    <h2>Qué no hace (todavía)</h2>
+    <p class="sub">Preferible decirlo acá que descubrirlo en producción.</p>
+    <div class="grid2">
+      <div class="card"><h3>Pronosticar</h3><p>Describe lo que pasó en la planilla. No proyecta el próximo mes ni
+        detecta estacionalidad con dos períodos de historia.</p></div>
+      <div class="card"><h3>Contabilidad</h3><p>Trabaja con el monto tal como viene en el archivo: no calcula IVA,
+        no cruza con facturas emitidas ni reemplaza el cierre contable.</p></div>
+      <div class="card"><h3>Comparar contra el mes anterior del calendario</h3><p>La comparación es contra la primera
+        mitad del rango que trae la planilla. Para comparar octubre completo contra septiembre completo hay que subir
+        el archivo con los dos meses, y el reporte usa esa historia.</p></div>
+      <div class="card"><h3>Datos de demo</h3><p>Las planillas del panel son de una clínica ficticia; los números
+        publicados salen de correr el eval sobre el set del repo.</p></div>
+    </div>
+    <a class="cta" href="#resultados">Ver los números</a>
+  </section>
+
+  <footer>
+    ReportBot es una de las piezas de la suite de automatización con IA · Francisco Pérez ·
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px">fperezdev</span>
+  </footer>
+</div>
+</body>
+</html>
