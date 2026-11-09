@@ -13,7 +13,8 @@ es la persona de recepción o administración del negocio; quien lo instala es F
 
 ## Superficies
 - `site/` — página de venta (Persuade).
-- `case/` — caso escrito y demos públicas (Experience).
+- `case/` — caso escrito y demos públicas (Experience): `invoiceflow.html`, `replydesk.html`,
+  `leadscore.html`, `reportbot.html`, cada una con su medición y su video de 60 s.
 - `apps/api/static/index.html` — **panel de operación** (Operate): resumen de métricas, bandeja de
   conversaciones con take-over humano, cola de revisión de facturas, leads con score y borrador,
   base de conocimiento del agente.
@@ -24,7 +25,8 @@ es la persona de recepción o administración del negocio; quien lo instala es F
 - Idempotencia y trazabilidad: cada mensaje guarda `wa_message_id`, latencia y costo.
 - Facturas con estado automático (`pass`), a revisar (`review`, con el motivo) y aprobadas.
 - Leads con score, tier y motivos; el borrador de respuesta ya escrito.
-- Eval del agente con su puntaje publicado.
+- Eval de cada pieza con su puntaje publicado (30 casos por módulo, mediana y máximo).
+- Que el panel distinga lo calculado de lo redactado: toda cifra viene de una cuenta, no del modelo.
 
 ## Fuera de alcance del panel
 Edición de flujos n8n, facturación del cliente, alta de tenants desde la UI (por API/seed).

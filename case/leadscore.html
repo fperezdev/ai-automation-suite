@@ -39,6 +39,8 @@
   .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
 
+  .video video{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);background:#000;box-shadow:var(--shadow)}
+  .video figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
   .shot{margin:34px 0 0}
   .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
@@ -92,6 +94,13 @@
       <div class="stat"><b>US$ 0</b><span>costo por consulta puntuada</span></div>
       <div class="stat"><b>13</b><span>motivos con código estable y puntos</span></div>
     </div>
+    <figure class="video">
+      <video controls preload="metadata" playsinline>
+        <source src="assets/leadscore-60s.mp4" type="video/mp4">
+        Tu navegador no reproduce el video: <a href="assets/leadscore-60s.mp4">descárgalo aquí</a>.
+      </video>
+      <figcaption>Un minuto: cómo entra cada consulta, qué sumó cada punto, cómo se detecta un duplicado y qué se midió.</figcaption>
+    </figure>
     <figure class="shot">
       <img src="assets/leadscore-panel.png" alt="Panel de leads: reparto por temperatura, consultas con score y tier, y ficha con el desglose de puntos y la próxima acción.">
       <figcaption>La cola real: a la izquierda las consultas por hacer, arriba el reparto Hot / Warm / Cold, y a la

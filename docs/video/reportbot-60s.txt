@@ -1,0 +1,11 @@
+Todos los meses, el mismo trabajo: bajar la planilla de ventas y armar el resumen a mano.
+Este módulo lo hace en un paso: se sube el archivo y el reporte queda armado.
+Se llama Report Bot, y no adivina nada: lee la planilla, suma, y escribe lo que las cifras dicen.
+Acepta el archivo como venga: coma, punto y coma o tabulación, con montos en formato chileno.
+Del período salen el total, la comparación con el período anterior y la variación.
+También el ticket promedio, el reparto por categoría y el mejor y el peor día.
+Y las observaciones: qué categoría explica el crecimiento, si hay concentración, si entraron devoluciones.
+Cada observación tiene su regla escrita, así que se puede discutir y ajustar.
+El resumen se copia o se descarga en Markdown, y el mismo archivo no se duplica.
+Sobre treinta planillas de prueba, las treinta salieron exactas, en medio milisegundo y sin costo.
+Menos planillas a mano, y un resumen que se revisa línea por línea.

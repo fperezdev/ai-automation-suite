@@ -22,3 +22,19 @@ Mismo negocio que la demo del asistente virtual por WhatsApp, para que el caso d
 - `voz-de-marca.md`: guía de voz de marca del caso, reutilizable como *skill*/instrucción de proyecto.
   Castellano neutro con tildes, tuteo, CTA canónico «Escríbenos y cotizamos», reglas de validación
   clínica y checklist previo a publicar.
+
+## Páginas de caso (una por módulo)
+
+Cada página tiene la captura del panel, la tabla de métricas medidas y el video de 60 s.
+
+| Página | Módulo | Medición publicada |
+|---|---|---|
+| `invoiceflow.html` | 01 · InvoiceFlow (facturas PDF) | 30/30 · campos 100% · p50 2,9 ms · US$ 0 |
+| `replydesk.html` | 02 · ReplyDesk (WhatsApp + soporte) | 40/40 · p50 1,6 s |
+| `leadscore.html` | 03 · LeadScore (captación) | 30/30 · motivos 100/100 · p50 0,05 ms |
+| `reportbot.html` | 04 · ReportBot (ventas) | 30/30 · cifras 100% · p50 0,6 ms |
+
+Videos en `assets/*-60s.mp4`; guion y desglose toma por toma en `docs/demo-60s-*.md`.
+El sitio público `https://ai.fperez.top/` sirve `site/`, con `site/case` como symlink a este
+directorio.
+

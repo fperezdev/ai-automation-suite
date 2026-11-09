@@ -39,6 +39,8 @@
   .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
 
+  .video video{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);background:#000;box-shadow:var(--shadow)}
+  .video figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
   .shot{margin:34px 0 0}
   .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
@@ -95,6 +97,13 @@
       <div class="stat"><b>US$ 0</b><span>costo por reporte generado</span></div>
       <div class="stat"><b>13</b><span>observaciones con código estable</span></div>
     </div>
+    <figure class="video">
+      <video controls preload="metadata" playsinline>
+        <source src="assets/reportbot-60s.mp4" type="video/mp4">
+        Tu navegador no reproduce el video: <a href="assets/reportbot-60s.mp4">descárgalo aquí</a>.
+      </video>
+      <figcaption>Un minuto: la planilla entra, las cifras se calculan, el resumen sale escrito y se puede verificar.</figcaption>
+    </figure>
     <figure class="shot">
       <img src="assets/reportbot-panel.png" alt="Panel de reportes: lista de planillas procesadas a la izquierda y, a la derecha, el detalle con total, comparación contra el período anterior, ventas por día, reparto por categoría y el resumen escrito.">
       <figcaption>El reporte de octubre de la clínica de demo: $6.821.000 contra $5.663.000 del período anterior,

@@ -1,0 +1,12 @@
+Cada consulta que llega, por WhatsApp, por formulario o por referido, entra a una misma cola.
+Y entra ordenada: arriba quedan los contactos con intención real de compra.
+Este módulo se llama Lead Score, y trabaja con reglas escritas, no con corazonadas.
+Cada punto del score tiene nombre y se ve en el panel: el servicio pedido, la urgencia, el presupuesto, el contacto.
+Con eso, la consulta queda en Hot, Warm o Cold, y con la próxima acción ya decidida.
+La persona del equipo no adivina a quién escribir primero: lo lee.
+Y si alguien escribe dos veces, el trabajo no se duplica.
+Se detecta por email o por teléfono normalizado, y el sistema avisa que es la misma persona.
+Sobre treinta consultas de prueba, los treinta niveles salieron correctos.
+Los motivos del score, cien de cien; la detección de duplicados, también.
+Cada consulta tarda cinco centésimas de milisegundo y cuesta cero.
+La clínica contacta antes a quien tiene intención real, y lo hace por escrito.

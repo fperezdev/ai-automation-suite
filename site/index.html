@@ -73,6 +73,9 @@
   .card{background:var(--paper);padding:26px 24px}
   .card h3{margin-bottom:9px}
   .card p{color:var(--muted);font-size:15.5px;margin:0}
+  .card .metric{font:500 12.5px/1.5 var(--mono);color:var(--ink-soft);display:block;margin:14px 0 10px;letter-spacing:.01em}
+  .card .more{font-size:14.5px;font-weight:600;color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+  .card .more:hover{border-color:var(--accent)}
   .num{font:500 12px/1 var(--mono);color:var(--accent);letter-spacing:.1em;display:block;margin-bottom:14px}
 
   /* steps */
@@ -108,6 +111,7 @@
       <li><a href="#caso">El caso</a></li>
       <li><a href="#como">Cómo funciona</a></li>
       <li><a href="#incluye">Qué incluye</a></li>
+      <li><a href="#casos">Módulos</a></li>
       <li><a href="#stack">Stack</a></li>
     </ul>
   </nav>
@@ -163,6 +167,19 @@
       <div class="card"><span class="num">04</span><h3>Panel del negocio</h3><p>Conversaciones en vivo, estado del asistente, métricas de respuesta y botón para intervenir. Sin depender de nadie.</p></div>
       <div class="card"><span class="num">05</span><h3>Trazabilidad</h3><p>Se registra cada mensaje, la fuente usada y el tiempo de respuesta. Cuando algo sale mal, se puede reconstruir.</p></div>
       <div class="card"><span class="num">06</span><h3>Datos de salud, tratados como tales</h3><p>Aviso de asistente virtual, política de privacidad, retención definida y salida fácil. Alineado a la Ley 21.719.</p></div>
+    </div>
+  </section>
+
+  <section id="casos">
+    <div class="section-head">
+      <h2>Cuatro módulos, cada uno con su medición</h2>
+      <p>No son demos de concepto: cada módulo tiene su set de prueba, su script de evaluación y una página con los números al lado de las decisiones. Todo lo que toca dinero o datos de clientes se calcula con reglas, no con un modelo que pueda inventar.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card"><span class="num">01</span><h3>InvoiceFlow · facturas</h3><p>PDF de proveedor a registro validado: RUT, IVA, cuadre de líneas y tope de monto, con cola de revisión y el motivo escrito.</p><span class="metric">30 facturas · campos 100% · p50 2,9 ms</span><a class="more" href="case/invoiceflow.html">Ver el caso →</a></div>
+      <div class="card"><span class="num">02</span><h3>ReplyDesk · WhatsApp</h3><p>Asistente que responde con la base de conocimiento del negocio, con la fuente citada, y deriva a una persona con el transcript completo.</p><span class="metric">40 preguntas · 40/40 · p50 1,6 s</span><a class="more" href="case/replydesk.html">Ver el caso →</a></div>
+      <div class="card"><span class="num">03</span><h3>LeadScore · captación</h3><p>Cada consulta entra con su score y el motivo de cada punto: HOT/WARM/COLD, próxima acción y dedupe por email y teléfono.</p><span class="metric">30 consultas · tiers 30/30 · p50 0,05 ms</span><a class="more" href="case/leadscore.html">Ver el caso →</a></div>
+      <div class="card"><span class="num">04</span><h3>ReportBot · reportes</h3><p>La planilla de ventas del mes entra y sale el resumen escrito, con cada cifra calculada sobre el archivo y las observaciones que esos números sostienen.</p><span class="metric">30 planillas · 30/30 · p50 0,6 ms</span><a class="more" href="case/reportbot.html">Ver el caso →</a></div>
     </div>
   </section>
 

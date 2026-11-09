@@ -5,6 +5,11 @@
 [![LLM](https://img.shields.io/badge/LLM-compatible%20OpenAI-000000.svg)](#-por-qué-un-llm-mock)
 [![Smoke test](https://img.shields.io/badge/smoke%20test-12%2F12%20passing-brightgreen.svg)](#-quickstart-un-comando-sin-api-keys)
 [![Sin API keys](https://img.shields.io/badge/corre%20sin-API%20keys-success.svg)](#-por-qué-un-llm-mock)
+[![Facturas 30/30](https://img.shields.io/badge/facturas-30%2F30-brightgreen.svg)](case/invoiceflow.html)
+[![WhatsApp 40/40](https://img.shields.io/badge/whatsapp-40%2F40-brightgreen.svg)](case/replydesk.html)
+[![Leads 30/30](https://img.shields.io/badge/leads-30%2F30-brightgreen.svg)](case/leadscore.html)
+[![Reportes 30/30](https://img.shields.io/badge/reportes-30%2F30-brightgreen.svg)](case/reportbot.html)
+
 
 ### Automatización con IA para PyMEs — de punta a punta
 
@@ -76,9 +81,9 @@ recepción, el bot no responde; (3) el modelo, con la base de conocimiento del t
 |---|--------|----------|-----|
 | **1** | **Asistente de WhatsApp con RAG** | Canal WhatsApp Cloud API → recuperación por relevancia (TF-IDF) sobre la base de conocimiento del negocio → respuestas **fundamentadas** + derivación a humano | [ver](docs/modulo-01-asistente-whatsapp.md) |
 | **2** | **Automatización de facturas** | Sube un PDF → extracción **determinista** de los campos fiscales (sin LLM en el camino crítico) → reglas chilenas (RUT, IVA 19%, cuadre de líneas y total, tope de monto) → cola PASS/REVIEW en el panel con el motivo escrito | [cómo funciona](docs/modulo-02-facturacion.md) · [página de caso](case/invoiceflow.html) · [video 60 s](docs/video/invoiceflow-60s.mp4) |
-| **3** | **Captación de pacientes/leads** | Consulta entrante → scoring **determinista** por reglas con nombre (servicio, urgencia, presupuesto, precio, contacto, detalle) → **HOT/WARM/COLD** + próxima acción + dedupe por email/teléfono → cola en el panel | [cómo funciona](docs/modulo-03-captacion.md) · [página de caso](case/leadscore.html) |
-| **4** | **Agente de soporte interno** | Webchat que responde con los datos del negocio y **deriva a una persona** con el transcript completo cuando debe | [ver](docs/modulo-04-soporte.md) |
-| **5** | **Reportes de ventas** | Sube el CSV del negocio → totales, comparación contra el período anterior, ventas por día y por categoría, calculados **sin LLM** → resumen escrito donde cada cifra sale de una cuenta del archivo, panel y `.md` descargable | [cómo funciona](docs/modulo-05-reportes.md) · [página de caso](case/reportbot.html) |
+| **3** | **Captación de pacientes/leads** | Consulta entrante → scoring **determinista** por reglas con nombre (servicio, urgencia, presupuesto, precio, contacto, detalle) → **HOT/WARM/COLD** + próxima acción + dedupe por email/teléfono → cola en el panel | [cómo funciona](docs/modulo-03-captacion.md) · [página de caso](case/leadscore.html) · [video 60 s](docs/video/leadscore-60s.mp4) |
+| **4** | **Agente de soporte interno** | Webchat que responde con los datos del negocio y **deriva a una persona** con el transcript completo cuando debe | [cómo funciona](docs/modulo-04-soporte.md) · [página de caso](case/replydesk.html) · [video 60 s](docs/video/replydesk-60s.mp4) |
+| **5** | **Reportes de ventas** | Sube el CSV del negocio → totales, comparación contra el período anterior, ventas por día y por categoría, calculados **sin LLM** → resumen escrito donde cada cifra sale de una cuenta del archivo, panel y `.md` descargable | [cómo funciona](docs/modulo-05-reportes.md) · [página de caso](case/reportbot.html) · [video 60 s](docs/video/reportbot-60s.mp4) |
 
 El **módulo 1 es la pieza estrella**: es el que corre sobre **WhatsApp real** con la
 Cloud API oficial de Meta y el único con **RAG** (respuestas ancladas a una base de

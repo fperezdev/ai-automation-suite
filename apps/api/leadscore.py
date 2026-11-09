@@ -296,10 +296,10 @@ def draft_reply(lead: dict, verdict: dict, *, business: str = "el negocio") -> s
         return ""
     if services:
         first = services[0]
-        cuerpo = (f"Hola {name}, gracias por escribir a {business}. "
+        cuerpo = (f"Hola {name}, gracias por escribirnos. "
                   f"Por lo que cuentas sobre {first}, te puedo dar una hora esta semana. ")
     else:
-        cuerpo = (f"Hola {name}, gracias por escribir a {business}. "
+        cuerpo = (f"Hola {name}, gracias por escribirnos. "
                   f"Cuéntame un poco m\u00e1s y te digo c\u00f3mo seguimos. ")
     if verdict["tier"] == "HOT":
         cuerpo += "Si me confirmas un horario, te reservo el cupo ahora."
