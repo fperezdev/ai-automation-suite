@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LeadScore — consultas entrantes puntuadas con reglas y cola de seguimiento</title>
+<meta name="description" content="Módulo de captación para pymes: cada consulta entra puntuada por reglas deterministas, con el motivo de cada punto, la próxima acción y los duplicados marcados. 30/30 del set de prueba, 0,05 ms por consulta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f5ef; --card:#fffdf8; --ink:#1d2430; --ink-soft:#3d4652; --muted:#5b636c;
+    --line:#e2ddd1; --line-2:#c8c1b1; --accent:#1d2430; --amber:#b4761f; --amber-soft:#f4e6cd;
+    --ok:#2f6b4f; --bad:#8c2f2f; --radius:12px; --shadow:0 1px 2px rgba(29,36,48,.05), 0 8px 24px -16px rgba(29,36,48,.25);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 16px/1.62 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+       -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px}
+  header.top{border-bottom:1px solid var(--line);background:rgba(247,245,239,.86);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
+  .dot{width:9px;height:9px;border-radius:2px;background:var(--amber)}
+  nav a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-left:18px}
+  nav a:hover{color:var(--ink)}
+  nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:6px;text-decoration-thickness:2px}
+
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a12}
+  h1{font-size:clamp(30px,4.4vw,46px);line-height:1.1;letter-spacing:-.025em;margin:16px 0 0;max-width:24ch;font-weight:600;text-wrap:balance}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:18px 0 0}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:38px 0 0;border-top:1px solid var(--line-2)}
+  .stat{padding:16px 18px 4px 0;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+
+  .shot{margin:34px 0 0}
+  .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:24px;line-height:1.25;letter-spacing:-.015em;margin:0 0 8px;font-weight:600}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px;max-width:64ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .card p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .card p + p{margin-top:8px}
+  code{font:400 12.5px "JetBrains Mono",monospace;background:#efeade;padding:1px 5px;border-radius:4px}
+
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line-2)}
+  td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  td b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+  ul.flat{margin:0;padding-left:18px;font-size:15px;color:var(--ink-soft)}
+  ul.flat li{margin-bottom:8px}
+
+  footer{padding:36px 0 56px;color:var(--muted);font-size:13.5px}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;
+       padding:11px 18px;border-radius:8px;font-weight:500;font-size:14.5px;margin-top:6px}
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stat{border-right:0;border-bottom:1px solid var(--line);padding-bottom:14px}
+    .grid2{grid-template-columns:1fr}
+    .hero{padding:44px 0 30px}
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>LeadScore</div>
+  <nav><a href="#como" class="on">Cómo funciona</a><a href="#resultados">Resultados</a><a href="#decisiones">Decisiones</a><a href="#limites">Límites</a></nav>
+</div></header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Automatización con IA · Captación</div>
+    <h1>Cada consulta entra sabiendo quién es y qué hacer con ella.</h1>
+    <p class="lede">Módulo de captación para pymes. Cada mensaje que llega por formulario, WhatsApp o DM se puntúa con
+    reglas: qué servicio pide, qué urgencia, si dejó teléfono, si preguntó precio, si escribió algo real. El panel
+    muestra qué sumó cada punto, cuál es la próxima acción y cuáles son la misma persona. Sin modelo en el camino
+    crítico: misma consulta, mismo puntaje, cero costo.</p>
+    <div class="stats">
+      <div class="stat"><b>30/30</b><span>consultas del set, con el tier correcto</span></div>
+      <div class="stat"><b>0,05 ms</b><span>mediana por consulta, sin red ni tokens</span></div>
+      <div class="stat"><b>US$ 0</b><span>costo por consulta puntuada</span></div>
+      <div class="stat"><b>13</b><span>motivos con código estable y puntos</span></div>
+    </div>
+    <figure class="shot">
+      <img src="assets/leadscore-panel.png" alt="Panel de leads: reparto por temperatura, consultas con score y tier, y ficha con el desglose de puntos y la próxima acción.">
+      <figcaption>La cola real: a la izquierda las consultas por hacer, arriba el reparto Hot / Warm / Cold, y a la
+      derecha la ficha con qué sumó cada punto, lo que escribió la persona y la próxima acción con su vencimiento.</figcaption>
+    </figure>
+  </section>
+
+  <section id="como">
+    <h2>Cómo funciona</h2>
+    <p class="sub">Cuatro pasos, todos con funciones puras sobre el texto del mensaje. La misma consulta siempre da el
+    mismo puntaje, y cada punto se puede explicar.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>1 · Normalizar y detectar la misma persona</h3>
+        <p>Email en minúsculas y teléfono reducido a dígitos, con clave de dedupe por tenant. Si la persona vuelve a
+        escribir por otro canal, no se duplica el trabajo: el lead nuevo queda apuntando al original y se muestra
+        marcado.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Sumar motivos, no adivinar</h3>
+        <p>Cada regla aporta puntos con nombre: <code>service_match</code> +30, <code>urgency</code> +20,
+        <code>price_question</code> +10, <code>phone_ok</code> +10, <code>message_detail</code> +10, y también resta
+        cuando corresponde (<code>spam</code>, <code>out_of_scope</code>). El total es la suma, no una corazonada.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Tiers y próxima acción</h3>
+        <p>HOT desde 70, WARM desde 40, COLD bajo 40. Del tier sale la acción: HOT se responde hoy, WARM entra a la
+        cola de seguimiento, COLD se archiva. La cola ordena por score y por vencimiento, así lo que lleva dos días
+        esperando aparece arriba aunque tenga menos puntos.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Panel y exportación</h3>
+        <p>Lista con score, tier, origen y vencimiento; ficha con el desglose de puntos, el mensaje original y el
+        borrador de respuesta; cambio de estado (contactado, calificado, tomó hora, descartado) y exportación a CSV
+        para pasar la cola a la planilla que ya usa el negocio.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <h2>Resultados medidos</h2>
+    <p class="sub">Set de 30 consultas generadas para cubrir lo que llega de verdad: urgencia dental, ortodoncia con
+    Isapre, preguntas de precio sin datos de contacto, referidos, mensajes de una línea, spam de dominio desechable,
+    postulaciones de trabajo, consultas fuera de servicio, y la misma persona escribiendo dos veces. Se corre con
+    <code>eval_leadscore.py</code> y cada corrida queda guardada en la base.</p>
+    <table>
+      <thead><tr><th>Métrica</th><th>Valor</th><th>Cómo se mide</th></tr></thead>
+      <tbody>
+        <tr><td>Consultas con tier correcto</td><td><b>30/30 (100%)</b></td><td>HOT / WARM / COLD contra el tier esperado</td></tr>
+        <tr><td>Score dentro del rango esperado</td><td><b>30/30</b></td><td>banda por caso, para no sobreajustar a un número exacto</td></tr>
+        <tr><td>Motivos detectados</td><td><b>precisión y cobertura 100%</b></td><td>códigos que debían estar y códigos que no</td></tr>
+        <tr><td>Duplicados reconocidos</td><td><b>100%</b></td><td>mismo email o teléfono normalizado, por tenant</td></tr>
+        <tr><td>Latencia por consulta</td><td><b>0,05 ms mediana</b></td><td>de texto a score, en el contenedor de la API</td></tr>
+        <tr><td>Costo por consulta</td><td><b>US$ 0</b></td><td>no hay llamada a modelo ni servicio externo</td></tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:16px">Qué significa en trabajo real: de 100 consultas del mes, las que piden algo
+    concreto y dejaron contacto aparecen arriba con la hora en que hay que responderlas; las que sólo preguntan
+    precio o no dejaron datos no se pierden, pero no compiten por atención. Y si la misma persona escribe tres veces
+    por tres canales, se atiende una vez.</p>
+  </section>
+
+  <section id="decisiones">
+    <h2>Decisiones de diseño</h2>
+    <p class="sub">Las tres que cambian el resultado y el costo de operarlo.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Reglas antes que LLM</h3>
+        <p>Calificar una consulta es aplicar el criterio del negocio: qué servicios vende, qué palabras indican
+        urgencia, qué datos hacen falta para responder. Un modelo agrega varianza (la misma consulta puntuada distinto
+        el martes) y costo por mensaje, y no se puede auditar por qué un lead salió HOT.</p>
+        <p>Acá el criterio está escrito en trece reglas con nombre y puntos. Cambiar el negocio es cambiar los puntos,
+        no el modelo.</p>
+      </div>
+      <div class="card">
+        <h3>Explicar cada punto</h3>
+        <p>El score solo no sirve: «82» no dice qué hacer. Cada motivo trae su texto, y en la ficha se ve la suma
+        completa. Si un lead sale HOT por una razón equivocada, se ve en el desglose y se corrige la regla.</p>
+        <p>Los códigos son estables, así que también se puede medir qué regla genera más ruido y ajustarla.</p>
+      </div>
+      <div class="card">
+        <h3>Los duplicados no compiten</h3>
+        <p>La misma persona escribiendo por WhatsApp y por el formulario es un contacto, no dos. El dedupe por email y
+        teléfono normalizado deja el segundo apuntando al original, y las métricas los separan para no inflar el
+        embudo con trabajo repetido.</p>
+      </div>
+      <div class="card">
+        <h3>Medido, no «funciona»</h3>
+        <p>El set de 30 vive en el repo con su <code>golden.json</code>, y el eval escribe cada corrida en la base. Si
+        mañana se toca una regla, la cifra sube o baja y se ve. Publicar «30/30» sin el set que lo respalda es
+        exactamente lo que este eval evita.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="limites">
+    <h2>Qué no hace (todavía)</h2>
+    <p class="sub">Preferible decirlo acá que descubrirlo en producción.</p>
+    <div class="grid2">
+      <div class="card"><h3>Leer la intención fina</h3><p>El scorer trabaja sobre el texto y los datos de contacto.
+        No entiende ironía ni conversaciones largas: una consulta que dice «ok» sin contexto no sube de tier por más
+        que venga de un cliente antiguo.</p></div>
+      <div class="card"><h3>Responder solo</h3><p>El borrador de respuesta se arma con plantillas y el servicio pedido.
+        El envío es del negocio: este módulo ordena y explica, no conversa en nombre de la clínica.</p></div>
+      <div class="card"><h3>Atribución de marketing</h3><p>Registra el origen declarado (formulario, WhatsApp, DM,
+        referido), pero no cruza campañas ni costo por lead. Eso es otra pieza, con datos que hoy no están.</p></div>
+      <div class="card"><h3>Datos de demo</h3><p>Los leads del panel son de una clínica ficticia; los números
+        publicados salen de correr el eval sobre el set del repo.</p></div>
+    </div>
+    <a class="cta" href="#resultados">Ver los números</a>
+  </section>
+
+  <footer>
+    LeadScore es una de las piezas de la suite de automatización con IA · Francisco Pérez ·
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px">fperezdev</span>
+  </footer>
+</div>
+</body>
+</html>

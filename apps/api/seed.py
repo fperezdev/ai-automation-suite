@@ -10,6 +10,7 @@ import random
 from datetime import datetime, timedelta, timezone
 
 import db
+import leadscore
 
 TENANT = "clinica-sonrisa-nunoa"
 random.seed(7)
@@ -120,16 +121,26 @@ INVOICES = [
 ]
 
 LEADS = [
-    ("Josefa Contreras", "josefa.c@mail.com", "formulario web", 88, "HOT",
-     ["Pidió hora en el formulario", "Presupuesto declarado CLP 500k", "Zona Ñuñoa"], 0),
-    ("Rodrigo Peña", "rpena@mail.com", "instagram", 61, "WARM",
-     ["Consultó por ortodoncia", "Sin presupuesto declarado"], 1),
-    ("Ignacio Vera", "ivera@mail.com", "formulario web", 24, "COLD",
-     ["Sólo pide lista de precios"], 2),
-    ("Fernanda Lillo", "flillo@mail.com", "referido", 92, "HOT",
-     ["Viene referida por una paciente", "Quiere iniciar tratamiento este mes"], 3),
-    ("Tomás Aguilera", "taguilera@mail.com", "instagram", 47, "WARM",
-     ["Pregunta por financiamiento"], 5),
+    dict(name="Josefa Contreras", email="josefa.contreras@gmail.com", phone="+56 9 8412 7733",
+         source="formulario web", status="new", days_ago=0,
+         message="Hola, quiero empezar ortodoncia con brackets. Tengo convenio con isapre y quisiera "
+                 "saber los valores y si se puede pagar en cuotas. Puedo ir en la tarde."),
+    dict(name="Rodrigo Pena", email="rpena@gmail.com", source="instagram", status="contacted", days_ago=1,
+         message="hola, cuanto sale la limpieza dental?"),
+    dict(name="Ignacio Vera", email="ivera@mail.com", source="formulario web", status="new", days_ago=2,
+         message="Hola, buenas tardes. Necesito informacion."),
+    dict(name="Fernanda Lillo", email="flillo@gmail.com", phone="+56 9 6677 8899",
+         source="referido", status="qualified", days_ago=3,
+         message="Me recomendó una paciente. Quiero hacerme un blanqueamiento antes de mi matrimonio, "
+                 "cuanto sale? Puedo el sabado en la manana."),
+    dict(name="Tomas Aguilera", email="taguilera@gmail.com", source="instagram", status="new", days_ago=5,
+         message="Hola, tienen financiamiento para resinas? Tengo fonasa."),
+    dict(name="Ana Maria Soto", email="ana.soto@gmail.com", phone="+56 9 5511 2244",
+         source="whatsapp", status="contacted", days_ago=0,
+         message="Hola, me duele mucho una muela y necesito atencion urgente hoy. Tengo isapre."),
+    dict(name="Josefa Contreras", email="JOSEFA.CONTRERAS@gmail.com", phone="+56 9 8412 7733",
+         source="whatsapp", status="discarded", days_ago=0,
+         message="hola, escribi por el formulario, sigo interesada en los brackets"),
 ]
 
 
@@ -192,13 +203,30 @@ def run() -> None:
                     created + timedelta(minutes=random.randint(6, 40)) if reviewed else None,
                     created))
 
-    for name, email, source, score, tier, reasons, days_ago in LEADS:
-        db.execute("""INSERT INTO leads (tenant_id, name, email, source, score, tier, reasons, draft, status, created_at)
-                      VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
-                   (tid, name, email, source, score, tier, json.dumps(reasons, ensure_ascii=False),
-                    f"Hola {name.split()[0]}, gracias por escribirnos. Por lo que cuentas te conviene una "
-                    f"evaluación inicial; tengo jueves 11:00 o viernes 17:30. ¿Cuál te sirve?",
-                    "new" if tier != "COLD" else "discarded", now - timedelta(days=days_ago)))
+    seen: dict[str, str] = {}
+    for lead in LEADS:
+        payload = {k: lead.get(k) for k in ("name", "email", "phone", "source", "message")}
+        verdict = leadscore.evaluate_lead(payload)
+        key = verdict["dedupe_key"]
+        dup = seen.get(key) if key else None
+        created = now - timedelta(days=lead["days_ago"])
+        due = None if dup else leadscore.due_at(verdict["next_action"]["due_hours"], now=created)
+        row = db.execute("""INSERT INTO leads (tenant_id, name, email, phone, source, message, score, tier,
+                                               reasons, score_breakdown, services, draft, status, dedupe_key,
+                                               duplicate_of, next_action_kind, next_action_at, created_at)
+                            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s::jsonb,%s::jsonb,%s,%s,%s,%s,%s,%s,%s)
+                            RETURNING id""",
+                         (tid, lead.get("name"), leadscore.norm_email(lead.get("email")),
+                          leadscore.norm_phone(lead.get("phone")), lead.get("source"),
+                          lead.get("message"),
+                          verdict["score"], verdict["tier"],
+                          json.dumps([r["text"] for r in verdict["reasons"]], ensure_ascii=False),
+                          json.dumps(verdict["reasons"], ensure_ascii=False),
+                          json.dumps(verdict["services"], ensure_ascii=False),
+                          verdict["draft"], "discarded" if dup else lead["status"], key, dup,
+                          verdict["next_action"]["kind"], due, created))
+        if key and not dup and row:
+            seen[key] = row["id"]
 
     # La calidad NO se siembra: se mide corriendo `python eval_replydesk.py`.
     print("seed listo:", TENANT, "(para la tarjeta de calidad: docker compose exec -T api python eval_replydesk.py)")

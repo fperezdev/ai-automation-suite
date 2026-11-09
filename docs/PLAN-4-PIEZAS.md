@@ -22,7 +22,7 @@ Conclusión: **nombre propio + caso con números + demo que se toca en 60 s**, e
 |---|---|---|---|
 | **InvoiceFlow** | factura PDF → extracción → validación → registro + cola de revisión | **productizada y medida**: extracción determinista, reglas chilenas, cola PASS/REVIEW, eval 30/30, página de caso | `case/invoiceflow.html` |
 | **ReplyDesk** | agente WhatsApp con KB del negocio, bandeja y derivación a humano | **productizada y medida**: reglas + LLM, webhook firmado e idempotente, take-over, eval 40/40, página de caso | `case/replydesk.html` |
-| **LeadScore** | captación → scoring con motivos → borrador de seguimiento | módulo 3 funcionando | `/leadscore` |
+| **LeadScore** | consulta entrante → scoring por reglas con motivos → cola de seguimiento | **productizada y medida**: scorer determinista de 13 reglas, tiers + próxima acción, dedupe por email/teléfono, cola y export CSV, eval 30/30 | `case/leadscore.html` |
 | **ReportBot** | planilla → variaciones → resumen con LLM → mail/Telegram | **no existe** | `/reportbot` |
 
 ## Qué significa "nivel de producto" (checklist común)
@@ -61,7 +61,14 @@ Se aplica a las 4, sin excepción. Es lo que separa esto de un demo:
   `wa_message_id`, `/api/simulate`), `eval_replydesk.py` con **40 preguntas → 40/40**, p50 1,6 s,
   US$ 0,00004 por pregunta. Página de caso con chat funcional en `case/replydesk.html`.
   Video de 60 s hecho: `docs/video/replydesk-60s.mp4` (voz clonada con fal.ai).
-- Siguiente: **F4 — LeadScore**. F3 cerrada: pipeline determinista, cola con estados, aprobación, export y métricas; set de 30 y página de caso.
+- **F3 — InvoiceFlow: cerrada.** Pipeline determinista, cola con estados, aprobación, export y
+  métricas; set de 30 (30/30, p50 2,9 ms), página de caso y video de 60 s.
+- **F4 — LeadScore: cerrada y medida.** `leadscore.py` con 13 reglas y puntos con nombre,
+  HOT ≥ 70 / WARM ≥ 40 / COLD, `next_action_kind` + vencimiento, dedupe por email/teléfono
+  normalizado, migración 005, endpoints GET/POST/CSV/PATCH, panel con desglose y acciones,
+  `eval_leadscore.py` con **30/30** de tier, motivos 100/100, dedupe 100%, p50 0,05 ms.
+  Página de caso en `case/leadscore.html`.
+- Siguiente: **F5 — ReportBot**.
 
 ## Fases (plan original)
 : migraciones Postgres, modelo `tenant`, panel shell con

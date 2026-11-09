@@ -76,7 +76,7 @@ recepción, el bot no responde; (3) el modelo, con la base de conocimiento del t
 |---|--------|----------|-----|
 | **1** | **Asistente de WhatsApp con RAG** | Canal WhatsApp Cloud API → recuperación por relevancia (TF-IDF) sobre la base de conocimiento del negocio → respuestas **fundamentadas** + derivación a humano | [ver](docs/modulo-01-asistente-whatsapp.md) |
 | **2** | **Automatización de facturas** | Sube un PDF → extracción **determinista** de los campos fiscales (sin LLM en el camino crítico) → reglas chilenas (RUT, IVA 19%, cuadre de líneas y total, tope de monto) → cola PASS/REVIEW en el panel con el motivo escrito | [cómo funciona](docs/modulo-02-facturacion.md) · [página de caso](case/invoiceflow.html) · [video 60 s](docs/video/invoiceflow-60s.mp4) |
-| **3** | **Captación de pacientes/leads** | Formulario → enriquecimiento (fetch del sitio) + scoring con IA (HOT/WARM/COLD) → registro + borrador de seguimiento | [ver](docs/modulo-03-captacion.md) |
+| **3** | **Captación de pacientes/leads** | Consulta entrante → scoring **determinista** por reglas con nombre (servicio, urgencia, presupuesto, precio, contacto, detalle) → **HOT/WARM/COLD** + próxima acción + dedupe por email/teléfono → cola en el panel | [cómo funciona](docs/modulo-03-captacion.md) · [página de caso](case/leadscore.html) |
 | **4** | **Agente de soporte interno** | Webchat que responde con los datos del negocio y **deriva a una persona** con el transcript completo cuando debe | [ver](docs/modulo-04-soporte.md) |
 
 El **módulo 1 es la pieza estrella**: es el que corre sobre **WhatsApp real** con la

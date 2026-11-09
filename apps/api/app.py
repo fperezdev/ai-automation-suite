@@ -7,18 +7,22 @@ Superficies:
 """
 from __future__ import annotations
 
+import csv
+import io
+import json
 import os
 import pathlib
 from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 import db
 import invoiceflow as iflow
+import leadscore as lscore
 from webhooks import router as replydesk_router
 
 APP_DIR = pathlib.Path(__file__).parent
@@ -96,9 +100,15 @@ def metrics(tenant: str, days: int = Query(7, ge=1, le=90)) -> dict:
                             FROM v_invoices_daily WHERE tenant_id=%s AND day >= %s ORDER BY day""",
                          (tid, since.date()))
     vendors = db.one("SELECT count(*) AS total FROM vendors WHERE tenant_id=%s", (tid,)) or {}
-    leads = db.one("""SELECT count(*) AS total,
-                             count(*) FILTER (WHERE tier='HOT') AS hot,
-                             count(*) FILTER (WHERE status='contacted') AS contacted
+    leads = db.one("""SELECT count(*) FILTER (WHERE duplicate_of IS NULL) AS total,
+                             count(*) FILTER (WHERE tier='HOT' AND duplicate_of IS NULL) AS hot,
+                             count(*) FILTER (WHERE tier='WARM' AND duplicate_of IS NULL) AS warm,
+                             count(*) FILTER (WHERE tier='COLD' AND duplicate_of IS NULL) AS cold,
+                             count(*) FILTER (WHERE duplicate_of IS NOT NULL) AS duplicates,
+                             count(*) FILTER (WHERE status IN ('new','contacted') AND duplicate_of IS NULL) AS open,
+                             count(*) FILTER (WHERE status IN ('qualified','booked') AND duplicate_of IS NULL) AS won,
+                             count(*) FILTER (WHERE status='contacted') AS contacted,
+                             count(*) FILTER (WHERE next_action_at < now() AND status IN ('new','contacted')) AS overdue
                       FROM leads WHERE tenant_id=%s""", (tid,)) or {}
     ev = db.one("""SELECT score, created_at, piece, total, passed FROM eval_runs WHERE tenant_id=%s
                    ORDER BY created_at DESC LIMIT 1""", (tid,)) or {}
@@ -376,18 +386,130 @@ def patch_invoice(iid: str, p: InvoiceReview) -> dict:
 
 
 
-# ---------------------------------------------------------------- leads
+# ---------------------------------------------------------------- leads (LeadScore)
+LEAD_COLS = """id, name, email, phone, source, score, tier, reasons, score_breakdown, services,
+                draft, status, message, dedupe_key, duplicate_of, next_action_kind, next_action_at,
+                created_at, updated_at"""
+
+
+class LeadIn(BaseModel):
+    tenant: str
+    name: str | None = None
+    email: str | None = None
+    phone: str | None = None
+    source: str | None = "formulario web"
+    message: str | None = None
+    service: str | None = None
+    returning: bool = False
+
+
+class LeadPatch(BaseModel):
+    status: str | None = None
+    next_action_at: datetime | None = None
+
+
 @app.get("/api/leads")
-def leads(tenant: str, status: str | None = None, limit: int = 100) -> list[dict]:
+def leads(tenant: str, status: str | None = None, tier: str | None = None,
+          q: str | None = None, limit: int = 200) -> list[dict]:
     tid = tenant_id(tenant)
-    sql = "SELECT * FROM leads WHERE tenant_id=%s"
+    sql = f"SELECT {LEAD_COLS} FROM leads WHERE tenant_id=%s"
     params: list = [tid]
     if status:
         sql += " AND status=%s"
         params.append(status)
-    sql += " ORDER BY created_at DESC LIMIT %s"
+    if tier:
+        sql += " AND tier=%s"
+        params.append(tier.upper())
+    if q:
+        sql += " AND (name ILIKE %s OR email ILIKE %s OR message ILIKE %s)"
+        like = f"%{q}%"
+        params += [like, like, like]
+    sql += " ORDER BY duplicate_of IS NOT NULL, score DESC, created_at DESC LIMIT %s"
     params.append(limit)
-    return db.query(sql, tuple(params))
+    rows = db.query(sql, tuple(params))
+    now = datetime.now(timezone.utc)
+    for r in rows:
+        due = r.get("next_action_at")
+        r["overdue"] = bool(due and r["status"] in ("new", "contacted") and due < now)
+    return rows
+
+
+@app.post("/api/leads", status_code=201)
+def lead_ingest(lead: LeadIn) -> dict:
+    """Entra una consulta: se puntúa con reglas, se deduplica y se encola el seguimiento."""
+    tid = tenant_id(lead.tenant)
+    payload = lead.model_dump(exclude={"tenant"})
+    verdict = lscore.evaluate_lead(payload)
+    key = verdict["dedupe_key"]
+
+    dup = None
+    if key:
+        dup = db.one("""SELECT id, name, score, tier FROM leads
+                        WHERE tenant_id=%s AND dedupe_key=%s AND duplicate_of IS NULL
+                        ORDER BY created_at LIMIT 1""", (tid, key))
+
+    status = "discarded" if dup else "new"
+    due = None if dup else lscore.due_at(verdict["next_action"]["due_hours"])
+    row = db.execute(f"""INSERT INTO leads (tenant_id, name, email, phone, source, message, score, tier,
+                                             reasons, score_breakdown, services, draft, status, dedupe_key,
+                                             duplicate_of, next_action_kind, next_action_at)
+                         VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s::jsonb,%s::jsonb,%s::jsonb,%s,%s,%s,%s,%s,%s)
+                         RETURNING {LEAD_COLS}""",
+                      (tid, lead.name, lscore.norm_email(lead.email), lscore.norm_phone(lead.phone),
+                       lead.source, lead.message, verdict["score"], verdict["tier"],
+                       json.dumps([r["text"] for r in verdict["reasons"]], ensure_ascii=False),
+                       json.dumps(verdict["reasons"], ensure_ascii=False),
+                       json.dumps(verdict["services"], ensure_ascii=False),
+                       verdict["draft"], status, key, dup["id"] if dup else None,
+                       verdict["next_action"]["kind"], due))
+    if not row:
+        raise HTTPException(500, "no se pudo guardar el lead")
+    row["duplicate"] = bool(dup)
+    row["next_action_text"] = verdict["next_action"]["text"]
+    return row
+
+
+@app.patch("/api/leads/{lead_id}")
+def lead_patch(lead_id: str, body: LeadPatch) -> dict:
+    sets, params = [], []
+    if body.status:
+        if body.status not in ("new", "contacted", "qualified", "booked", "discarded"):
+            raise HTTPException(400, "estado inválido")
+        sets.append("status=%s")
+        params.append(body.status)
+        if body.status in ("qualified", "booked", "discarded"):
+            sets.append("next_action_at=NULL")
+    if body.next_action_at:
+        sets.append("next_action_at=%s")
+        params.append(body.next_action_at)
+    if not sets:
+        raise HTTPException(400, "nada que actualizar")
+    sets.append("updated_at=now()")
+    params.append(lead_id)
+    row = db.execute(f"UPDATE leads SET {', '.join(sets)} WHERE id=%s RETURNING {LEAD_COLS}", tuple(params))
+    if not row:
+        raise HTTPException(404, "lead no encontrado")
+    return row
+
+
+@app.get("/api/leads/export.csv")
+def leads_export(tenant: str) -> Response:
+    """CSV plano con las columnas que pide cualquier CRM al importar contactos."""
+    tid = tenant_id(tenant)
+    rows = db.query(f"SELECT {LEAD_COLS} FROM leads WHERE tenant_id=%s ORDER BY score DESC", (tid,))
+    out = io.StringIO()
+    w = csv.writer(out)
+    w.writerow(["name", "email", "phone", "source", "score", "tier", "status", "next_action",
+                "next_action_at", "reasons", "duplicate_of", "created_at", "message"])
+    for r in rows:
+        w.writerow([r["name"] or "", r["email"] or "", r["phone"] or "", r["source"] or "",
+                    r["score"], r["tier"], r["status"], r["next_action_kind"] or "",
+                    r["next_action_at"].isoformat() if r["next_action_at"] else "",
+                    " | ".join(x.get("text", "") for x in (r["score_breakdown"] or [])),
+                    r["duplicate_of"] or "",
+                    r["created_at"].isoformat() if r["created_at"] else "", r["message"] or ""])
+    return Response(content=out.getvalue(), media_type="text/csv; charset=utf-8",
+                    headers={"Content-Disposition": 'attachment; filename="leads.csv"'})
 
 
 # ---------------------------------------------------------------- KB

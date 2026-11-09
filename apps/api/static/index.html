@@ -171,6 +171,32 @@ td .sub{color:var(--muted);font-size:11.8px;margin-top:2px}
 .tier.COLD{background:#e8e5dd;color:var(--muted)}
 .bar-mini{height:4px;background:#e8e5dd;border-radius:3px;overflow:hidden;margin-top:5px;width:64px}
 .bar-mini i{display:block;height:100%;background:var(--accent)}
+/* --- LeadScore */
+.inbox.leads{grid-template-columns:390px 1fr}
+.leadrow .l1{align-items:center}
+.leadrow .sc{font:500 13px var(--mono);margin-right:6px}
+.leadrow .flags{display:flex;gap:5px;margin-top:4px;flex-wrap:wrap}
+.leadflag{font:500 10.2px var(--mono);letter-spacing:.03em;padding:1px 5px;border-radius:3px;background:#e8e5dd;color:var(--muted)}
+.leadflag.due{background:var(--danger-soft);color:var(--danger)}
+.leadflag.dup{background:#e7e4f6;color:#4b4194}
+.ldoc{padding:0 18px 20px;overflow:auto;min-height:0}
+.ldoc .head{display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid var(--line);padding:15px 0 13px}
+.ldoc .head .who{min-width:0;flex:1}
+.ldoc .head h3{margin:0 0 3px;font-size:16px}
+.ldoc .head .meta{font-size:12.2px;color:var(--muted);overflow-wrap:anywhere}
+.ldoc .big{text-align:right;flex:none}
+.ldoc .big b{display:block;font:500 30px/1 var(--mono);letter-spacing:-.02em}
+.ldoc .big span{display:block;margin-top:4px;font-size:11px;color:var(--muted)}
+.ldoc .sec{border-bottom:1px solid var(--line);padding:13px 0}
+.ldoc .sec:last-child{border-bottom:0}
+.ldoc h4{margin:0 0 8px;font:500 10.8px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lreason{display:flex;gap:9px;align-items:baseline;padding:3px 0;font-size:12.8px}
+.lreason .pts{flex:none;width:30px;text-align:right;font:500 12px var(--mono)}
+.lreason .pts.up{color:var(--ok)}
+.lreason .pts.down{color:var(--danger)}
+.ldoc .why{font-size:12.6px;color:var(--ink-soft);line-height:1.5}
+.ldraft{white-space:pre-wrap;font-size:12.8px;line-height:1.55;background:#fbf9f2;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px;color:var(--ink-soft)}
+.lactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:9px}
 
 /* ---------- KB ---------- */
 .kblist{display:grid;gap:10px}
@@ -358,9 +384,23 @@ footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px s
     <!-- LEADS -->
     <section class="view" id="view-leads">
       <div class="view-head">
-        <div><h2>Leads</h2><p>Cada consulta entra con un score y un borrador de respuesta listo para enviar o editar.</p></div>
+        <div><h2>Leads</h2><p>Cada consulta entra puntuada por reglas: el panel muestra qué sumó cada punto, qué hacer ahora y qué consultas son la misma persona.</p></div>
+        <div class="tools"><a class="btn" id="lead-export" href="#" role="button">Exportar CSV</a></div>
       </div>
-      <div class="panel"><div class="body" style="padding:0"><div id="leads-table"></div></div></div>
+      <div class="inv-stats" id="lead-stats"></div>
+      <div class="inbox inv leads">
+        <div class="list">
+          <div class="filters" id="lead-filters">
+            <button class="chipf" data-f="queue" aria-pressed="true">Por hacer</button>
+            <button class="chipf" data-f="HOT" aria-pressed="false">Hot</button>
+            <button class="chipf" data-f="WARM" aria-pressed="false">Warm</button>
+            <button class="chipf" data-f="COLD" aria-pressed="false">Cold</button>
+            <button class="chipf" data-f="all" aria-pressed="false">Todos</button>
+          </div>
+          <div class="rows" id="lead-rows"></div>
+        </div>
+        <div class="thread" id="lead-detail"></div>
+      </div>
     </section>
 
     <!-- KB -->
@@ -387,6 +427,19 @@ const fmt = {
   sec: ms => (ms === null || ms === undefined) ? '—' : `${(ms / 1000).toFixed(1).replace('.', ',')} s`,
   int: v => (v === null || v === undefined) ? '—' : new Intl.NumberFormat('es-CL').format(v),
   clp: v => v === null || v === undefined ? '—' : '$' + new Intl.NumberFormat('es-CL').format(Math.round(v)),
+  phone: p => {
+    if (!p) return '';
+    const d = String(p);
+    if (d.length === 11 && d.startsWith('56')) return '+56 ' + d[2] + ' ' + d.slice(3, 7) + ' ' + d.slice(7);
+    return d;
+  },
+  due: iso => {
+    if (!iso) return '';
+    const diff = (new Date(iso) - Date.now()) / 60000;
+    const abs = Math.abs(diff);
+    const span = abs < 60 ? `${Math.max(1, Math.round(abs))} min` : `${Math.round(abs / 60)} h`;
+    return diff < 0 ? `vencida hace ${span}` : `en ${span}`;
+  },
   when: iso => {
     if (!iso) return '';
     const d = new Date(iso), now = new Date(), diff = (now - d) / 60000;
@@ -771,24 +824,150 @@ async function uploadInvoices(files) {
   await loadInvoices(); loadSummary();
 }
 
-/* ---------- leads ---------- */
+/* ---------- leads (LeadScore) ---------- */
+const LEAD = { rows: [], filter: 'queue', selected: null };
+const LEAD_STATUS = { new: 'Nuevo', contacted: 'Contactado', qualified: 'Calificado', booked: 'Con hora', discarded: 'Descartado' };
+
 async function loadLeads() {
-  $('#leads-table').innerHTML = `<div class="body">${skeleton(4)}</div>`;
+  $('#lead-rows').innerHTML = skeleton(5);
   try {
-    const rows = await api('/api/leads');
-    $('#c-leads').textContent = rows.length;
-    $('#leads-table').innerHTML = rows.length ? `<table>
-      <thead><tr><th>Lead</th><th>Origen</th><th>Score</th><th>Por qué</th><th>Borrador de respuesta</th></tr></thead>
-      <tbody>${rows.map(l => `<tr>
-        <td><b>${esc(l.name || 'sin nombre')}</b><div class="sub">${esc(l.email || l.phone || '')}</div></td>
-        <td><span class="sub">${esc(l.source || '')}</span></td>
-        <td><span class="score">${l.score ?? '—'}</span> <span class="tier ${l.tier}">${l.tier || ''}</span>
-          <div class="bar-mini"><i style="width:${Math.min(100, l.score || 0)}%"></i></div></td>
-        <td>${(l.reasons || []).map(r => `<div class="sub" style="color:var(--ink-soft)">${esc(r)}</div>`).join('') || '<span class="sub">—</span>'}</td>
-        <td><div style="font-size:12.4px;color:var(--ink-soft);max-width:38ch">${esc(l.draft || '—')}</div></td>
-      </tr>`).join('')}</tbody></table>` : '<div class="empty"><b>Sin leads</b>Los formularios y DMs entran acá con score.</div>';
-  } catch (err) { $('#leads-table').innerHTML = `<div class="empty"><b>Error al leer leads</b>${esc(err.message)}</div>`; }
+    LEAD.rows = await api('/api/leads?limit=200');
+    $('#c-leads').textContent = LEAD.rows.filter(r => !r.duplicate_of).length;
+    leadStats();
+    const exp = $('#lead-export');
+    if (exp) exp.href = '/api/leads/export.csv?tenant=' + encodeURIComponent(TENANT);
+    const vis = leadVisible();
+    if (!vis.some(r => r.id === LEAD.selected)) LEAD.selected = vis.length ? vis[0].id : null;
+    leadRenderList();
+    leadRenderDetail();
+  } catch (err) {
+    $('#lead-rows').innerHTML = '';
+    $('#lead-detail').innerHTML = `<div class="empty"><b>Error al leer leads</b>${esc(err.message)}</div>`;
+  }
 }
+
+function leadVisible() {
+  const f = LEAD.filter;
+  return LEAD.rows.filter(l => {
+    if (f === 'all') return true;
+    if (f === 'queue') return !l.duplicate_of && ['new', 'contacted'].includes(l.status);
+    return l.tier === f && !l.duplicate_of;
+  });
+}
+
+function leadStats() {
+  const real = LEAD.rows.filter(l => !l.duplicate_of);
+  const n = t => real.filter(l => l.tier === t).length;
+  const queue = real.filter(l => ['new', 'contacted'].includes(l.status)).length;
+  const overdue = real.filter(l => l.overdue).length;
+  const dups = LEAD.rows.length - real.length;
+  const won = real.filter(l => ['qualified', 'booked'].includes(l.status)).length;
+  const total = real.length || 1;
+  $('#lead-stats').innerHTML = `
+    <div class="segmented" role="img" aria-label="Reparto por temperatura">
+      <i style="width:${100 * n('HOT') / total}%;background:#b4453c"></i>
+      <i style="width:${100 * n('WARM') / total}%;background:#b4761f"></i>
+      <i style="width:${100 * n('COLD') / total}%;background:#cfcabd"></i>
+    </div>
+    <div class="inv-legend">
+      <span><i style="background:#b4453c"></i>Hot ${n('HOT')}</span>
+      <span><i style="background:#b4761f"></i>Warm ${n('WARM')}</span>
+      <span><i style="background:#cfcabd"></i>Cold ${n('COLD')}</span>
+      <span>· duplicados ${dups}</span>
+    </div>
+    <div class="statline">
+      <span><b>${queue}</b>en la cola</span>
+      <span><b>${overdue}</b>vencidos</span>
+      <span><b>${won}</b>calificados o con hora</span>
+      <span><b>${LEAD.rows.length ? Math.round(100 * won / total) : 0}%</b>de avance</span>
+    </div>`;
+}
+
+function leadRenderList() {
+  const rows = leadVisible();
+  if (!rows.length) {
+    $('#lead-rows').innerHTML = `<div class="empty"><b>Nada acá</b>${LEAD.filter === 'queue' ? 'No queda nada por hacer: la cola está al día.' : 'Probá otro filtro.'}</div>`;
+    return;
+  }
+  $('#lead-rows').innerHTML = rows.map(l => {
+    const flags = [];
+    if (l.overdue) flags.push('<span class="leadflag due">vencido</span>');
+    if (l.duplicate_of) flags.push('<span class="leadflag dup">duplicado</span>');
+    if (l.status !== 'new') flags.push(`<span class="leadflag">${esc(LEAD_STATUS[l.status] || l.status)}</span>`);
+    return `<button class="row leadrow" data-id="${l.id}" aria-selected="${l.id === LEAD.selected}">
+      <div class="l1"><span class="name">${esc(l.name || 'sin nombre')}</span>
+        <span><span class="sc">${l.score ?? '—'}</span><span class="tier ${l.tier}">${l.tier || ''}</span></span></div>
+      <div class="l2">${esc((l.message || l.email || '').slice(0, 110))}</div>
+      <div class="flags">${flags.join('')}<span class="leadflag">${esc(l.source || '—')}</span><span class="leadflag">${fmt.when(l.created_at)}</span></div>
+    </button>`;
+  }).join('');
+}
+
+function leadRenderDetail() {
+  const l = LEAD.rows.find(r => r.id === LEAD.selected);
+  if (!l) { $('#lead-detail').innerHTML = '<div class="empty"><b>Elegí un lead</b>La cola se ordena por score y por vencimiento.</div>'; return; }
+  const reasons = l.score_breakdown && l.score_breakdown.length ? l.score_breakdown
+    : (l.reasons || []).map(t => ({ code: '', points: 0, text: t }));
+  const next = l.duplicate_of
+    ? 'Esta consulta es la misma persona que un lead anterior: se marcó como duplicado y no se vuelve a contactar.'
+    : (l.next_action_kind === 'discard' ? 'No es una consulta real: archivar sin responder.'
+      : l.next_action_at ? `Próxima acción: ${fmt.due(l.next_action_at)}.` : 'Sin próxima acción definida.');
+  $('#lead-detail').innerHTML = `<div class="ldoc">
+    <div class="head">
+      <div class="who">
+        <h3>${esc(l.name || 'sin nombre')}</h3>
+        <div class="meta">${esc(l.email || '—')}${l.phone ? ' · ' + esc(fmt.phone(l.phone)) : ''}<br>${esc(l.source || '')} · ${esc(LEAD_STATUS[l.status] || l.status)}</div>
+      </div>
+      <div class="big"><b>${l.score ?? '—'}</b><span>${esc(l.tier || '')}</span></div>
+    </div>
+    <div class="sec"><h4>Qué sumó cada punto</h4>
+      ${reasons.map(r => `<div class="lreason"><span class="pts ${r.points >= 0 ? 'up' : 'down'}">${r.points >= 0 ? '+' : ''}${r.points}</span><span>${esc(r.text)}</span></div>`).join('') || '<div class="why">Sin motivos.</div>'}
+    </div>
+    ${l.message ? `<div class="sec"><h4>Lo que escribió</h4><div class="why">${esc(l.message)}</div></div>` : ''}
+    <div class="sec"><h4>Próxima acción</h4><div class="why">${esc(next)}</div>
+      <div class="lactions">
+        <button class="btn solid" data-act="contacted" ${l.status === 'contacted' ? 'disabled' : ''}>Marcar contactado</button>
+        <button class="btn" data-act="qualified" ${l.status === 'qualified' ? 'disabled' : ''}>Calificado</button>
+        <button class="btn" data-act="booked" ${l.status === 'booked' ? 'disabled' : ''}>Tomó hora</button>
+        <button class="btn" data-act="discarded" ${l.status === 'discarded' ? 'disabled' : ''}>Descartar</button>
+      </div>
+    </div>
+    ${l.draft ? `<div class="sec"><h4>Borrador de respuesta</h4><div class="ldraft">${esc(l.draft)}</div>
+      <div class="lactions"><button class="btn" data-act="copy">Copiar borrador</button></div></div>` : ''}
+  </div>`;
+}
+
+$('#lead-filters').addEventListener('click', e => {
+  const b = e.target.closest('.chipf'); if (!b) return;
+  $$('#lead-filters .chipf').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  b.setAttribute('aria-pressed', 'true'); LEAD.filter = b.dataset.f;
+  const vis = leadVisible();
+  if (!vis.some(r => r.id === LEAD.selected)) LEAD.selected = vis.length ? vis[0].id : null;
+  leadRenderList(); leadRenderDetail();
+});
+$('#lead-rows').addEventListener('click', e => {
+  const r = e.target.closest('.leadrow'); if (!r) return;
+  LEAD.selected = r.dataset.id; leadRenderList(); leadRenderDetail();
+});
+$('#lead-detail').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const lead = LEAD.rows.find(r => r.id === LEAD.selected); if (!lead) return;
+  const act = b.dataset.act;
+  if (act === 'copy') {
+    try { await navigator.clipboard.writeText(lead.draft || ''); toast('Borrador copiado'); }
+    catch { toast('No se pudo copiar: seleccioná el texto'); }
+    return;
+  }
+  try {
+    const row = await api(`/api/leads/${lead.id}`, {
+      method: 'PATCH', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ status: act })
+    });
+    Object.assign(lead, row);
+    leadStats(); leadRenderList(); leadRenderDetail();
+    toast(act === 'booked' ? 'Lead con hora tomada' : `Lead marcado como ${(LEAD_STATUS[act] || act).toLowerCase()}`);
+  } catch (err) { toast('No se pudo actualizar: ' + err.message); }
+});
 
 /* ---------- kb ---------- */
 async function loadKb() {

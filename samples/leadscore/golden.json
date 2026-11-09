@@ -1,0 +1,412 @@
+[
+  {
+    "id": "L01",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 85,
+      "score_max": 100,
+      "codes": [
+        "service_match",
+        "urgency",
+        "budget",
+        "email_ok",
+        "phone_ok",
+        "message_detail"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L02",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 70,
+      "score_max": 90,
+      "codes": [
+        "service_match",
+        "budget",
+        "price_question",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L03",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 65,
+      "score_max": 85,
+      "codes": [
+        "service_match",
+        "price_question",
+        "email_ok",
+        "phone_ok",
+        "time_given"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L04",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 70,
+      "score_max": 95,
+      "codes": [
+        "service_match",
+        "urgency",
+        "returning",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L05",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 65,
+      "score_max": 90,
+      "codes": [
+        "service_match",
+        "budget",
+        "email_ok",
+        "phone_ok",
+        "message_detail",
+        "time_given"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L06",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "price_question",
+        "email_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L07",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L08",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "email_ok",
+        "message_detail"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L09",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "phone_ok",
+        "urgency"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L10",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "price_question",
+        "phone_ok",
+        "time_given"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L11",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "email_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L12",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "message_detail",
+        "email_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L13",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "budget",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L14",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L15",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 45,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "returning",
+        "email_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L16",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match",
+        "price_question",
+        "email_ok",
+        "phone_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L17",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "email_ok"
+      ],
+      "absent": [
+        "service_match",
+        "urgency"
+      ]
+    }
+  },
+  {
+    "id": "L18",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "email_ok"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L19",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "no_contact"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L20",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "invalid_email"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L21",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "invalid_email"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L22",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 44,
+      "codes": [
+        "no_contact"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L23",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 20,
+      "codes": [
+        "spam"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L24",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 20,
+      "codes": [
+        "spam"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L25",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 20,
+      "codes": [
+        "out_of_scope"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L26",
+    "expect": {
+      "tier": "COLD",
+      "score_min": 0,
+      "score_max": 20,
+      "codes": [
+        "out_of_scope"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L27",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 85,
+      "score_max": 100,
+      "codes": [
+        "service_match"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L28",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L29",
+    "expect": {
+      "tier": "WARM",
+      "score_min": 40,
+      "score_max": 69,
+      "codes": [
+        "service_match"
+      ],
+      "absent": []
+    }
+  },
+  {
+    "id": "L30",
+    "expect": {
+      "tier": "HOT",
+      "score_min": 65,
+      "score_max": 95,
+      "codes": [
+        "service_match",
+        "urgency"
+      ],
+      "absent": []
+    }
+  }
+]
