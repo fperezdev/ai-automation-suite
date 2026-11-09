@@ -1,0 +1,11 @@
+Una pyme recibe facturas de insumos todos los meses, y alguien las tipea a mano.
+Invoice Flow las lee, las valida, y deja sólo las dudosas para revisar.
+El corazón no es un modelo de lenguaje. Son reglas.
+Del PDF se extraen proveedor, folio, fecha, neto, IVA y total.
+Después se valida el RUT chileno con su dígito verificador, el IVA al diecinueve por ciento, la suma de las líneas y el cuadre del total.
+Si todo cuadra, la factura queda automática y se registra sola.
+Si algo no cuadra, entra a la cola con el motivo escrito: acá la suma de las líneas no cuadra con el neto, y el panel muestra el número exacto.
+La persona revisa sólo esas, aprueba o devuelve, y exporta el mes a CSV para el contador.
+Se midió sobre un set de treinta facturas: treinta correctas, siete campos al cien por ciento, y menos de tres milisegundos por documento.
+Cero tokens, cero costo por factura, y el mismo resultado siempre.
+Eso se puede auditar, y por eso la cola se puede confiar.

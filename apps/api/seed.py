@@ -107,7 +107,7 @@ VENDORS = [
 INVOICES = [
     ("factura-dental-supply-0912.pdf", "Dental Supply SpA", "F-00912", 428900, "pass", [], [], 0),
     ("factura-insumos-norte-0455.pdf", "Insumos Norte Ltda", "F-00455", 199030, "review",
-     [{"code": "lines_mismatch", "text": "La suma de las líneas no cuadra con el neto (189030.0 ≠ 167252.10)"}],
+     [{"code": "lines_mismatch", "text": "La suma de las líneas no cuadra con el neto (189.030 ≠ 167.252)"}],
      [], 1),
     ("factura-limpieza-pro-0231.pdf", "Limpieza Pro SpA", "F-00231", 89000, "approved", [],
      [{"field": "total", "from": 84000.0, "to": 89000.0}], 2),

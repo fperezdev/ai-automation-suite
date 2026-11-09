@@ -39,6 +39,9 @@
   .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
   .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
 
+  .video{margin:32px 0 0;max-width:880px}
+  .video video{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);background:#000;box-shadow:var(--shadow)}
+  .video figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
   .shot{margin:34px 0 0}
   .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
   .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
@@ -93,6 +96,13 @@
       <div class="stat"><b>US$ 0</b><span>costo variable por factura procesada</span></div>
       <div class="stat"><b>10</b><span>motivos de revisión con código estable</span></div>
     </div>
+    <figure class="video">
+      <video controls preload="metadata" playsinline>
+        <source src="assets/invoiceflow-60s.mp4" type="video/mp4">
+        Tu navegador no reproduce el video: <a href="assets/invoiceflow-60s.mp4">descárgalo aquí</a>.
+      </video>
+      <figcaption>Un minuto: qué extrae, qué valida, cómo entra a la cola y qué se midió. Sin llamadas ni reuniones.</figcaption>
+    </figure>
     <figure class="shot">
       <img src="assets/invoiceflow-panel.png" alt="Panel de facturas: resumen de automáticas, en revisión y aprobadas, cola con el motivo de cada revisión y detalle de la factura seleccionada.">
       <figcaption>La cola real: arriba el resumen (automáticas, en revisión, aprobadas), al centro la lista con el motivo

@@ -271,6 +271,15 @@ def parse_lines(text: str) -> list[dict]:
 
 
 # ------------------------------------------------------------------ validación
+def money(v) -> str:
+    """Formato chileno: 189.030 · 1.862,90. Se usa en los textos del panel."""
+    s = f"{float(v):,.2f}"
+    ip, dp = s.split(".")
+    ip = ip.replace(",", ".")
+    dp = dp.rstrip("0").rstrip(".")
+    return ip if not dp else f"{ip},{dp}"
+
+
 def validate(fields: dict, *, vendors: list[dict] | None = None,
              existing: list[dict] | None = None,
              config: dict | None = None, today: date | None = None) -> list[dict]:
@@ -292,19 +301,19 @@ def validate(fields: dict, *, vendors: list[dict] | None = None,
     neto, iva, total = fields.get("neto"), fields.get("iva"), fields.get("total")
     if neto is not None and iva is not None and total is not None:
         if abs((neto + iva) - total) > tol:
-            add("total_mismatch", neto=float(neto), iva=float(iva), total=float(total))
+            add("total_mismatch", neto=money(neto), iva=money(iva), total=money(total))
         elif iva > 0 and neto > 0:
             expected = (neto * IVA_CLP).quantize(Decimal("0.01")) if fields.get("currency") == "CLP" else None
             if expected is not None:
                 slack = max(Decimal("2"), (neto * Decimal("0.002")))
                 if abs(iva - expected) > slack:
-                    add("iva_mismatch", expected=float(expected))
+                    add("iva_mismatch", expected=money(expected))
 
     lines = fields.get("lines") or []
     if lines and neto is not None:
         s = sum(Decimal(str(l["amount"])) for l in lines)
         if abs(s - neto) > tol:
-            add("lines_mismatch", sum=float(s), neto=float(neto))
+            add("lines_mismatch", sum=money(s), neto=money(neto))
 
     if fields.get("vendor_rut") and not fields.get("rut_valid"):
         add("invalid_rut", rut=fields["vendor_rut"])
