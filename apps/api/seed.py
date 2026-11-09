@@ -160,9 +160,8 @@ def run() -> None:
                     f"evaluación inicial; tengo jueves 11:00 o viernes 17:30. ¿Cuál te sirve?",
                     "new" if tier != "COLD" else "discarded", now - timedelta(days=days_ago)))
 
-    db.execute("""INSERT INTO eval_runs (tenant_id, piece, total, passed, detail) VALUES (%s,'replydesk',32,30,%s)""",
-               (tid, json.dumps([{"q": "precio limpieza", "ok": True}, {"q": "convenio fonasa", "ok": False}])))
-    print("seed listo:", TENANT)
+    # La calidad NO se siembra: se mide corriendo `python eval_replydesk.py`.
+    print("seed listo:", TENANT, "(para la tarjeta de calidad: docker compose exec -T api python eval_replydesk.py)")
 
 
 if __name__ == "__main__":
