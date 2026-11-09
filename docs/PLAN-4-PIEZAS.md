@@ -60,7 +60,7 @@ Se aplica a las 4, sin excepción. Es lo que separa esto de un demo:
   tenant → JSON con `handoff`), `webhooks.py` (challenge de Meta, HMAC SHA-256, idempotencia por
   `wa_message_id`, `/api/simulate`), `eval_replydesk.py` con **40 preguntas → 40/40**, p50 1,6 s,
   US$ 0,00004 por pregunta. Página de caso con chat funcional en `case/replydesk.html`.
-  Pendiente de F2: video de 60 s.
+  Video de 60 s hecho: `docs/video/replydesk-60s.mp4` (voz clonada con fal.ai).
 - Siguiente: **F3 — InvoiceFlow** (cola de revisión con estados, aprobación, export, métricas).
 
 ## Fases (plan original)

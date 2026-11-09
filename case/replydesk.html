@@ -30,6 +30,9 @@
   nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:6px;text-decoration-thickness:2px}
 
   .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .video{margin:32px 0 0;max-width:880px}
+  .video video{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);background:#000;box-shadow:var(--shadow)}
+  .video figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
   .eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a12}
   h1{font-size:clamp(30px,4.4vw,46px);line-height:1.1;letter-spacing:-.025em;margin:16px 0 0;max-width:20ch;font-weight:600}
   .lede{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:18px 0 0}
@@ -107,6 +110,13 @@
       <div class="stat"><b>US$ 0,00004</b><span>costo por pregunta</span></div>
       <div class="stat"><b>5</b><span>reglas que derivan sin gastar tokens</span></div>
     </div>
+    <figure class="video">
+      <video controls preload="metadata" playsinline poster="">
+        <source src="assets/replydesk-60s.mp4" type="video/mp4">
+        Tu navegador no reproduce el video: <a href="assets/replydesk-60s.mp4">descárgalo aquí</a>.
+      </video>
+      <figcaption>Un minuto: qué hace el agente, cómo deriva y qué queda medido. Sin llamadas ni reuniones.</figcaption>
+    </figure>
   </section>
 
   <section id="demo">
