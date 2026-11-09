@@ -153,8 +153,8 @@ def extract_fields(text: str) -> dict:
 
     # proveedor
     vendor, labeled = _search(
-        [r"^\s*(?:proveedor|raz[oó]n social|emisor)\s*[:#]?\s*(.+)$",
-         r"^\s*INVOICE\s+(\S.{2,60})$"],
+        [r"^\s*(?:proveedor|vendor|raz[oó]n social|emisor|billed by)\s*[:#]?\s*(.+)$",
+         r"^INVOICE[ \t]+(\S.{2,60})$"],
         t, re.IGNORECASE | re.MULTILINE)
     if not vendor:
         # heurística: primera línea con forma de razón social
@@ -183,12 +183,9 @@ def extract_fields(text: str) -> dict:
                         r"\bsubtotal\b[^\d\-]{0,12}([\-\d][\d.,]*)",
                         r"monto\s*neto[^\d\-]{0,12}([\-\d][\d.,]*)"], t)
     # excluir la fila "Subtotal" cuando es la suma de líneas: es la misma cifra, sirve igual
-    iva, l2 = _search([r"\btax\s*\(?\s*\d{1,2}\s*%\s*\)?\s*[^\d\-]{0,8}([\-\d][\d.,]*)",
-                       r"\biva\s*\(?\s*\d{1,2}\s*%\s*\)?\s*[^\d\-]{0,8}([\-\d][\d.,]*)",
-                       r"\biva\b[^\d\-]{0,14}([\-\d][\d.,]*)",
-                       r"i\.?\s*v\.?\s*a\.?[^\d\-]{0,14}([\-\d][\d.,]*)",
-                       r"\btax\b[^\d\-]{0,14}([\-\d][\d.,]*)",
-                       r"\bimpuesto\b[^\d\-]{0,14}([\-\d][\d.,]*)"], t)
+    iva, l2 = _search([r"\b(?:iva|impuesto)\s*(?:\(?\s*\d{1,2}\s*%\s*\)?)?[^\d\-]{0,12}([\-\d][\d.,]*)",
+                       r"\bi\s*\.?\s*v\s*\.?\s*a\s*\.?\s*(?:\(?\s*\d{1,2}\s*%\s*\)?)?[^\d\-]{0,12}([\-\d][\d.,]*)",
+                       r"\btax\s*(?:\(?\s*\d{1,2}\s*%\s*\)?)?[^\d\-]{0,12}([\-\d][\d.,]*)"], t)
     total, l3 = _search([r"\btotal\s*(?:a\s*pagar)?\b[^\d\-]{0,14}([\-\d][\d.,]*)",
                          r"\bimporte\s*total\b[^\d\-]{0,14}([\-\d][\d.,]*)"], t)
 
@@ -214,27 +211,24 @@ def parse_lines(text: str) -> list[dict]:
         line = raw.strip()
         if len(line) < 8:
             continue
-        m = re.match(r"^(?P<desc>.{3,80}?)\s{2,}(?P<qty>\d{1,4})\s+(?P<price>[\d.,]+)\s+(?P<amount>[\d.,]+)$", line)
+        m = re.match(r"^(?P<desc>.{3,80}?)\s{2,}(?P<qty>\d{1,4})\s+(-?[\d.,]+)\s+(-?[\d.,]+)$", line)
         if not m:
-            m = re.match(r"^(?P<desc>.{3,80}?)\s+(?P<qty>\d{1,4})\s+(?P<price>\d[\d.,]*\d|\d)\s+(?P<amount>\d[\d.,]*\d|\d)$", line)
+            m = re.match(r"^(?P<desc>.{3,80}?)\s+(?P<qty>\d{1,4})\s+(-?\d[\d.,]*\d|-?\d)\s+(-?\d[\d.,]*\d|-?\d)$", line)
         if not m:
             continue
         desc = m.group("desc").strip(" -:")
         if _norm(desc).startswith(("subtotal", "total", "iva", "tax", "descripcion")):
             continue
         qty = int(m.group("qty"))
-        price = parse_number(m.group("price"))
-        amount = parse_number(m.group("amount"))
+        price = parse_number(m.group(3))
+        amount = parse_number(m.group(4))
         if price is None or amount is None:
             continue
         out.append({"description": desc, "qty": qty,
                     "unit_price": float(price), "amount": float(amount)})
-    if out:
-        return out
-
     # descripción en una línea y "cantidad  precio  monto" en la siguiente
     lines = [l.strip() for l in text.splitlines() if l.strip()]
-    pattern = re.compile(r"^(?P<qty>\d{1,4})\s{2,}(?P<price>[\d.,]+)\s{2,}(?P<amount>[\d.,]+)$")
+    pattern = re.compile(r"^(?P<qty>\d{1,4})\s{2,}(?P<price>-?[\d.,]+)\s{2,}(?P<amount>-?[\d.,]+)$")
     for i in range(1, len(lines)):
         m = pattern.match(lines[i])
         desc = lines[i - 1]

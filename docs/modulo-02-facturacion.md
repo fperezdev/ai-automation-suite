@@ -107,9 +107,10 @@ Así el resultado es reproducible, medible y no cuesta tokens por factura.
 
 ### Evaluación medida
 
-Set dorado de 12 facturas chilenas (`scripts/make_invoice_golden.py` → `samples/invoiceflow/`,
-con `golden.json`): 2 limpias y 10 con un defecto distinto cada una, de modo que cada motivo
-tenga su caso.
+Set dorado de 30 facturas (`scripts/make_invoice_golden.py` → `samples/invoiceflow/`,
+con `golden.json`). Cubre formato chileno clásico y en tabla, facturas en inglés con USD, exenta
+sin IVA, multi-página, descuento por línea (monto negativo), RUT sin formato, folio alfanumérico,
+fechas borde y total justo en el tope; y un caso por cada motivo de revisión, más las limpias.
 
 ```
 docker cp apps/api/eval_invoiceflow.py suite-api:/app/
@@ -121,9 +122,9 @@ Resultado del último run (queda registrado en `eval_runs`):
 
 | Métrica | Valor |
 |---|---|
-| Casos | 12 / 12 correctos |
+| Casos | 30 / 30 correctos |
 | Precisión por campo (proveedor, folio, fecha, neto, IVA, total, moneda) | 100% |
 | Estado (pass / review) | 100% |
 | Precisión y recall de motivos | 100% |
-| Latencia de extracción | p50 2,8 ms · máx 80 ms |
+| Latencia de extracción | p50 2,9 ms · máx 83 ms |
 

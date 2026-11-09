@@ -32,14 +32,14 @@
       "file": "if-001-limpia.pdf",
       "expected": {
         "status": "pass",
+        "reasons": [],
         "vendor": "Insumos Dentales SpA",
         "invoice_no": "004512",
         "issue_date": "2026-10-15",
         "neto": 166000,
         "iva": 31540,
         "total": 197540,
-        "currency": "CLP",
-        "reasons": []
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -47,14 +47,14 @@
       "file": "if-002-tres-lineas.pdf",
       "expected": {
         "status": "pass",
+        "reasons": [],
         "vendor": "Implantes CL SpA",
         "invoice_no": "007788",
         "issue_date": "2026-10-02",
         "neto": 1250000,
         "iva": 237500,
         "total": 1487500,
-        "currency": "CLP",
-        "reasons": []
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -62,16 +62,16 @@
       "file": "if-003-total-malo.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "total_mismatch"
+        ],
         "vendor": "Dental Supply SpA",
         "invoice_no": "091201",
         "issue_date": "2026-10-10",
         "neto": 412500,
         "iva": 78375,
         "total": 500000,
-        "currency": "CLP",
-        "reasons": [
-          "total_mismatch"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -79,16 +79,16 @@
       "file": "if-004-iva-malo.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "iva_mismatch"
+        ],
         "vendor": "Ortodoncia Insumos Ltda",
         "invoice_no": "012107",
         "issue_date": "2026-10-08",
         "neto": 245000,
         "iva": 24500,
         "total": 269500,
-        "currency": "CLP",
-        "reasons": [
-          "iva_mismatch"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -96,16 +96,16 @@
       "file": "if-005-sin-folio.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "missing_field"
+        ],
         "vendor": "Rayos X Digital SpA",
         "invoice_no": null,
         "issue_date": "2026-10-12",
         "neto": 126000,
         "iva": 23940,
         "total": 149940,
-        "currency": "CLP",
-        "reasons": [
-          "missing_field"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -113,16 +113,16 @@
       "file": "if-006-rut-malo.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "invalid_rut"
+        ],
         "vendor": "Limpieza Pro SpA",
         "invoice_no": "023101",
         "issue_date": "2026-10-09",
         "neto": 189000,
         "iva": 35910,
         "total": 224910,
-        "currency": "CLP",
-        "reasons": [
-          "invalid_rut"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -130,16 +130,16 @@
       "file": "if-007-proveedor-nuevo.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "unknown_vendor"
+        ],
         "vendor": "Distribuidora Nova SpA",
         "invoice_no": "055001",
         "issue_date": "2026-10-14",
         "neto": 60000,
         "iva": 11400,
         "total": 71400,
-        "currency": "CLP",
-        "reasons": [
-          "unknown_vendor"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -147,16 +147,16 @@
       "file": "if-008-duplicada.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "duplicate_folio"
+        ],
         "vendor": "Insumos Dentales SpA",
         "invoice_no": "004512",
         "issue_date": "2026-10-16",
         "neto": 166000,
         "iva": 31540,
         "total": 197540,
-        "currency": "CLP",
-        "reasons": [
-          "duplicate_folio"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -164,16 +164,16 @@
       "file": "if-009-fecha-vieja.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "date_out_of_range"
+        ],
         "vendor": "Dental Supply SpA",
         "invoice_no": "091305",
         "issue_date": "2024-03-03",
         "neto": 156000,
         "iva": 29640,
         "total": 185640,
-        "currency": "CLP",
-        "reasons": [
-          "date_out_of_range"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -181,16 +181,16 @@
       "file": "if-010-sobre-tope.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "total_over_cap"
+        ],
         "vendor": "Implantes CL SpA",
         "invoice_no": "007999",
         "issue_date": "2026-10-11",
         "neto": 7983193,
         "iva": 1516807,
         "total": 9500000,
-        "currency": "CLP",
-        "reasons": [
-          "total_over_cap"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -198,16 +198,16 @@
       "file": "if-011-lineas-mal.pdf",
       "expected": {
         "status": "review",
+        "reasons": [
+          "lines_mismatch"
+        ],
         "vendor": "Ortodoncia Insumos Ltda",
         "invoice_no": "012233",
         "issue_date": "2026-10-07",
         "neto": 500000,
         "iva": 95000,
         "total": 595000,
-        "currency": "CLP",
-        "reasons": [
-          "lines_mismatch"
-        ]
+        "currency": "CLP"
       },
       "notes": ""
     },
@@ -221,6 +221,284 @@
         "reasons": [
           "no_text"
         ]
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-013-usd-limpia.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Dental Imaging LLC",
+        "invoice_no": "INV-2041",
+        "issue_date": "2026-10-05",
+        "neto": 2580.0,
+        "iva": 490.2,
+        "total": 3070.2,
+        "currency": "USD"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-014-usd-total-malo.pdf",
+      "expected": {
+        "status": "review",
+        "reasons": [
+          "total_mismatch"
+        ],
+        "vendor": "Dental Imaging LLC",
+        "invoice_no": "INV-2042",
+        "issue_date": "2026-10-06",
+        "neto": 2580.0,
+        "iva": 490.2,
+        "total": 3100.0,
+        "currency": "USD"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-015-exenta.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Limpieza Pro SpA",
+        "invoice_no": "023140",
+        "issue_date": "2026-10-13",
+        "neto": 312000,
+        "iva": null,
+        "total": 312000,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-016-tabla.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Insumos Dentales SpA",
+        "invoice_no": "004530",
+        "issue_date": "2026-10-17",
+        "neto": 227260,
+        "iva": 43179,
+        "total": 270439,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-017-multipagina.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Dental Supply SpA",
+        "invoice_no": "091420",
+        "issue_date": "2026-10-18",
+        "neto": 150500,
+        "iva": 28595,
+        "total": 179095,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-018-fecha-futura.pdf",
+      "expected": {
+        "status": "review",
+        "reasons": [
+          "date_out_of_range"
+        ],
+        "vendor": "Rayos X Digital SpA",
+        "invoice_no": "055210",
+        "issue_date": "2026-12-20",
+        "neto": 450000,
+        "iva": 85500,
+        "total": 535500,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-019-en-el-tope.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Implantes CL SpA",
+        "invoice_no": "008010",
+        "issue_date": "2026-10-19",
+        "neto": 6722689,
+        "iva": 1277311,
+        "total": 8000000,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-020-descuento.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Ortodoncia Insumos Ltda",
+        "invoice_no": "012300",
+        "issue_date": "2026-10-21",
+        "neto": 450000,
+        "iva": 85500,
+        "total": 535500,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-021-solo-subtotal.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Rayos X Digital SpA",
+        "invoice_no": "055240",
+        "issue_date": "2026-10-22",
+        "neto": 96000,
+        "iva": 18240,
+        "total": 114240,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-022-sin-total.pdf",
+      "expected": {
+        "status": "review",
+        "reasons": [
+          "missing_field"
+        ],
+        "vendor": "Dental Supply SpA",
+        "invoice_no": "091455",
+        "issue_date": "2026-10-23",
+        "neto": 156000,
+        "iva": 29640,
+        "total": null,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-023-iva-decimales.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Insumos Dentales SpA",
+        "invoice_no": "004545",
+        "issue_date": "2026-10-24",
+        "neto": 123456,
+        "iva": 23457,
+        "total": 146913,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-024-rut-sin-formato.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Limpieza Pro SpA",
+        "invoice_no": "023155",
+        "issue_date": "2026-10-25",
+        "neto": 189000,
+        "iva": 35910,
+        "total": 224910,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-025-nombre-largo.pdf",
+      "expected": {
+        "status": "review",
+        "reasons": [
+          "unknown_vendor"
+        ],
+        "vendor": "Distribuidora Odontologica del Pacifico S.A.",
+        "invoice_no": "066002",
+        "issue_date": "2026-10-26",
+        "neto": 114000,
+        "iva": 21660,
+        "total": 135660,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-026-impuesto.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Ortodoncia Insumos Ltda",
+        "invoice_no": "012315",
+        "issue_date": "2026-10-27",
+        "neto": 160000,
+        "iva": 30400,
+        "total": 190400,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-027-tabla-multipagina.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Insumos Dentales SpA",
+        "invoice_no": "004560",
+        "issue_date": "2026-10-28",
+        "neto": 153840,
+        "iva": 29229,
+        "total": 183069,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-028-usd-lineas.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Dental Imaging LLC",
+        "invoice_no": "INV-2043",
+        "issue_date": "2026-10-07",
+        "neto": 1862.9,
+        "iva": 353.95,
+        "total": 2216.85,
+        "currency": "USD"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-029-fecha-borde.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Dental Supply SpA",
+        "invoice_no": "091500",
+        "issue_date": "2025-11-09",
+        "neto": 144000,
+        "iva": 27360,
+        "total": 171360,
+        "currency": "CLP"
+      },
+      "notes": ""
+    },
+    {
+      "file": "if-030-folio-alfa.pdf",
+      "expected": {
+        "status": "pass",
+        "reasons": [],
+        "vendor": "Rayos X Digital SpA",
+        "invoice_no": "RX-2026/0455",
+        "issue_date": "2026-10-29",
+        "neto": 124000,
+        "iva": 23560,
+        "total": 147560,
+        "currency": "CLP"
       },
       "notes": ""
     }

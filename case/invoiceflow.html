@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InvoiceFlow — extracción de facturas chilenas con cola de revisión</title>
+<meta name="description" content="Módulo de facturación para pymes chilenas: extrae los campos del PDF sin LLM, valida RUT, IVA y cuadre de líneas, y deja en la cola sólo las facturas dudosas. 30/30 del set de prueba, 2,9 ms por documento.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f5ef; --card:#fffdf8; --ink:#1d2430; --ink-soft:#3d4652; --muted:#5b636c;
+    --line:#e2ddd1; --line-2:#c8c1b1; --accent:#1d2430; --amber:#b4761f; --amber-soft:#f4e6cd;
+    --ok:#2f6b4f; --bad:#8c2f2f; --radius:12px; --shadow:0 1px 2px rgba(29,36,48,.05), 0 8px 24px -16px rgba(29,36,48,.25);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 16px/1.62 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+       -webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px}
+  header.top{border-bottom:1px solid var(--line);background:rgba(247,245,239,.86);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
+  .dot{width:9px;height:9px;border-radius:2px;background:var(--amber)}
+  nav a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-left:18px}
+  nav a:hover{color:var(--ink)}
+  nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:6px;text-decoration-thickness:2px}
+
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a12}
+  h1{font-size:clamp(30px,4.4vw,46px);line-height:1.1;letter-spacing:-.025em;margin:16px 0 0;max-width:24ch;font-weight:600;text-wrap:balance}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:18px 0 0}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:38px 0 0;border-top:1px solid var(--line-2)}
+  .stat{padding:16px 18px 4px 0;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+
+  .shot{margin:34px 0 0}
+  .shot img{display:block;width:100%;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .shot figcaption{margin-top:10px;font-size:13px;color:var(--muted)}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:24px;line-height:1.25;letter-spacing:-.015em;margin:0 0 8px;font-weight:600}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px;max-width:64ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .card p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .card p + p{margin-top:8px}
+  code{font:400 12.5px "JetBrains Mono",monospace;background:#efeade;padding:1px 5px;border-radius:4px}
+
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line-2)}
+  td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  td b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:999px;border:1px solid #cfdccd;background:#e7f0e6;color:var(--ok)}
+  .pill.warn{border-color:#e4d0a8;background:var(--amber-soft);color:#7a5416}
+
+  ul.flat{margin:0;padding-left:18px;font-size:15px;color:var(--ink-soft)}
+  ul.flat li{margin-bottom:8px}
+
+  footer{padding:36px 0 56px;color:var(--muted);font-size:13.5px}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;
+       padding:11px 18px;border-radius:8px;font-weight:500;font-size:14.5px;margin-top:6px}
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stat{border-right:0;border-bottom:1px solid var(--line);padding-bottom:14px}
+    .grid2{grid-template-columns:1fr}
+    .hero{padding:44px 0 30px}
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>InvoiceFlow</div>
+  <nav><a href="#como" class="on">Cómo funciona</a><a href="#resultados">Resultados</a><a href="#decisiones">Decisiones</a><a href="#limites">Límites</a></nav>
+</div></header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Automatización con IA · Documentos</div>
+    <h1>La factura entra sola. La persona revisa sólo lo dudoso.</h1>
+    <p class="lede">Módulo de facturación para pymes chilenas. Lee el PDF, extrae proveedor, folio, fecha, neto, IVA y total,
+    valida RUT, IVA 19% y cuadre de líneas, y arma una cola donde lo automático se aprueba solo y lo dudoso llega con
+    el motivo escrito. Sin modelos en el camino crítico: mismas facturas, mismo resultado, cero costo por documento.</p>
+    <div class="stats">
+      <div class="stat"><b>30/30</b><span>facturas del set, con estado correcto</span></div>
+      <div class="stat"><b>2,9 ms</b><span>mediana por documento, sin red ni tokens</span></div>
+      <div class="stat"><b>US$ 0</b><span>costo variable por factura procesada</span></div>
+      <div class="stat"><b>10</b><span>motivos de revisión con código estable</span></div>
+    </div>
+    <figure class="shot">
+      <img src="assets/invoiceflow-panel.png" alt="Panel de facturas: resumen de automáticas, en revisión y aprobadas, cola con el motivo de cada revisión y detalle de la factura seleccionada.">
+      <figcaption>La cola real: arriba el resumen (automáticas, en revisión, aprobadas), al centro la lista con el motivo
+      de cada duda y a la derecha el detalle con el campo culpable marcado.</figcaption>
+    </figure>
+  </section>
+
+  <section id="como">
+    <h2>Cómo funciona</h2>
+    <p class="sub">Cuatro pasos, todos deterministas. El único paso que puede fallar es el de lectura del PDF, y cuando
+    falla no inventa: devuelve un motivo.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>1 · Texto del PDF, no píxeles</h3>
+        <p>Se extrae la capa de texto y se buscan los campos con patrones por etiqueta (proveedor, RUT, folio, fecha,
+        neto, IVA, total), con respaldo para los formatos que no traen etiqueta.</p>
+        <p>Si el PDF es un escaneo sin texto, no se adivina: queda en revisión con <code>missing_field</code>.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Reglas del dominio chileno</h3>
+        <p>RUT con dígito verificador, IVA 19% del neto, suma de líneas contra el neto, neto + IVA contra el total,
+        fecha dentro de rango y tope por documento. Tolerancia de 1 peso en CLP y 0,02 en USD, porque los PDF
+        redondean distinto.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Cola PASS / REVIEW</h3>
+        <p>Si pasa todas las reglas se registra como automática. Si no, entra a revisión con un código estable
+        (<code>total_mismatch</code>, <code>iva_mismatch</code>, <code>lines_mismatch</code>, <code>unknown_vendor</code>…)
+        y el texto que ve la persona: «Neto + IVA no cuadra con el total (450.000 + 85.500 ≠ 536.000)».</p>
+      </div>
+      <div class="card">
+        <h3>4 · Panel y exportación</h3>
+        <p>Cola con filtros por estado, detalle con los campos y los renglones leídos, aprobar / rechazar / devolver, y
+        exportación a CSV para el contador. Idempotencia por <code>sha256</code>: subir dos veces el mismo archivo no
+        duplica la factura.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <h2>Resultados medidos</h2>
+    <p class="sub">Set de 30 facturas generadas para cubrir lo que aparece en la práctica: formato chileno clásico y en
+    tabla, facturas en inglés con USD, exenta sin IVA, multi-página, descuento por línea, RUT sin formato, folio
+    alfanumérico, fechas borde, total justo en el tope y un caso por cada motivo de revisión. Se corre con
+    <code>eval_invoiceflow.py</code> y queda guardado en la base.</p>
+    <table>
+      <thead><tr><th>Métrica</th><th>Valor</th><th>Cómo se mide</th></tr></thead>
+      <tbody>
+        <tr><td>Facturas con estado correcto</td><td><b>30/30 (100%)</b></td><td>automática o a revisión, contra el estado esperado</td></tr>
+        <tr><td>Campos extraídos bien</td><td><b>7/7 al 100%</b></td><td>proveedor, folio, fecha, neto, IVA, total y moneda</td></tr>
+        <tr><td>Motivos de revisión</td><td><b>precisión y cobertura 100%</b></td><td>el código que se muestra es el que correspondía</td></tr>
+        <tr><td>Latencia por documento</td><td><b>2,9 ms mediana · 83 ms máximo</b></td><td>de texto extraído a veredicto, en el contenedor de la API</td></tr>
+        <tr><td>Costo por factura</td><td><b>US$ 0</b></td><td>no hay llamada a modelo ni servicio externo</td></tr>
+        <tr><td>Duplicados al re-subir</td><td><b>0</b></td><td>huella <code>sha256</code> por tenant</td></tr>
+      </tbody>
+    </table>
+    <p class="sub" style="margin-top:16px">Qué significa en trabajo real: de 100 facturas del mes, las que cuadran se
+    registran sin intervención y la persona revisa las que traen un motivo concreto, con el número que no cuadra ya
+    calculado. El tiempo se va en decidir, no en tipear.</p>
+  </section>
+
+  <section id="decisiones">
+    <h2>Decisiones de diseño</h2>
+    <p class="sub">Las tres que cambian el resultado y el costo de operarlo.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Reglas antes que LLM</h3>
+        <p>Una factura es un documento con forma fija: pedirle a un modelo que lea seis campos numéricos agrega
+        varianza, latencia y costo por documento, y hace imposible auditar por qué una factura salió mal.</p>
+        <p>Acá cada veredicto es reproducible y explicable. El LLM queda para lo que sí es difuso (leer un correo que
+        acompaña la factura, clasificar un gasto), no para el camino crítico.</p>
+      </div>
+      <div class="card">
+        <h3>Motivos con nombre, no «error»</h3>
+        <p>La cola no dice «revisar»: dice qué revisar. Cada código tiene su texto con los números involucrados, así
+        se corrige en un minuto. Los códigos son estables, lo que permite medir cuántas revisiones causa cada regla
+        y ajustar la que más ruido genera.</p>
+      </div>
+      <div class="card">
+        <h3>Tolerancias explícitas</h3>
+        <p>1 peso en CLP y 0,02 en USD. Sin tolerancia, cualquier PDF con un redondeo distinto termina en la cola y
+        la persona aprende a aprobar sin mirar, que es peor que no revisar. El IVA sólo se valida en CLP: en USD se
+        respeta lo que declare el documento.</p>
+      </div>
+      <div class="card">
+        <h3>Medido, no «funciona»</h3>
+        <p>El set de 30 vive en el repo con su <code>golden.json</code>, y el eval escribe cada corrida en la base. Si
+        mañana se toca un patrón, la cifra sube o baja y se ve. Publicar «30/30» sin el set que lo respalda es
+        exactamente lo que este eval evita.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="limites">
+    <h2>Qué no hace (todavía)</h2>
+    <p class="sub">Preferible decirlo acá que descubrirlo en producción.</p>
+    <div class="grid2">
+      <div class="card"><h3>Escaneos sin texto</h3><p>No hay OCR en esta versión: un PDF fotografiado va a revisión.
+        Agregar OCR es un paso aparte del pipeline, con su propio costo por página.</p></div>
+      <div class="card"><h3>Descuentos globales</h3><p>Se soportan descuentos por línea (monto negativo, probado en el
+        set). Un descuento aplicado sobre el total, fuera de las líneas, hoy no se reconcilia.</p></div>
+      <div class="card"><h3>Formatos fuera de Chile / inglés</h3><p>Está afinado para facturas chilenas y para el
+        formato en inglés con USD. Otro país es otro conjunto de reglas y otro set de prueba.</p></div>
+      <div class="card"><h3>Datos de demo</h3><p>Los proveedores y facturas del panel son de una clínica ficticia; los
+        números publicados salen de correr el eval sobre el set del repo.</p></div>
+    </div>
+    <a class="cta" href="#resultados">Ver los números</a>
+  </section>
+
+  <footer>
+    InvoiceFlow es una de las piezas de la suite de automatización con IA · Francisco Pérez ·
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px">fperezdev</span>
+  </footer>
+</div>
+</body>
+</html>
