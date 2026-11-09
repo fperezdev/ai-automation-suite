@@ -36,7 +36,7 @@ make panel     # http://localhost:8090
 docker compose exec -T api python eval_replydesk.py   # corre el set y guarda el resultado
 ```
 
-Página de caso con el chat funcionando: [`case/replydesk.html`](case/replydesk.html).
+Página de caso con el chat funcionando: [`case/replydesk.html`](case/replydesk.html) · video de 60 s: [`docs/video/replydesk-60s.mp4`](docs/video/replydesk-60s.mp4) · [guion](docs/demo-60s-replydesk.md)
 
 **Cómo decide el agente:** (1) reglas deterministas —urgencia, reclamo, "quiero hablar con una
 persona", temas administrativos— que derivan sin gastar tokens; (2) si la conversación ya está en
