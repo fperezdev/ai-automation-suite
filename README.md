@@ -20,6 +20,32 @@ hoy atiende todo a mano. Los 4 módulos son la suite completa que le armé.
 
 ---
 
+## 🧩 Piezas productizadas
+
+Cada pieza se entrega con base de datos, estados explícitos, panel operable y **calidad medida**
+(no "funciona en mi máquina": un set de preguntas y un número publicado).
+
+| Pieza | Qué hace | Estado | Números medidos |
+|---|---|---|---|
+| **ReplyDesk** | agente de WhatsApp que responde con la información del negocio y deriva a una persona cuando hace falta | funcionando de punta a punta | 40/40 en el set de evaluación · p50 1,6 s · US$ 0,00004 por pregunta · 15/40 derivadas sin gastar tokens |
+
+```bash
+make up        # Postgres + API + panel
+make seed      # datos de la clínica de referencia
+make panel     # http://localhost:8090
+docker compose exec -T api python eval_replydesk.py   # corre el set y guarda el resultado
+```
+
+Página de caso con el chat funcionando: [`case/replydesk.html`](case/replydesk.html).
+
+**Cómo decide el agente:** (1) reglas deterministas —urgencia, reclamo, "quiero hablar con una
+persona", temas administrativos— que derivan sin gastar tokens; (2) si la conversación ya está en
+recepción, el bot no responde; (3) el modelo, con la base de conocimiento del tenant, devuelve
+`{"reply", "handoff", "reason"}`. El webhook verifica la firma HMAC de Meta y deduplica por
+`wa_message_id`.
+
+---
+
 ## 🦷 El caso de referencia
 
 | Dato | Valor |

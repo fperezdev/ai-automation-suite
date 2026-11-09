@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel — Clínica Sonrisa Ñuñoa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f7f5f0; --paper-2:#efece4; --card:#fffdf9; --ink:#14181c; --ink-soft:#3d454e;
+  --muted:#5b636c; --line:#ddd8cd; --line-2:#c3bcac;
+  --accent:#1f6f5c; --accent-soft:#e2ede8; --accent-ink:#155444;
+  --warn:#8a4a06; --warn-soft:#f6e7d2;
+  --danger:#8c2b1f; --danger-soft:#f7e2de;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --sans:Montserrat,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --radius:8px;
+  --shadow:0 1px 2px rgba(20,24,28,.05), 0 8px 24px -12px rgba(20,24,28,.18);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font:400 14.5px/1.55 var(--sans);
+  -webkit-font-smoothing:antialiased;
+  font-variant-numeric:tabular-nums;
+}
+::selection{background:var(--accent);color:#fff}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+*{scrollbar-width:thin;scrollbar-color:var(--line-2) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:6px;border:3px solid var(--paper)}
+h1,h2,h3{margin:0;font-weight:600;letter-spacing:-.015em}
+a{color:var(--accent-ink)}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+aside{background:var(--paper-2);border-right:1px solid var(--line);padding:22px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:22px}
+.brand{display:flex;flex-direction:column;gap:3px;padding:0 6px}
+.brand b{font-size:15px;letter-spacing:-.02em}
+.brand small{color:var(--muted);font-size:12px}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav button{
+  all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:9px 11px;border-radius:6px;font-size:13.8px;font-weight:500;color:var(--ink-soft);
+  transition:background .15s ease,color .15s ease;
+}
+.nav button:hover{background:#e6e2d8;color:var(--ink)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent-ink);font-weight:600}
+.nav .count{font:500 11px var(--mono);color:var(--muted);background:#e6e1d6;border-radius:20px;padding:2px 7px}
+aside .foot{margin-top:auto;font-size:12px;color:var(--muted);padding:0 6px;display:flex;flex-direction:column;gap:6px}
+aside .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:6px}
+
+main{min-width:0;display:flex;flex-direction:column}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 28px;border-bottom:1px solid var(--line);background:rgba(247,245,240,.86);
+  backdrop-filter:blur(6px);position:sticky;top:0;z-index:5;
+}
+.topbar h1{font-size:17px}
+.topbar .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.tools{display:flex;align-items:center;gap:10px}
+select,input,button{font-family:inherit;font-size:13.5px}
+select{
+  appearance:none;background:var(--card) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4.5l4 4 4-4' fill='none' stroke='%2368717b' stroke-width='1.6'/></svg>") no-repeat right 10px center;
+  border:1px solid var(--line-2);border-radius:6px;padding:7px 30px 7px 11px;color:var(--ink);cursor:pointer;
+}
+.btn{
+  border:1px solid var(--line-2);background:var(--card);color:var(--ink);border-radius:6px;
+  padding:7px 13px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s,color .15s;
+}
+.btn:hover{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+.btn.solid{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.solid:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.badge{font:500 11.5px var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:3px 7px}
+
+.view{padding:24px 28px 48px;display:none}
+.view.active{display:block}
+.view-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:18px}
+.view-head h2{font-size:16px}
+.view-head p{margin:4px 0 0;color:var(--muted);font-size:13px;max-width:62ch}
+
+/* ---------- medidores ---------- */
+.measures{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:26px}
+.measure{padding:16px 16px 15px;border-right:1px solid var(--line)}
+.measure:last-child{border-right:0}
+.measure .k{font-size:12.2px;color:var(--ink-soft);font-weight:500}
+.measure .v{font:500 26px/1.15 var(--mono);letter-spacing:-.02em;margin-top:6px}
+.measure .d{font-size:11.8px;color:var(--muted);margin-top:5px}
+.measure .d.good{color:var(--accent-ink)}
+.measure .d.warn{color:var(--warn)}
+
+.grid-2{display:grid;grid-template-columns:1.35fr 1fr;gap:20px;align-items:stretch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column}
+.panel > header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.panel > header h3{font-size:13.5px}
+.panel > header .hint{font-size:11.5px;color:var(--muted)}
+.panel .body{padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:center}
+
+/* barras */
+.chart{display:flex;align-items:flex-end;gap:12px;height:172px;padding-top:6px;border-bottom:1px solid var(--line-2)}
+.chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;height:100%;padding-bottom:4px}
+.chart .stack{width:100%;display:flex;flex-direction:column;justify-content:flex-end;gap:0;align-self:flex-end}
+.chart .bar{background:var(--accent);border-radius:0;transition:height .45s cubic-bezier(.16,1,.3,1)}
+.chart .bar:last-child{border-radius:3px 3px 0 0}
+.chart .bar:only-child{border-radius:3px 3px 0 0}
+.chart .bar.human{background:#b06a12;border-radius:3px 3px 0 0}
+.chart .lbl{font:400 10.5px var(--mono);color:var(--muted);letter-spacing:.02em}
+.legend{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+
+/* ---------- conversaciones ---------- */
+.inbox{display:grid;grid-template-columns:340px 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--card);box-shadow:var(--shadow);height:clamp(420px, calc(100vh - 236px), 640px)}
+.list{border-right:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.list .filters{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.chipf{border:1px solid var(--line-2);background:transparent;border-radius:20px;padding:4px 10px;font-size:12px;cursor:pointer;color:var(--ink-soft)}
+.chipf[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.rows{overflow:auto;flex:1;min-height:0}
+.row{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;padding:11px 13px;cursor:pointer}
+.row:hover{background:#f4f1e9}
+.row[aria-selected="true"]{background:var(--accent-soft)}
+.row .l1{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.row .name{font-weight:600;font-size:13.5px}
+.row .when{font:400 10.8px var(--mono);color:#5f6771}
+.row .l2{color:var(--muted);font-size:12.5px;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pill{display:inline-flex;align-items:center;gap:5px;font:500 10.5px var(--mono);text-transform:uppercase;letter-spacing:.05em;border-radius:4px;padding:2px 6px}
+.pill.bot{background:var(--accent-soft);color:var(--accent-ink)}
+.pill.human{background:var(--warn-soft);color:var(--warn)}
+.pill.closed{background:#e6e2d8;color:#4c5459}
+.pill.pass{background:var(--accent-soft);color:var(--accent-ink)}
+.pill.review{background:var(--warn-soft);color:var(--warn)}
+.pill.approved{background:#e4e9f2;color:#2f4a72}
+.pill.pending{background:#e8e5dd;color:var(--ink-soft)}
+.pill.rejected{background:var(--danger-soft);color:var(--danger)}
+
+.thread{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.thread > header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.thread > header .acts{display:flex;align-items:center;gap:8px;flex-wrap:nowrap}
+.thread > header .who b{font-size:14px}
+.thread > header .who div{font:400 11.5px var(--mono);color:var(--muted);margin-top:2px}
+.thread .reason{font-size:12px;color:var(--warn);background:var(--warn-soft);border-radius:4px;padding:3px 8px}
+.msgs{padding:16px;overflow:auto;flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;background:
+  linear-gradient(var(--card),var(--card)) padding-box,
+  repeating-linear-gradient(0deg,#f3f0e8 0 1px,transparent 1px 22px);}
+.msg{max-width:76%;padding:9px 12px;border-radius:10px;font-size:13.5px;line-height:1.5;box-shadow:0 1px 1px rgba(20,24,28,.05)}
+.msg.in{align-self:flex-start;background:#f0ede4;border:1px solid var(--line);border-bottom-left-radius:3px}
+.msg.out{align-self:flex-end;border-bottom-right-radius:3px}
+.msg.out.bot{background:var(--accent);color:#fff}
+.msg.out.human{background:var(--ink);color:#f7f5f0}
+.msg .meta{display:flex;gap:8px;font:400 10.2px var(--mono);margin-top:5px;opacity:.85}
+.composer{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--line);background:var(--card)}
+.composer input{flex:1;border:1px solid var(--line-2);border-radius:6px;padding:8px 11px;background:var(--paper)}
+.composer input::placeholder{color:#6c747d}
+.composer.locked{background:#faf8f3}
+.locknote{flex:1;display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--ink-soft)}
+
+/* ---------- tablas ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.2px}
+thead th{text-align:left;font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 14px;border-bottom:1px solid var(--line-2);background:var(--card);position:sticky;top:0}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tbody tr:hover{background:#f7f4ec}
+td.num{text-align:right;font-family:var(--mono);font-size:12.6px}
+td .sub{color:var(--muted);font-size:11.8px;margin-top:2px}
+.score{font:500 13px var(--mono)}
+.tier{font:500 10.5px var(--mono);letter-spacing:.05em;padding:2px 6px;border-radius:4px}
+.tier.HOT{background:var(--danger-soft);color:var(--danger)}
+.tier.WARM{background:var(--warn-soft);color:var(--warn)}
+.tier.COLD{background:#e8e5dd;color:var(--muted)}
+.bar-mini{height:4px;background:#e8e5dd;border-radius:3px;overflow:hidden;margin-top:5px;width:64px}
+.bar-mini i{display:block;height:100%;background:var(--accent)}
+
+/* ---------- KB ---------- */
+.kblist{display:grid;gap:10px}
+.kbitem{border:1px solid var(--line);border-radius:6px;padding:11px 13px;background:var(--card)}
+.kbitem b{font-size:13.2px}
+.kbitem p{margin:4px 0 0;font-size:13px;color:var(--ink-soft)}
+.kbitem .price{font:500 11.5px var(--mono);color:var(--accent-ink)}
+
+/* ---------- estados ---------- */
+.skel{height:12px;border-radius:4px;background:linear-gradient(90deg,#eee9dd,#e3ded2,#eee9dd);background-size:200% 100%;animation:sh 1.1s infinite linear}
+@keyframes sh{to{background-position:-200% 0}}
+.empty{text-align:center;padding:44px 20px;color:var(--muted);font-size:13px}
+.empty b{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,10px);opacity:0;background:var(--ink);color:#fff;padding:9px 15px;border-radius:6px;font-size:13px;transition:.25s cubic-bezier(.16,1,.3,1);pointer-events:none;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+footer.note{padding:16px 28px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);line-height:1.5}
+
+@media(max-width:1080px){
+  .measures{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-2{grid-template-columns:1fr}
+  .inbox{grid-template-columns:1fr}
+  .list{border-right:0;border-bottom:1px solid var(--line)}
+  .rows{max-height:260px}
+}
+@media(max-width:760px){
+  .shell{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;overflow:auto;align-items:center;gap:14px;padding:12px}
+  .brand small,aside .foot{display:none}
+  .nav{flex-direction:row}
+  .view,.topbar{padding-left:16px;padding-right:16px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside>
+    <div class="brand"><b>Automatizaciones Fperez</b><small>panel de operación</small></div>
+    <nav class="nav" id="nav">
+      <button data-view="resumen" aria-current="page">Resumen</button>
+      <button data-view="conversaciones">Conversaciones <span class="count" id="c-conv">—</span></button>
+      <button data-view="facturas">Facturas <span class="count" id="c-inv">—</span></button>
+      <button data-view="leads">Leads <span class="count" id="c-leads">—</span></button>
+      <button data-view="kb">Base de conocimiento</button>
+    </nav>
+    <div class="foot">
+      <div><span class="dot"></span><span id="health">conectando…</span></div>
+      <div>v1.0 · datos de demostración</div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div>
+        <h1>Clínica Dental Sonrisa Ñuñoa</h1>
+        <div class="sub" id="subtitle">Santiago · WhatsApp · agente con derivación a recepción</div>
+      </div>
+      <div class="tools">
+        <span class="badge">demo</span>
+        <select id="tenant" aria-label="Negocio">
+          <option value="clinica-sonrisa-nunoa">Clínica Sonrisa Ñuñoa</option>
+        </select>
+        <button class="btn" id="refresh">Actualizar</button>
+      </div>
+    </div>
+
+    <!-- RESUMEN -->
+    <section class="view active" id="view-resumen">
+      <div class="measures" id="measures"></div>
+      <div class="grid-2">
+        <div class="panel">
+          <header><h3>Conversaciones por día</h3><span class="hint" id="chart-hint">últimos 7 días</span></header>
+          <div class="body">
+            <div class="chart" id="chart"></div>
+            <div class="legend"><span><i style="background:var(--accent)"></i>bot</span><span><i style="background:var(--warn)"></i>con persona</span></div>
+          </div>
+        </div>
+        <div class="panel">
+          <header><h3>Calidad del agente</h3><span class="hint">última evaluación</span></header>
+          <div class="body" id="quality"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONVERSACIONES -->
+    <section class="view" id="view-conversaciones">
+      <div class="view-head">
+        <div><h2>Bandeja</h2><p>El agente responde solo; cuando el caso lo pide, la conversación queda en manos de recepción y el bot deja de contestar.</p></div>
+      </div>
+      <div class="inbox">
+        <div class="list">
+          <div class="filters" id="filters">
+            <button class="chipf" data-f="all" aria-pressed="true">Todas</button>
+            <button class="chipf" data-f="bot" aria-pressed="false">Bot</button>
+            <button class="chipf" data-f="human" aria-pressed="false">Con persona</button>
+            <button class="chipf" data-f="closed" aria-pressed="false">Cerradas</button>
+          </div>
+          <div class="rows" id="conv-rows"></div>
+        </div>
+        <div class="thread" id="thread"></div>
+      </div>
+    </section>
+
+    <!-- FACTURAS -->
+    <section class="view" id="view-facturas">
+      <div class="view-head">
+        <div><h2>Facturas recibidas</h2><p>Se extraen, se validan contra el maestro de proveedores y se registran. Lo que no cuadra queda en revisión con el motivo escrito.</p></div>
+      </div>
+      <div class="panel"><div class="body" style="padding:0"><div id="inv-table"></div></div></div>
+    </section>
+
+    <!-- LEADS -->
+    <section class="view" id="view-leads">
+      <div class="view-head">
+        <div><h2>Leads</h2><p>Cada consulta entra con un score y un borrador de respuesta listo para enviar o editar.</p></div>
+      </div>
+      <div class="panel"><div class="body" style="padding:0"><div id="leads-table"></div></div></div>
+    </section>
+
+    <!-- KB -->
+    <section class="view" id="view-kb">
+      <div class="view-head">
+        <div><h2>Base de conocimiento</h2><p>Es exactamente lo que el agente puede afirmar: precios, horarios y convenios. Si algo no está acá, deriva en vez de inventar.</p></div>
+      </div>
+      <div class="kblist" id="kblist"></div>
+    </section>
+
+    <footer class="note">Los datos de este panel son de demostración. Métricas calculadas sobre las tablas reales del backend (Postgres): conversaciones, mensajes, facturas y leads.</footer>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+let TENANT = $('#tenant').value;
+let state = { filter: 'all', selected: null };
+
+const fmt = {
+  pct: v => (v === null || v === undefined) ? '—' : `${Number(v).toFixed(1).replace('.', ',')}%`,
+  sec: ms => (ms === null || ms === undefined) ? '—' : `${(ms / 1000).toFixed(1).replace('.', ',')} s`,
+  int: v => (v === null || v === undefined) ? '—' : new Intl.NumberFormat('es-CL').format(v),
+  clp: v => v === null || v === undefined ? '—' : '$' + new Intl.NumberFormat('es-CL').format(Math.round(v)),
+  when: iso => {
+    if (!iso) return '';
+    const d = new Date(iso), now = new Date(), diff = (now - d) / 60000;
+    if (diff < 60) return `${Math.max(1, Math.round(diff))} min`;
+    if (diff < 1440) return `${Math.round(diff / 60)} h`;
+    return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short' });
+  }
+};
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2200);
+}
+async function api(path, opts) {
+  const r = await fetch(path + (path.includes('?') ? '&' : '?') + 'tenant=' + encodeURIComponent(TENANT), opts);
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.status === 204 ? null : r.json();
+}
+function skeleton(rows = 3) {
+  return Array.from({ length: rows }, () => '<div class="skel" style="margin:10px 0"></div>').join('');
+}
+
+/* navegación */
+$('#nav').addEventListener('click', e => {
+  const b = e.target.closest('button[data-view]'); if (!b) return;
+  $$('#nav button').forEach(x => x.removeAttribute('aria-current'));
+  b.setAttribute('aria-current', 'page');
+  $$('.view').forEach(v => v.classList.remove('active'));
+  $('#view-' + b.dataset.view).classList.add('active');
+  if (b.dataset.view === 'conversaciones') loadConversations();
+  if (b.dataset.view === 'facturas') loadInvoices();
+  if (b.dataset.view === 'leads') loadLeads();
+  if (b.dataset.view === 'kb') loadKb();
+});
+$('#refresh').addEventListener('click', () => { loadAll(); toast('Datos actualizados'); });
+$('#tenant').addEventListener('change', e => { TENANT = e.target.value; loadAll(); });
+
+/* ---------- resumen ---------- */
+async function loadSummary() {
+  $('#measures').innerHTML = Array.from({ length: 5 }, () => '<div class="measure"><div class="k skel" style="width:60%"></div><div class="v skel" style="margin-top:10px;height:26px;width:50%"></div></div>').join('');
+  let m;
+  try { m = await api('/api/metrics?days=7'); }
+  catch (err) { $('#measures').innerHTML = `<div class="measure" style="grid-column:1/-1"><div class="k">No se pudo leer el backend</div><div class="d">${esc(err.message)}</div></div>`; return; }
+
+  const totalConv = Number(m.totals?.conversations ?? 0);
+  const inbound = Number(m.totals?.inbound ?? 0);
+  const handoffPct = Number(m.handoff?.handoff_pct ?? 0);
+  const autoPct = 100 - handoffPct;
+  const p95 = m.latency?.p95_ms ?? null;
+  const invPct = m.invoices?.auto_pct ?? null;
+
+  const measures = [
+    { k: 'Conversaciones', v: fmt.int(totalConv), d: `últimos 7 días · ${fmt.int(inbound)} mensajes`, cls: '' },
+    { k: 'Resueltas sin persona', v: fmt.pct(autoPct), d: `${fmt.int(m.handoff?.with_human)} de ${fmt.int(m.handoff?.total)} pasaron a recepción`, cls: autoPct >= 70 ? 'good' : 'warn' },
+    { k: 'Respuesta del bot', v: fmt.sec(p95), d: `p95 · mediana ${fmt.sec(m.latency?.p50_ms)}`, cls: '' },
+    { k: 'Facturas automáticas', v: fmt.pct(invPct), d: `${fmt.int(m.invoices?.need_review)} en revisión manual`, cls: Number(invPct) >= 60 ? 'good' : 'warn' },
+    { k: 'Costo por conversación', v: m.cost?.cost_usd_per_conversation ? 'US$ ' + Number(m.cost.cost_usd_per_conversation).toFixed(3).replace('.', ',') : '—', d: `medido sobre ${fmt.int(m.cost?.conversations)} conversaciones`, cls: '' }
+  ];
+  $('#measures').innerHTML = measures.map(x =>
+    `<div class="measure"><div class="k">${x.k}</div><div class="v">${x.v}</div><div class="d ${x.cls}">${x.d}</div></div>`).join('');
+
+  /* chart: barra = conversaciones del día, segmento ámbar = las que pasaron por una persona */
+  const byDay = {};
+  m.daily.forEach(d => { byDay[d.day] = d; });
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const dt = new Date(); dt.setDate(dt.getDate() - i);
+    const key = dt.toISOString().slice(0, 10);
+    days.push(byDay[key] || { day: key, conversations: 0, handoff_conversations: 0 });
+  }
+  const max = Math.max(1, ...days.map(d => Number(d.conversations)));
+  const PX = 120;                       // alto máximo de la barra
+  $('#chart').innerHTML = days.map(d => {
+    const total = Number(d.conversations), human = Number(d.handoff_conversations);
+    const hTotal = total ? Math.max(6, Math.round((total / max) * PX)) : 2;
+    const hHuman = total ? Math.round((human / total) * hTotal) : 0;
+    const day = new Date(d.day + 'T00:00:00').toLocaleDateString('es-CL', { weekday: 'short' }).replace('.', '').toLowerCase();
+    const tip = `${d.day}: ${total} conversaciones, ${human} con persona`;
+    return `<div class="col" title="${tip}">
+      <span class="lbl" style="opacity:${total ? 1 : .35};font-weight:500">${total}</span>
+      <div class="stack" style="height:${hTotal}px">${hHuman ? `<div class="bar human" style="height:${hHuman}px"></div>` : ''}${total ? `<div class="bar" style="height:${hTotal - hHuman}px"></div>` : '<div class="bar" style="height:2px;background:var(--line-2)"></div>'}</div>
+      <div class="lbl">${day}</div></div>`;
+  }).join('');
+
+  const ev = m.eval || {};
+  $('#quality').innerHTML = ev.score ? `
+    <div style="font:500 40px/1 var(--mono);letter-spacing:-.03em">${Number(ev.score).toFixed(1).replace('.', ',')}<span style="font-size:17px;color:var(--muted);margin-left:2px">%</span></div>
+    <div style="margin-top:8px;font-size:13px;color:var(--ink-soft);max-width:34ch">
+      de respuestas correctas en la evaluación de <b style="color:var(--ink);font-weight:600">ReplyDesk</b>
+      <div style="color:var(--muted);font-size:12px;margin-top:3px">${new Date(ev.created_at).toLocaleDateString('es-CL', { day: 'numeric', month: 'long' })} · ${esc(String(ev.total || 32))} preguntas del negocio</div>
+    </div>
+    <div style="margin-top:16px;border-top:1px solid var(--line);padding-top:12px;font-size:12.5px;color:var(--ink-soft);display:grid;gap:7px">
+      <div style="display:flex;justify-content:space-between"><span>Preguntas respondidas bien</span><b>${fmt.int(ev.passed)}</b></div>
+      <div style="display:flex;justify-content:space-between"><span>Fallos detectados</span><b>${fmt.int((ev.total || 0) - (ev.passed || 0))}</b></div>
+    </div>`
+    : '<div class="empty"><b>Sin evaluación cargada</b>Corré la eval del agente para publicar el puntaje.</div>';
+}
+
+/* ---------- conversaciones ---------- */
+async function loadConversations() {
+  $('#conv-rows').innerHTML = skeleton(6);
+  try {
+    const list = await api('/api/conversations?status=' + (state.filter === 'all' ? '' : state.filter));
+    $('#c-conv').textContent = list.length;
+    $('#conv-rows').innerHTML = list.length ? list.map(c => `
+      <button class="row" data-id="${c.id}" aria-selected="${c.id === state.selected}">
+        <div class="l1"><span class="name">${esc(c.contact)}</span><span class="when">${fmt.when(c.last_message_at)}</span></div>
+        <div class="l1" style="margin-top:4px">
+          <span class="pill ${c.status}">${c.status === 'bot' ? 'bot' : c.status === 'human' ? 'con persona' : 'cerrada'}</span>
+          <span class="when">${c.msgs} msj</span>
+        </div>
+        <div class="l2">${esc(c.last_body || '')}</div>
+      </button>`).join('') : '<div class="empty"><b>Nada en este filtro</b>Cuando entre un mensaje aparecerá acá.</div>';
+    if (list.length && !list.some(c => c.id === state.selected)) {
+      state.selected = list[0].id;
+      await selectConversation(list[0].id);
+    }
+    else if (!list.length) $('#thread').innerHTML = '<div class="empty"><b>Sin conversación</b>Elegí una de la lista.</div>';
+  } catch (err) {
+    $('#conv-rows').innerHTML = `<div class="empty"><b>Error al leer la bandeja</b>${esc(err.message)}</div>`;
+  }
+}
+
+$('#filters').addEventListener('click', e => {
+  const b = e.target.closest('.chipf'); if (!b) return;
+  $$('.chipf').forEach(x => x.setAttribute('aria-pressed', 'false'));
+  b.setAttribute('aria-pressed', 'true'); state.filter = b.dataset.f; loadConversations();
+});
+$('#conv-rows').addEventListener('click', e => {
+  const r = e.target.closest('.row'); if (!r) return;
+  selectConversation(r.dataset.id);
+});
+
+async function selectConversation(id) {
+  state.selected = id;
+  $$('#conv-rows .row').forEach(r => r.setAttribute('aria-selected', String(r.dataset.id === id)));
+  $('#thread').innerHTML = `<div class="msgs">${skeleton(4)}</div>`;
+  let c;
+  try { c = await api('/api/conversations/' + id); }
+  catch (err) { $('#thread').innerHTML = `<div class="empty"><b>No se pudo abrir</b>${esc(err.message)}</div>`; return; }
+
+  const msgs = c.messages.map(m => `
+    <div class="msg ${m.direction} ${m.source}">
+      ${esc(m.body)}
+      <div class="meta"><span>${new Date(m.created_at).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}</span>
+        ${m.direction === 'out' ? `<span>${esc(m.source)}${m.latency_ms ? ' · ' + (m.latency_ms / 1000).toFixed(1) + ' s' : ''}</span>` : ''}</div>
+    </div>`).join('');
+
+  const estado = c.status === 'human' ? `en recepción${c.assigned_to ? ' · ' + esc(c.assigned_to) : ''}`
+                 : c.status === 'closed' ? 'cerrada' : 'responde el bot';
+  $('#thread').innerHTML = `
+    <header>
+      <div class="who">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <b>${esc(c.contact)}</b>
+          <span class="pill ${c.status}">${c.status === 'human' ? 'en recepción' : c.status === 'closed' ? 'cerrada' : 'bot'}</span>
+        </div>
+        <div>${esc(c.phone || c.channel)} · ${estado}</div>
+        ${c.handoff_reason ? `<span class="reason" style="margin-top:6px;display:inline-block">${esc(c.handoff_reason)}</span>` : ''}
+      </div>
+      <div class="acts">
+        <button class="btn" data-act="close" title="Cerrar esta conversación" ${c.status === 'closed' ? 'disabled' : ''}>Cerrar chat</button>
+      </div>
+    </header>
+    <div class="msgs">${msgs}</div>
+    <div class="composer${c.status === 'human' ? '' : ' locked'}">
+      ${c.status === 'human'
+        ? `<input placeholder="Responder como recepción…"><button class="btn solid" data-act="send">Enviar</button>`
+        : `<div class="locknote">El bot está respondiendo esta conversación.<button class="btn solid" data-act="takeover" style="margin-left:auto">Tomar el chat</button></div>`}
+    </div>`;
+
+  $('#thread').querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', async () => {
+    const act = b.dataset.act;
+    if (act === 'send') { toast('El envío real va por la Cloud API de Meta; acá queda registrado en la conversación.'); return; }
+    b.disabled = true;
+    try {
+      await fetch(`/api/conversations/${id}/${act}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ assignee: 'Javiera', reason: 'Tomado desde el panel' }) });
+      toast(act === 'takeover' ? 'Chat tomado por recepción — ya puedes responder' : 'Conversación cerrada');
+      // si el filtro deja fuera la conversación recién movida, pasamos al filtro que la contiene
+      const destino = act === 'takeover' ? 'human' : 'all';
+      if (state.filter !== 'all' && state.filter !== destino) {
+        state.filter = destino;
+        $$('.chipf').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.f === destino)));
+      }
+      await loadConversations();
+      // re-render del hilo: loadConversations no lo toca si el id sigue en la lista
+      if (state.selected) await selectConversation(state.selected);
+      loadSummary();
+    } catch (err) { toast('No se pudo: ' + err.message); b.disabled = false; }
+  }));
+}
+
+/* ---------- facturas ---------- */
+async function loadInvoices() {
+  $('#inv-table').innerHTML = `<div class="body">${skeleton(5)}</div>`;
+  try {
+    const rows = await api('/api/invoices');
+    $('#c-inv').textContent = rows.length;
+    $('#inv-table').innerHTML = rows.length ? `<table>
+      <thead><tr><th>Proveedor</th><th>Archivo</th><th style="text-align:right">Monto</th><th>Estado</th><th>Motivo / acción</th></tr></thead>
+      <tbody>${rows.map(i => `<tr>
+        <td><b>${esc(i.vendor)}</b><div class="sub">${esc(i.invoice_no || '')}</div></td>
+        <td><span style="font-family:var(--mono);font-size:11.8px;color:var(--muted)">${esc(i.file_name || '')}</span></td>
+        <td class="num">${fmt.clp(i.total)}</td>
+        <td><span class="pill ${i.status}">${i.status}</span></td>
+        <td>${i.reason ? `<span style="color:var(--warn);font-size:12.3px">${esc(i.reason)}</span>` : '<span class="sub">Validación automática OK</span>'}
+          ${i.status === 'review' ? `<div style="margin-top:6px"><button class="btn" data-approve="${i.id}" style="padding:3px 9px;font-size:12px">Aprobar a mano</button></div>` : ''}
+          ${i.reviewed_by ? `<div class="sub">por ${esc(i.reviewed_by)}</div>` : ''}</td>
+      </tr>`).join('')}</tbody></table>` : '<div class="empty"><b>Sin facturas</b>Subí un PDF y aparecerá con su estado.</div>';
+    $$('[data-approve]').forEach(b => b.addEventListener('click', async () => {
+      try {
+        await fetch('/api/invoices/' + b.dataset.approve, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'approved', reviewed_by: 'Javiera' }) });
+        toast('Factura aprobada'); loadInvoices(); loadSummary();
+      } catch (err) { toast('No se pudo aprobar'); }
+    }));
+  } catch (err) { $('#inv-table').innerHTML = `<div class="empty"><b>Error al leer facturas</b>${esc(err.message)}</div>`; }
+}
+
+/* ---------- leads ---------- */
+async function loadLeads() {
+  $('#leads-table').innerHTML = `<div class="body">${skeleton(4)}</div>`;
+  try {
+    const rows = await api('/api/leads');
+    $('#c-leads').textContent = rows.length;
+    $('#leads-table').innerHTML = rows.length ? `<table>
+      <thead><tr><th>Lead</th><th>Origen</th><th>Score</th><th>Por qué</th><th>Borrador de respuesta</th></tr></thead>
+      <tbody>${rows.map(l => `<tr>
+        <td><b>${esc(l.name || 'sin nombre')}</b><div class="sub">${esc(l.email || l.phone || '')}</div></td>
+        <td><span class="sub">${esc(l.source || '')}</span></td>
+        <td><span class="score">${l.score ?? '—'}</span> <span class="tier ${l.tier}">${l.tier || ''}</span>
+          <div class="bar-mini"><i style="width:${Math.min(100, l.score || 0)}%"></i></div></td>
+        <td>${(l.reasons || []).map(r => `<div class="sub" style="color:var(--ink-soft)">${esc(r)}</div>`).join('') || '<span class="sub">—</span>'}</td>
+        <td><div style="font-size:12.4px;color:var(--ink-soft);max-width:38ch">${esc(l.draft || '—')}</div></td>
+      </tr>`).join('')}</tbody></table>` : '<div class="empty"><b>Sin leads</b>Los formularios y DMs entran acá con score.</div>';
+  } catch (err) { $('#leads-table').innerHTML = `<div class="empty"><b>Error al leer leads</b>${esc(err.message)}</div>`; }
+}
+
+/* ---------- kb ---------- */
+async function loadKb() {
+  $('#kblist').innerHTML = skeleton(4);
+  try {
+    const rows = await api('/api/kb');
+    $('#kblist').innerHTML = rows.length ? rows.map(k => `
+      <div class="kbitem"><b>${esc(k.topic)}</b> ${k.price ? `<span class="price">${esc(k.price)}</span>` : ''}
+        <p>${esc(k.answer)}</p></div>`).join('')
+      : '<div class="empty"><b>Base vacía</b>Sin entradas el agente sólo puede derivar.</div>';
+  } catch (err) { $('#kblist').innerHTML = `<div class="empty"><b>Error</b>${esc(err.message)}</div>`; }
+}
+
+async function loadAll() {
+  try {
+    const h = await (await fetch('/health')).json();
+    $('#health').textContent = h.ok ? 'backend OK · ' + new Date(h.ts).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' }) : 'backend sin respuesta';
+  } catch { $('#health').textContent = 'backend sin respuesta'; }
+  loadSummary();
+  const active = $('.view.active').id.replace('view-', '');
+  if (active === 'conversaciones') loadConversations();
+  if (active === 'facturas') loadInvoices();
+  if (active === 'leads') loadLeads();
+  if (active === 'kb') loadKb();
+  if (active === 'resumen') { loadConversations(); loadInvoices(); loadLeads(); }
+}
+loadAll();
+</script>
+</body>
+</html>

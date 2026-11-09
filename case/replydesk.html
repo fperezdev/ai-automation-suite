@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReplyDesk — agente de WhatsApp con derivación a recepción</title>
+<meta name="description" content="Agente de WhatsApp para pymes: responde con la información del negocio, deriva a una persona cuando corresponde y deja métricas medidas de cada conversación.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f7f5ef; --card:#fffdf8; --ink:#1d2430; --ink-soft:#3d4652; --muted:#5b636c;
+    --line:#e2ddd1; --line-2:#c8c1b1; --accent:#1d2430; --amber:#b4761f; --amber-soft:#f4e6cd;
+    --ok:#2f6b4f; --radius:12px; --shadow:0 1px 2px rgba(29,36,48,.05), 0 8px 24px -16px rgba(29,36,48,.25);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);
+       font:400 16px/1.62 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+       font-feature-settings:"ss01","cv05";-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .wrap{max-width:940px;margin:0 auto;padding:0 24px}
+  header.top{border-bottom:1px solid var(--line);background:rgba(247,245,239,.86);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:16px}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:-.01em}
+  .dot{width:9px;height:9px;border-radius:2px;background:var(--amber)}
+  nav a{font-size:13.5px;color:var(--ink-soft);text-decoration:none;margin-left:18px}
+  nav a:hover{color:var(--ink)}
+  nav a.on{color:var(--ink);text-decoration:underline;text-decoration-color:var(--amber);text-underline-offset:6px;text-decoration-thickness:2px}
+
+  .hero{padding:64px 0 40px;border-bottom:1px solid var(--line)}
+  .eyebrow{font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.14em;text-transform:uppercase;color:#8a5a12}
+  h1{font-size:clamp(30px,4.4vw,46px);line-height:1.1;letter-spacing:-.025em;margin:16px 0 0;max-width:20ch;font-weight:600}
+  .lede{font-size:18px;color:var(--ink-soft);max-width:62ch;margin:18px 0 0}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:38px 0 0;border-top:1px solid var(--line-2)}
+  .stat{padding:16px 18px 4px 0;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font:600 26px/1.15 Inter;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat span{display:block;font-size:12.5px;color:var(--muted);margin-top:5px}
+
+  section{padding:52px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:24px;line-height:1.25;letter-spacing:-.015em;margin:0 0 8px;font-weight:600}
+  .sub{color:var(--muted);margin:0 0 26px;font-size:15px;max-width:64ch}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid2.demo{grid-template-columns:1.18fr .82fr}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow)}
+  .card h3{margin:0 0 6px;font-size:15.5px;font-weight:600;letter-spacing:-.01em}
+  .card p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  ol.steps{margin:0;padding-left:20px;font-size:15px;color:var(--ink-soft)}
+  ol.steps li{margin-bottom:9px}
+
+  /* chat demo */
+  .chat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .chat header{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:#fbf9f4}
+  .chat header .who b{display:block;font-size:14px}
+  .chat header .who span{font-size:12px;color:var(--muted)}
+  .chat .log{padding:16px;height:352px;overflow:auto;display:flex;flex-direction:column;gap:10px;background:#f4f1e9;scrollbar-width:thin;scrollbar-color:#cbc4b3 transparent}
+  .msg{max-width:82%;padding:9px 12px;border-radius:10px;font-size:14.5px;line-height:1.5}
+  .msg.user{align-self:flex-end;background:#dfe9df;border:1px solid #cfdccd}
+  .msg.bot{align-self:flex-start;background:#fffdf8;border:1px solid var(--line)}
+  .msg .meta{font:400 11.5px/1.35 "JetBrains Mono",monospace;color:#565f69;margin-top:7px;display:flex;gap:8px}
+  .tag{align-self:center;font:500 12.5px/1.4 Inter;color:#6b4711;background:#f2e0bd;border:1px solid #dcc294;border-radius:999px;padding:6px 12px;text-align:center;max-width:90%}
+  .chat .composer{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--line);background:var(--card)}
+  .chat input{flex:1;min-height:42px;border:1px solid #b8b0a0;border-radius:8px;padding:10px 12px;font:inherit;font-size:14.5px;background:var(--paper);color:var(--ink)}
+  .chat input::placeholder{color:#71797f}
+  .chat input:focus{outline:2px solid #cbb98e;outline-offset:1px}
+  button.send{border:1px solid var(--accent);background:var(--accent);color:#fff;border-radius:8px;padding:0 18px;min-height:42px;font:500 14px Inter;cursor:pointer}
+  button.send:disabled{opacity:.5;cursor:progress}
+  .hint{font-size:12.5px;color:var(--muted);margin-top:10px}
+  .hint code{font:400 12px "JetBrains Mono",monospace;background:#efeade;padding:1px 5px;border-radius:4px}
+
+  table{width:100%;border-collapse:collapse;font-size:14.5px}
+  th{text-align:left;font:500 12px/1 "JetBrains Mono",monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--line-2)}
+  td{padding:11px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);vertical-align:top}
+  td b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+  .pill{display:inline-block;font-size:11.5px;font-weight:500;padding:3px 8px;border-radius:999px;border:1px solid #cfdccd;background:#e7f0e6;color:var(--ok)}
+  .pill.warn{border-color:#e4d0a8;background:var(--amber-soft);color:#7a5416}
+  footer{padding:36px 0 56px;color:var(--muted);font-size:13.5px}
+  .cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;
+       padding:11px 18px;border-radius:8px;font-weight:500;font-size:14.5px;margin-top:6px}
+  @media (max-width:760px){
+    .stats{grid-template-columns:1fr 1fr}
+    .stat{border-right:0;border-bottom:1px solid var(--line);padding-bottom:14px}
+    .grid2{grid-template-columns:1fr}
+    .hero{padding:44px 0 30px}
+    .chat .log{height:300px}
+  }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>ReplyDesk</div>
+  <nav><a href="#demo" class="on">Demo</a><a href="#como">Cómo funciona</a><a href="#resultados">Resultados</a><a href="#limites">Límites</a></nav>
+</div></header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Automatización con IA · WhatsApp</div>
+    <h1>El bot contesta; recepción entra cuando hace falta.</h1>
+    <p class="lede">Agente de WhatsApp para pymes de servicios. Responde precios, horarios y convenios con la
+    información real del negocio, y deriva a una persona en cuanto el caso lo necesita. Cada conversación queda
+    con su estado, su latencia y su costo, medidos.</p>
+    <div class="stats">
+      <div class="stat"><b>40/40</b><span>preguntas de la evaluación respondidas bien</span></div>
+      <div class="stat"><b>1,6 s</b><span>mediana de respuesta</span></div>
+      <div class="stat"><b>US$ 0,00004</b><span>costo por pregunta</span></div>
+      <div class="stat"><b>5</b><span>reglas que derivan sin gastar tokens</span></div>
+    </div>
+  </section>
+
+  <section id="demo">
+    <h2>Pruébalo</h2>
+    <p class="sub">Es el agente real, con la base de conocimiento de una clínica dental de Ñuñoa (precios, horarios,
+    convenios). Escribe como si fueras el paciente; también puedes probar «me duele mucho una muela» para ver la derivación.</p>
+    <div class="grid2 demo">
+      <div class="chat">
+        <header>
+          <div class="who"><b>Clínica Dental Sonrisa Ñuñoa</b><span>WhatsApp · agente con derivación a recepción</span></div>
+        </header>
+        <div class="log" id="log"></div>
+        <div class="composer">
+          <input id="msg" placeholder="Escribe un mensaje…" autocomplete="off">
+          <button class="send" id="send">Enviar</button>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <h3>Qué mirar</h3>
+          <p><b>Precio:</b> «¿cuánto sale la limpieza?» → responde CLP 35.000 con el detalle del tratamiento.</p>
+        </div>
+        <div class="card" style="margin-bottom:14px">
+          <h3>Derivación por regla</h3>
+          <p><b>Urgencia:</b> «me duele mucho una muela» → avisa que pasa el caso a recepción y la conversación
+          cambia de estado. No gasta tokens ni depende del modelo.</p>
+        </div>
+        <div class="card">
+          <h3>Derivación por el modelo</h3>
+          <p><b>Fuera de la base:</b> «¿hacen blanqueamiento con láser?» → responde lo que sí sabe y deriva
+          lo que no, en vez de inventarlo.</p>
+        </div>
+        <p class="hint" id="hint">La demo necesita el stack local en <code>localhost:8090</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="como">
+    <h2>Cómo funciona</h2>
+    <p class="sub">El orden importa: primero las reglas baratas y deterministas, después el modelo, y siempre un
+    camino de salida hacia una persona.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>1 · Webhook verificado e idempotente</h3>
+        <p>Firma HMAC SHA-256 del cuerpo crudo, verificación del challenge de Meta y deduplicación por
+        <code>wa_message_id</code>: si Meta reintenta el aviso, no se responde dos veces.</p>
+      </div>
+      <div class="card">
+        <h3>2 · Reglas antes que tokens</h3>
+        <p>Urgencia, reclamo, «quiero hablar con alguien», temas administrativos y tratamientos que requieren
+        evaluación se derivan con un mensaje de contención. Costo cero, latencia 15 ms.</p>
+      </div>
+      <div class="card">
+        <h3>3 · Respuesta con la base del negocio</h3>
+        <p>El modelo recibe sólo la base de conocimiento del tenant y devuelve JSON con la respuesta, si deriva y
+        por qué. Si el dato no está, deriva en vez de inventar.</p>
+      </div>
+      <div class="card">
+        <h3>4 · Bandeja con toma de control</h3>
+        <p>Cuando la conversación pasa a recepción, el bot deja de contestar y la persona responde desde el panel.
+        Todo queda con estado visible: bot, en recepción, cerrada.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="resultados">
+    <h2>Resultados medidos</h2>
+    <p class="sub">Sobre el set de 40 preguntas del negocio (precios, horarios, convenios, urgencias, reclamos,
+    temas fuera de alcance). Se corre con <code>eval_replydesk.py</code> y queda guardado en la base.</p>
+    <table>
+      <thead><tr><th>Métrica</th><th>Valor</th><th>Cómo se mide</th></tr></thead>
+      <tbody>
+        <tr><td>Aciertos del set de evaluación</td><td><b>40/40 (100%)</b></td><td>respuesta correcta, o derivación cuando correspondía</td></tr>
+        <tr><td>Latencia mediana</td><td><b>1,6 s</b></td><td>tiempo del modelo, guardado en cada mensaje</td></tr>
+        <tr><td>Costo por pregunta</td><td><b>US$ 0,00004</b></td><td>tokens reales × precio del modelo</td></tr>
+        <tr><td>Derivaciones sin gastar tokens</td><td><b>15/40</b></td><td>reglas deterministas antes de llamar al modelo</td></tr>
+        <tr><td>Reintentos de Meta duplicados</td><td><b>0 respuestas</b></td><td>deduplicación por <code>wa_message_id</code></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section id="limites">
+    <h2>Qué no hace (todavía)</h2>
+    <p class="sub">Preferible decirlo acá que descubrirlo en producción.</p>
+    <div class="grid2">
+      <div class="card"><h3>Audio, imágenes y documentos</h3><p>Los mensajes que no son texto se ignoran en esta
+        versión; en producción van a una cola de revisión con transcripción.</p></div>
+      <div class="card"><h3>Agenda real</h3><p>No reserva horas en el sistema de la clínica: coordina y deja la
+        conversación en recepción. La integración con agenda es un módulo aparte.</p></div>
+      <div class="card"><h3>Multi-idioma</h3><p>Está afinado para español de Chile. Cambiar de idioma es cambiar
+        el prompt y el set de evaluación, no el código.</p></div>
+      <div class="card"><h3>Datos de demo</h3><p>La base de conocimiento y las conversaciones son de una clínica
+        ficticia; los números salen de correr el agente contra esa base.</p></div>
+    </div>
+    <a class="cta" href="#demo">Probar el agente</a>
+  </section>
+
+  <footer>
+    ReplyDesk es una de las piezas de la suite de automatización con IA · Francisco Pérez ·
+    <span style="font-family:'JetBrains Mono',monospace;font-size:12.5px">fperezdev</span>
+  </footer>
+</div>
+
+<script>
+// La demo habla con el stack local; en GitHub Pages se avisa en vez de fallar raro.
+const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const API = location.port === '8090' ? '' : 'http://localhost:8090';
+const log = document.getElementById('log');
+const input = document.getElementById('msg');
+const send = document.getElementById('send');
+const hint = document.getElementById('hint');
+const WA_ID = '569' + Math.floor(10000000 + Math.random() * 89999999);
+let busy = false;
+
+function bubble(text, who, meta) {
+  const el = document.createElement('div');
+  el.className = 'msg ' + who;
+  el.textContent = text;
+  if (meta) {
+    const m = document.createElement('div');
+    m.className = 'meta';
+    m.textContent = meta;
+    el.appendChild(m);
+  }
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+  return el;
+}
+function tag(text) {
+  const el = document.createElement('div');
+  el.className = 'tag';
+  el.textContent = text;
+  log.appendChild(el);
+  log.scrollTop = log.scrollHeight;
+}
+
+async function ask(text) {
+  if (!text.trim() || busy) return;
+  busy = true; send.disabled = true;
+  bubble(text, 'user');
+  input.value = '';
+  const typing = bubble('escribiendo…', 'bot');
+  try {
+    const r = await fetch(`${API}/api/simulate`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tenant: 'clinica-sonrisa-nunoa', text, wa_id: WA_ID, name: 'Visita web' })
+    });
+    const d = await r.json();
+    typing.remove();
+    if (d.error) throw new Error(d.error);
+    if (d.reply) {
+      const meta = d.source === 'rules'
+        ? `regla · ${d.latency_ms} ms · sin tokens`
+        : `${d.latency_ms} ms · ${d.tokens} tokens · US$ ${(d.cost_usd || 0).toFixed(5)}`;
+      bubble(d.reply, 'bot', meta);
+    }
+    if (d.handoff) tag(`derivado a recepción — ${d.reason}`);
+    if (d.status === 'human' && !d.reply) tag('la conversación quedó en recepción');
+  } catch (err) {
+    typing.remove();
+    bubble('No pude hablar con el agente: ' + err.message, 'bot');
+    hint.innerHTML = '¿El stack no está corriendo? <code>make up</code> y <code>make panel</code> en el repo.';
+  } finally {
+    busy = false; send.disabled = false; input.focus();
+  }
+}
+
+send.addEventListener('click', () => ask(input.value));
+input.addEventListener('keydown', e => { if (e.key === 'Enter') ask(input.value); });
+if (!isLocal) {
+  send.disabled = true; input.disabled = true;
+  hint.innerHTML = 'La demo interactiva corre contra el stack local (<code>make up</code> + <code>make panel</code>). ' +
+    'En esta página quedan el caso y los números medidos.';
+}
+bubble('¡Hola! ¿En qué te puedo ayudar?', 'bot', 'agente');
+</script>
+</body>
+</html>

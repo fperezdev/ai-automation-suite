@@ -50,5 +50,46 @@ services:
       timeout: 3s
       retries: 10
 
+  postgres:
+    image: postgres:16-alpine
+    container_name: suite-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: suite
+      POSTGRES_PASSWORD: suite
+      POSTGRES_DB: suite
+    ports:
+      - "5544:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U suite -d suite"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: suite-api
+    restart: unless-stopped
+    network_mode: host        # necesita hablar con el llm-router del host (127.0.0.1:8770)
+    environment:
+      DATABASE_URL: postgresql://suite:suite@127.0.0.1:5544/suite
+      MIGRATIONS_DIR: /db/migrations
+      LLM_ROUTER_URL: http://127.0.0.1:8770/chat
+      API_PORT: "8090"
+      WA_VERIFY_TOKEN: suite-demo-verify
+      WA_DEMO_MODE: "1"       # sin app secret de Meta: acepta webhooks sin firma (marcados)
+    volumes:
+      - ./apps/api:/app          # código en caliente: editar y reiniciar el contenedor
+      - ./db:/db                 # migraciones en caliente
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   n8n_data:
+  pg_data:
+
